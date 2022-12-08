@@ -9,13 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@dicebear/avatars": "^4.10.5",
+    "@dicebear/big-ears-neutral": "^4.10.5",
     "@supabase/supabase-js": "^2.1.1",
     "@types/node": "18.11.11",
     "@types/react": "18.0.26",
     "@types/react-dom": "18.0.9",
+    "@types/svg64": "^1.1.0",
+    "axios": "^1.2.1",
+    "minidenticons": "^2.0.0",
     "next": "13.0.6",
+    "next-connect": "^0.13.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-feather": "^2.0.10",
+    "svg64": "^1.2.0",
     "typescript": "4.9.3"
   },
   "devDependencies": {

@@ -1,8 +1,16 @@
+import { useEffect, useState } from 'react'
+import { Category } from '../components'
+import {supabaseClient} from '../lib/supabaseClient'
+
 type Props = {}
 
 const Home = (props: Props) => {
+
+
+
   return (
-    <div className="text-[64px] font-[600]">
+    <div>
+      <Category/>
     </div>
   )
 }
