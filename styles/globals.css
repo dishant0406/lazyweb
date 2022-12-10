@@ -2,3 +2,54 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import 'react-input-checkbox/lib/react-input-checkbox.min.css';
+
+
+/**=============================================
+=            CSS FOR CHECKBOX            =
+/**=============================================*/
+
+.bootstrap-checkbox {
+  padding-left: 1.5rem;
+  margin-bottom: 0.5em;
+  display: flex;
+  align-items: center;
+}
+
+.bootstrap-checkbox__image {
+  margin-left: -1.5rem;
+
+  border: #5e5f60 solid 1px;
+  border-radius: .25rem;
+
+  background-color: #35363a;
+
+  transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.bootstrap-checkbox__input:checked + .bootstrap-checkbox__image {
+  border-color: #007bff;
+  background: #007bff url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA4IDgnPjxwYXRoIGZpbGw9JyNmZmYnIGQ9J002LjU2NC43NWwtMy41OSAzLjYxMi0xLjUzOC0xLjU1TDAgNC4yNiAyLjk3NCA3LjI1IDggMi4xOTN6Jy8+PC9zdmc+) no-repeat 50%/50% 50%;
+}
+.bootstrap-checkbox__input_indeterminate + .bootstrap-checkbox__image {
+  border-color: #007bff;
+  background: #007bff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3e%3cpath stroke='%23fff' d='M0 2h4'/%3e%3c/svg%3e") no-repeat 50%/50% 50%;
+}
+.bootstrap-checkbox__input:disabled + .bootstrap-checkbox__image {
+  background-color: #e9ecef;
+}
+.bootstrap-checkbox__input:checked:disabled + .bootstrap-checkbox__image,
+.bootstrap-checkbox__input_indeterminate:disabled + .bootstrap-checkbox__image {
+  background-color: rgba(0,123,255,.5);
+}
+.bootstrap-checkbox__input:focus + .bootstrap-checkbox__image {
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.bootstrap-checkbox__label {
+  vertical-align: middle;
+}
+
+
+/**=====  End of CSS FOR CHECKBOX  ======**/

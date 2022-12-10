@@ -20,7 +20,7 @@ const ProfileIcon = ({address, className}: Props):JSX.Element => {
   },[])
 
   return <div className={className} >
-    {imgData!=='' && <img src={imgData} className='h-[2.5rem] p-[0.1rem] w-[2.5rem] rounded-full' alt="profile icon" />}
+    <img src={imgData} className={`h-[2.5rem] ${imgData===''?'scale-[0]':'scale-[1]'} transition-all duration-[0.2s] p-[0.1rem] w-[2.5rem] rounded-full`} alt="profile icon" />
   </div>
 }
 
