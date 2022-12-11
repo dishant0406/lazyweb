@@ -6,6 +6,21 @@
 @import 'react-input-checkbox/lib/react-input-checkbox.min.css';
 
 
+.top_product svg circle {
+  fill: #1c64ec;
+}
+.top_product svg rect{
+  fill: #fff;
+}
+.product-of-day svg circle{
+  fill: #0eaf62;
+  stroke: #fff;
+}
+.product-of-day svg polyline{
+  fill: #0eaf62;
+  stroke: #fff;
+}
+
 /**=============================================
 =            CSS FOR CHECKBOX            =
 /**=============================================*/

@@ -6,6 +6,9 @@ import CategoryPill from './shared/CategoryPill';
 import Sidebar from './desktop/Sidebar/Sidebar';
 import CustomCheckbox from './shared/CustomCheckbox';
 import SidebarCategory from './desktop/SidebarCategory';
+import Dashboard from './desktop/Dashboard/Dashboard';
+import TopProduct from './desktop/TopProduct/TopProduct';
+import Favicon from './utility/Favicon/Favicon';
 
 export {
   NavBar,
@@ -16,4 +19,7 @@ export {
   Sidebar,
   CustomCheckbox,
   SidebarCategory,
+  Dashboard,
+  TopProduct,
+  Favicon,
 }

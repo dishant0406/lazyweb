@@ -1,0 +1,87 @@
+type Props = {}
+import { useState, useEffect } from 'react';
+import { useWebsiteScreenshot } from '../../../hooks/useWebsiteScreenshot';
+import {Layout, Award, Compass, ThumbsUp, Link2, Star, UserCheck} from 'react-feather'
+
+const TopProduct = (props: Props) => {
+  const [imgData, setImageData] = useState('')
+
+  useEffect(()=>{
+    (
+      async ()=>{
+        const imgData = await useWebsiteScreenshot('roadmap.sh')
+        setImageData(imgData)
+      }
+    )()
+  },[])
+
+  return (
+    <div>
+      <p className="text-white mt-[1rem] ml-[1rem]">Today's Top Product</p>
+      <div className="w-[100%] flex justify-center">
+        <div className="flex w-[95%] gap-[1.5rem] mt-[1rem]">
+          <div className={`h-[15rem] ${imgData===''?'scale-[0]':'scale-[1]'} transition-all flex items-center justify-center rounded-[20px] w-[24rem] bg-altGray`}>
+            <div className="w-[22rem] flex flex-col items-center h-[12rem]">
+              <div style={{backgroundImage:`url(${imgData})`, backgroundPosition:'center', backgroundSize:'cover', backgroundRepeat:'no-repeat'}} className="w-[90%] h-[6rem] rounded-[20px]"></div>
+              <div className='w-[90%] flex items-center justify-between'>
+                <div className='flex items-center top_product ml-[0.5rem] mt-[0.5rem] gap-[5px]'>
+                  <Layout className='text-altGray h-[1.2rem] mt-[4px]'/>
+                  <p className='text-white mt-[0.2rem]'>roadmap.sh</p>
+                  <Compass className='text-altGray rounded-full h-[1.2rem] mt-[4px]'/>
+                </div>
+                <div className='flex items-center top_product mt-[0.5rem] gap-[5px]'>
+                  <div className='h-[10px] w-[10px] rounded-full bg-[#0eaf62]'></div>
+                  <p className='text-[14px] text-[#0eaf62]'>Online</p>
+                </div>
+              </div>
+              <button className='w-[90%] h-[2.5rem] rounded-[20px] mt-[1.5rem] bg-[#1c64ec] text-white'>View Website</button>
+            </div>
+          </div>
+          <div>
+            <div className='flex gap-[1.5rem]'>
+              <div className='h-[8.5rem] w-[28rem] flex items-center justify-center bg-altGray rounded-[20px]'>
+                <div className='w-[90%] flex flex-col gap-[15px] h-[75%]'>
+                  <div className='flex gap-[10px]'>
+                    <Link2 className='text-lightGray scale-[0.6]'/>
+                    <div className='flex gap-[5px] items-center'>
+                      <p className='text-white'>Link:</p>
+                      <p className='text-[#7d9ddb] text-[14px]'>https://roadmap.sh</p>
+                    </div>
+                  </div>
+                  <div className='flex gap-[10px]'>
+                    <Star className='text-lightGray scale-[0.6]'/>
+                    <div className='flex gap-[5px] items-center'>
+                      <p className='text-white'>Rating:</p>
+                      <p className='text-[#7d9ddb] text-[14px]'>4.5</p>
+                      <p className='text-lightGray text-[14px]'>(15 reviews)</p>
+                    </div>
+                  </div>
+                  <div className='flex gap-[10px]'>
+                    <UserCheck className='text-lightGray scale-[0.6]'/>
+                    <div className='flex gap-[5px] items-center'>
+                      <p className='text-white'>Added:</p>
+                      <p className='text-[#7d9ddb] text-[14px]'>11 Dec 2022</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='h-[8.5rem] gap-[4px] product-of-day flex flex-col items-center justify-center w-[9rem] bg-[#0eaf62] rounded-[20px]'>
+                <p className='w-[6rem] font-[600] text-center text-white'>Product of the day</p>
+                <Award className='text-[#0eaf62] scale-[1.3] h-[2rem]'/>
+              </div>
+              <div className='h-[8.5rem] gap-[4px] product-of-day flex flex-col items-center justify-center w-[9rem] bg-[#0eaf62] rounded-[20px]'>
+                <p className='w-[6rem] font-[600] text-center text-white'>Liked Product</p>
+                <ThumbsUp className='text-[#fff] scale-[1.2] h-[2rem]'/>
+              </div>
+            </div>
+            <div className='w-[49rem] h-[5rem] rounded-[20px] mt-[1.5rem] bg-altGray'>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default TopProduct
