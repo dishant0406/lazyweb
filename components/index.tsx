@@ -9,6 +9,9 @@ import SidebarCategory from './desktop/SidebarCategory';
 import Dashboard from './desktop/Dashboard/Dashboard';
 import TopProduct from './desktop/TopProduct/TopProduct';
 import Favicon from './utility/Favicon/Favicon';
+import ResourceList from './desktop/ResourceList';
+import ResourceListBar from './desktop/ResourceListBar';
+import ResourceCard from './desktop/ResourceCard/index';
 
 export {
   NavBar,
@@ -22,4 +25,7 @@ export {
   Dashboard,
   TopProduct,
   Favicon,
+  ResourceList,
+  ResourceListBar,
+  ResourceCard
 }

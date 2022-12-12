@@ -1,9 +1,8 @@
-import { formatUrl } from '../lib/formatUrl'
+
 import axios from 'axios'
 
 
 const useWebsiteScreenshot = async (url:string)=>{
-  url = formatUrl(url)
   
   const alreadyData = localStorage.getItem(url)
 

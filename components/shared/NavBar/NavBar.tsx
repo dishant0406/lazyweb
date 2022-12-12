@@ -13,7 +13,7 @@ const NavBar = (props: Props) => {
         </div>
         <SearchBar/>
       </div>
-      <div className='flex gap-[1rem] items-center'>
+      <div className='flex gap-[1rem] mr-[1rem] items-center'>
         <div className='h-[2.5rem] w-[2px] bg-[#5e5f60]'/>
         <Grid className='text-[#6c6c6c] cursor-pointer'/>
         <ProfileIcon className='mr-[1rem] cursor-pointer' address='Dishant Sharma'/>

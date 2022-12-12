@@ -5,6 +5,15 @@
 
 @import 'react-input-checkbox/lib/react-input-checkbox.min.css';
 
+html{
+  overflow-x: hidden !important;
+}
+
+
+
+/*!=============================================
+=            Top Product Style           =
+/*!=============================================*/
 
 .top_product svg circle {
   fill: #1c64ec;
@@ -20,6 +29,10 @@
   fill: #0eaf62;
   stroke: #fff;
 }
+
+/*!=====  End of Top Product Style  ======*/
+
+
 
 /**=============================================
 =            CSS FOR CHECKBOX            =
