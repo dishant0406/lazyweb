@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import {X} from 'react-feather'
-import { emojiGenerator } from "../../../lib/emojiGenerator"
+import { emojiGenerator } from "lib/emojiGenerator"
 
 type Props = {
   name: string

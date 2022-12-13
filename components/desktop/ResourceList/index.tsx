@@ -1,4 +1,4 @@
-import {ResourceListBar, ResourceCard} from '../..'
+import {ResourceListBar, ResourceCard} from 'components'
 
 type Props = {}
 

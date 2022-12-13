@@ -1,5 +1,5 @@
-import { Category, Sidebar, Dashboard, Favicon } from '../components'
-import {supabaseClient} from '../lib/supabaseClient'
+import { Category, Sidebar, Dashboard, Favicon } from 'components'
+import {supabaseClient} from 'lib/supabaseClient'
 
 
 type Props = {}

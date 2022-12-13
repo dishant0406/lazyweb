@@ -1,7 +1,6 @@
-import {CustomCheckbox} from '../..'
-import { useState } from 'react';
+import {CustomCheckbox} from 'components'
+import { useState, useEffect } from 'react';
 import {ChevronDown} from 'react-feather'
-import { useEffect } from 'react';
 
 type Props = {
   options:string[],

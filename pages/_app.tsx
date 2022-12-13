@@ -1,8 +1,8 @@
-import '../styles/globals.css'
+import 'styles/globals.css'
 import type { AppProps } from 'next/app'
-import { NavBar } from '../components'
+import { NavBar } from 'components'
 import Head from 'next/head'
-import Favicon from '../components/utility/Favicon/Favicon'
+import Favicon from 'components/utility/Favicon/Favicon'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

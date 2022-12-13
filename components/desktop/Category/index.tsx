@@ -1,5 +1,5 @@
 
-import {CategoryPill} from '../../';
+import {CategoryPill} from 'components';
 
 type Props = {}
 

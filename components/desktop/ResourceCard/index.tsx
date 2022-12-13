@@ -1,5 +1,5 @@
-import { formatUrl } from "../../../lib/formatUrl"
-import { useWebsiteMetaData,useWebsiteScreenshot } from "../../../hooks"
+import { formatUrl } from "lib/formatUrl"
+import { useWebsiteMetaData,useWebsiteScreenshot } from "hooks"
 import { useEffect, useState } from 'react';
 
 type Props = {

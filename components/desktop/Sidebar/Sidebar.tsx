@@ -1,5 +1,5 @@
 type Props = {}
-import {SidebarCategory} from '../..'
+import {SidebarCategory} from 'components'
 
 const Sidebar = (props: Props) => {
   

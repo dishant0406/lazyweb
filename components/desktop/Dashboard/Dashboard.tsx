@@ -1,5 +1,5 @@
-import {TopProduct, ResourceList} from '../..'
-import { formatUrl } from '../../../lib/formatUrl'
+import {TopProduct, ResourceList} from 'components'
+import { formatUrl } from 'lib/formatUrl'
 
 type Props = {}
 

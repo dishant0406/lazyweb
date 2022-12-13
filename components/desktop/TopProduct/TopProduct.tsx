@@ -3,7 +3,7 @@ type Props = {
   unformatUrl:string
 }
 import { useState, useEffect } from 'react';
-import { useWebsiteScreenshot, useWebsiteMetaData } from '../../../hooks';
+import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
 import {Layout, Award, Compass, ThumbsUp, Link2, Star, UserCheck, Info} from 'react-feather'
 
 const TopProduct = ({url, unformatUrl}: Props) => {

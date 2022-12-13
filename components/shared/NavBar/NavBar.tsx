@@ -1,5 +1,5 @@
 const logo = '/assets/Logo.png'
-import {SearchBar, ProfileIcon} from '../../'
+import {SearchBar, ProfileIcon} from 'components'
 import {Grid} from 'react-feather'
 
 type Props = {}
