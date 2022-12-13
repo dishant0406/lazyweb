@@ -31,6 +31,11 @@ const ResourceCard = ({url}: Props) => {
     )()
   },[])
 
+  const handleGoto = ():void=>{
+    window.open(formattedUrl, '_blank');
+
+  }
+
   return (
     <div className={`w-[18rem] relative ${imgData===''&&websiteData.title===''?'scale-[0]':'scale-[1]'} transition h-[16rem] bg-altGray rounded-[20px]`}>
       <img src={imgData} className="w-[18rem] h-[10rem] rounded-t-[20px]"/>
@@ -38,7 +43,7 @@ const ResourceCard = ({url}: Props) => {
         <div className="text-white text-[16px] font-[500]">{websiteData.title.slice(0,28)}{websiteData.title.length>28&&'...'}</div>
         <div className="text-[#6c6c6c] w-[90%] text-[14px]">{websiteData.description.slice(0,55)}{websiteData.description.length>55&&'.....'}</div>
       </div>
-      <button className="text-white absolute bottom-[10px] right-[10px] px-[10px] py-[2px] text-[12px] bg-[#1c64ec] rounded-[20px]">Link</button>
+      <button onClick={handleGoto} className="text-white hover:scale-[1.05] transition-all absolute bottom-[10px] right-[10px] px-[10px] py-[2px] text-[12px] bg-[#1c64ec] rounded-[20px]">Link</button>
     </div>
   )
 }

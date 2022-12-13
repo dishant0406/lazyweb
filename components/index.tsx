@@ -12,6 +12,7 @@ import Favicon from './utility/Favicon/Favicon';
 import ResourceList from './desktop/ResourceList';
 import ResourceListBar from './desktop/ResourceListBar';
 import ResourceCard from './desktop/ResourceCard/index';
+import LoginModal from './utility/Modals/LoginModal/LoginModal';
 
 export {
   NavBar,
@@ -27,5 +28,6 @@ export {
   Favicon,
   ResourceList,
   ResourceListBar,
-  ResourceCard
+  ResourceCard,
+  LoginModal,
 }

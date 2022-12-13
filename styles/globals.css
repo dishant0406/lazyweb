@@ -7,9 +7,22 @@
 
 html{
   overflow-x: hidden !important;
+  overflow-y:auto !important;
 }
 
+.__react_component_tooltip{
+  background:#35363a !important;
+  opacity:1 !important;
+  border-radius:20px !important;
+}
 
+.__react_component_tooltip::before{
+  opacity:0 !important;
+}
+
+.__react_component_tooltip::after{
+  opacity:0 !important;
+}
 
 /*!=============================================
 =            Top Product Style           =

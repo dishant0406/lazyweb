@@ -11,7 +11,7 @@ const Home = (props: Props) => {
     <Favicon/>
       <div>
         <Category/>
-        <div className='flex'>
+        <div className='flex w-[100vw]'>
           <Sidebar/>
           <Dashboard/>
         </div>

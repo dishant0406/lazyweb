@@ -11,6 +11,7 @@
   "dependencies": {
     "@dicebear/avatars": "^4.10.5",
     "@dicebear/big-ears-neutral": "^4.10.5",
+    "@headlessui/react": "^1.7.5",
     "@supabase/supabase-js": "^2.1.1",
     "@types/node": "18.11.11",
     "@types/react": "18.0.26",
@@ -24,6 +25,8 @@
     "react-dom": "18.2.0",
     "react-feather": "^2.0.10",
     "react-input-checkbox": "^1.1.0",
+    "react-toastify": "^9.1.1",
+    "react-tooltip": "^4.5.1",
     "svg64": "^1.2.0",
     "typescript": "4.9.3"
   },
