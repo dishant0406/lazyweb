@@ -25,6 +25,7 @@
     "react-dom": "18.2.0",
     "react-feather": "^2.0.10",
     "react-input-checkbox": "^1.1.0",
+    "react-spinners": "^0.13.7",
     "react-toastify": "^9.1.1",
     "react-tooltip": "^4.5.1",
     "svg64": "^1.2.0",

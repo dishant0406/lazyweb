@@ -23,6 +23,11 @@ const NavBar = (props: Props) => {
     )()
   },[])
 
+  const signoutHandler = async ()=>{
+   await supabaseClient.auth.signOut()
+    setSession(null)
+  }
+
   return (
     <div className="w-[100vw] border-b border-[#5e5f60] flex justify-between items-center h-[70px] bg-[#202124]">
       <div className='flex items-center'>
@@ -31,10 +36,11 @@ const NavBar = (props: Props) => {
         </div>
         <SearchBar/>
       </div>
-      <div className='flex gap-[1rem] mr-[1rem] items-center'>
+      <div className='flex gap-[1rem] mr-[2rem] items-center'>
         <div className='h-[2.5rem] w-[2px] bg-[#5e5f60]'/>
         <Grid className='text-[#6c6c6c] cursor-pointer'/>
-        <ProfileIcon onClick={()=>!session && setIsOpen(true)} className='mr-[1rem] cursor-pointer' address={(session && session.email) ?session.email:'lazyweb'}/>
+        <ProfileIcon onClick={()=>!session && setIsOpen(true)} className='ursor-pointer' address={(session && session.email) ?session.email:'lazyweb'}/>
+        {session && <button onClick={signoutHandler} className='bg-altGray text-white px-[1rem] rounded-[20px] py-[0.5rem]'>sign out</button>}
       </div>
       <LoginModal isOpen={isOpen} setIsOpen={setIsOpen}/>
     </div>

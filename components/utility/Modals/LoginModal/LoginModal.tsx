@@ -2,14 +2,27 @@ import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useState } from 'react';
 import { supabaseClient } from 'lib/supabaseClient';
+import { AuthError, Session, User} from '@supabase/supabase-js';
+import { PuffLoader } from 'react-spinners';
 
 type Props = {
   isOpen: boolean,
   setIsOpen: (argo:boolean)=>void
 }
 
+type Data = {
+  user: User | null;
+  session: Session | null;
+} | {
+  user: null;
+  session: null;
+}
+
 const LoginModal = ({isOpen, setIsOpen}:Props) => {
   const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<AuthError|null>(null)
+  const [data, setData] = useState<Data|null>(null)
 
   function closeModal() {
     setIsOpen(false)
@@ -20,11 +33,15 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
   }
 
   const handleLogin = async ()=>{
+    setLoading(true)
     const {data, error} = await supabaseClient.auth.signInWithOtp({
       email,
     })
-
-    console.log({data, error})
+    setData(data)
+    if(error){
+      setError(error)
+    }
+    setLoading(false)
   }
 
   return (
@@ -43,7 +60,7 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black bg-opacity-50" />
+            <div className="fixed inset-0 bg-black bg-opacity-75" />
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
@@ -66,19 +83,20 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-white">
-                      Enter Your Email
+                      {!data ? 'Enter Your Email':'Check Your Email'}
                     </p>
                   </div>
                     
-                  <input onChange={(e)=>setEmail(e.target.value)} value={email} placeholder='joe@lazyweb.com' className="bg-[#35363a] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]" />
+                  {!error && !data && <input onChange={(e)=>setEmail(e.target.value)} value={email} placeholder='joe@lazyweb.com' className="bg-[#35363a] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]" />}
 
                   <div className="mt-4">
                     <button
                       onClick={handleLogin}
                       type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                      disabled={!data?false:true}
+                      className="inline-flex min-w-[6rem] justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                     >
-                      Sign In
+                      {!data ? !loading ? 'Sign In': <PuffLoader size={20} color="#fff" />:'Email Sent'}
                     </button>
                     
                   </div>

@@ -19,7 +19,7 @@ const ProfileIcon = ({address, className, onClick}: Props):JSX.Element => {
       }
     )()
 
-  },[])
+  },[address])
 
   return (
     <>
