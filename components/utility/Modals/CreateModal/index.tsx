@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
 import { formatUrl } from 'lib/formatUrl';
 import { supabaseClient } from 'lib/supabaseClient';
+import { useUserData } from '@/hooks';
 let placeholder = 'assets/placeholder-website.png'
 
 type Props = {
@@ -19,6 +20,7 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
   const [image, setImage] = useState(placeholder)
   const [loadingFetch, setLoadingFetch] = useState(false)
   const [err, setError] = useState<String|null>(null)
+  const session = useUserData(state=>state.session)
 
   function closeModal() {
     setIsOpen(false)
@@ -40,14 +42,24 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
 
   const handleAdd = async () =>{
     //add to supabase
-    const {data, error} = await supabaseClient.from('website').insert([
-      {
-        title,
-        url,
-        desc:description,
-        image_url:image
+    if(session && image!=='' && title!==''){
+      const {data, error} = await supabaseClient.from('website').insert([
+        {
+          title,
+          url,
+          created_by:session?.id,
+          desc:description,
+          image_url:image
+        }
+      ]).select()
+      console.log(data)
+      if(error){
+        console.log(error)
+
+      }else{
+        closeModal()
       }
-    ])
+    }
   }
 
   const handleFetchDetails = async ()=>{

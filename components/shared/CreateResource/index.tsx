@@ -10,7 +10,9 @@ const CreateResource = (props: Props) => {
   return (
     <div>
       <a data-tip data-for='create'>
-        <PlusCircle onClick={()=>setIsOpen(true)} className='text-[#6c6c6c] hover:text-[#aeaeae] transition-all cursor-pointer'/>
+        <div>
+          <PlusCircle onClick={()=>setIsOpen(true)} className='text-[#6c6c6c] hover:text-[#aeaeae] transition-all cursor-pointer'/>
+        </div>
       </a>
       <ReactTooltip className='bg-gray' type='warning' id='create' place='bottom'>
           add a resource

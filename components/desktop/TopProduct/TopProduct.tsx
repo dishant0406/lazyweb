@@ -18,7 +18,9 @@ const TopProduct = ({url, unformatUrl}: Props) => {
     (
       async ()=>{
         const imgData = await useWebsiteScreenshot(url)
-        setImageData(imgData)
+        if(imgData){
+          setImageData(imgData)
+        }
         const metaData = await useWebsiteMetaData(url)
         const webData = {
           title:metaData.title || 'Not Available',

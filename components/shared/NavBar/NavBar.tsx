@@ -1,31 +1,24 @@
 const logo = '/assets/Logo.png'
 import {SearchBar, ProfileIcon, LoginModal, CreateResource} from 'components'
-import {Grid, PlusCircle} from 'react-feather'
+import {Grid} from 'react-feather'
 import { useState, useEffect } from 'react';
 import { supabaseClient } from 'lib/supabaseClient';
 import {User} from '@supabase/gotrue-js/src/lib/types'
+import { useUserData } from '@/hooks';
 
 type Props = {}
 
 const NavBar = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false)
-  const [session, setSession] = useState<User|null>(null)
+  const {session,setSession, signOut} = useUserData()
 
   useEffect(()=>{
-    (
-      async ()=>{
-        const {data,error} = await supabaseClient.auth.getSession()
-        
-        if(data.session?.user){
-          setSession(data.session.user)
-        }
-      }
-    )()
+    setSession()
   },[])
 
   const signoutHandler = async ()=>{
    await supabaseClient.auth.signOut()
-    setSession(null)
+   signOut()
   }
 
   return (
