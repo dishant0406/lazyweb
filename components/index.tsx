@@ -13,6 +13,8 @@ import ResourceList from './desktop/ResourceList';
 import ResourceListBar from './desktop/ResourceListBar';
 import ResourceCard from './desktop/ResourceCard/index';
 import LoginModal from './utility/Modals/LoginModal/LoginModal';
+import CreateResource from './shared/CreateResource/index';
+import CreateModal from './utility/Modals/CreateModal/index';
 
 export {
   NavBar,
@@ -30,4 +32,6 @@ export {
   ResourceListBar,
   ResourceCard,
   LoginModal,
+  CreateResource,
+  CreateModal
 }

@@ -1,6 +1,6 @@
 const logo = '/assets/Logo.png'
-import {SearchBar, ProfileIcon, LoginModal} from 'components'
-import {Grid} from 'react-feather'
+import {SearchBar, ProfileIcon, LoginModal, CreateResource} from 'components'
+import {Grid, PlusCircle} from 'react-feather'
 import { useState, useEffect } from 'react';
 import { supabaseClient } from 'lib/supabaseClient';
 import {User} from '@supabase/gotrue-js/src/lib/types'
@@ -38,7 +38,8 @@ const NavBar = (props: Props) => {
       </div>
       <div className='flex gap-[1rem] mr-[2rem] items-center'>
         <div className='h-[2.5rem] w-[2px] bg-[#5e5f60]'/>
-        <Grid className='text-[#6c6c6c] cursor-pointer'/>
+        {!session && <Grid className='text-[#6c6c6c] cursor-pointer'/>}
+        {session && <CreateResource/>}
         <ProfileIcon onClick={()=>!session && setIsOpen(true)} className='ursor-pointer' address={(session && session.email) ?session.email:'lazyweb'}/>
         {session && <button onClick={signoutHandler} className='bg-altGray text-white px-[1rem] rounded-[20px] py-[0.5rem]'>sign out</button>}
       </div>

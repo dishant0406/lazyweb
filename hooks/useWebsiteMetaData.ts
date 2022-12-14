@@ -8,9 +8,13 @@ const useWebsiteMetaData = async (url:string)=>{
   if(alreadyData){
     return JSON.parse(alreadyData)
   }
-  const {data}:{data:{title:string, description:string, banner:string}} = await axios.post(process.env.NEXT_PUBLIC_META_DATA_ENDPOINT!, {url})
-  localStorage.setItem(`Meta:${url}`, JSON.stringify(data))
-  return data
+  try{
+    const {data}:{data:{title:string, description:string, banner:string}} = await axios.post(process.env.NEXT_PUBLIC_META_DATA_ENDPOINT!, {url})
+    localStorage.setItem(`Meta:${url}`, JSON.stringify(data))
+    return data
+  }catch(err){
+    console.log(err)
+  }
 }
 
 export {
