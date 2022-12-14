@@ -2,8 +2,9 @@ import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useState } from 'react';
 import { supabaseClient } from 'lib/supabaseClient';
-import { AuthError, Session, User} from '@supabase/supabase-js';
+import { AuthError, Provider, Session, User} from '@supabase/supabase-js';
 import { PuffLoader } from 'react-spinners';
+import {GitHub} from 'react-feather'
 
 type Props = {
   isOpen: boolean,
@@ -18,11 +19,19 @@ type Data = {
   session: null;
 }
 
+type DataGithub = {
+  provider: Provider;
+  url: string;
+} | {
+  provider: Provider;
+  url: null;
+}
+
 const LoginModal = ({isOpen, setIsOpen}:Props) => {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<AuthError|null>(null)
-  const [data, setData] = useState<Data|null>(null)
+  const [data, setData] = useState<Data|DataGithub|null>(null)
 
   function closeModal() {
     setIsOpen(false)
@@ -51,6 +60,23 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
     }
     setLoading(false)
   }
+
+  const handleGithubLogin = async ()=>{
+    setLoading(true)
+    setData(null)
+    setError(null)
+    const {data, error} = await supabaseClient.auth.signInWithOAuth({
+      provider: 'github',
+    })
+    setData(data)
+    if(error){
+      setError(error)
+    }
+    setLoading(false)
+
+  }
+
+
 
   return (
     <Transition appear 
@@ -97,7 +123,7 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
                     
                   {(!data || error) && <input onChange={(e)=>setEmail(e.target.value)} value={email} placeholder='joe@lazyweb.com' className="bg-[#35363a] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]" />}
 
-                  <div className="mt-4">
+                  <div className="mt-4 flex gap-[1rem] items-center">
                     <button
                       onClick={handleLogin}
                       type="button"
@@ -106,7 +132,11 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
                     >
                       {!data || error ? (!loading ? 'Sign In': <PuffLoader size={20} color="#fff" />):'Email Sent'}
                     </button>
-                    
+                    <p className='text-white'>or</p>
+                    <button onClick={handleGithubLogin} className='w-[7rem] py-1 text-lightGray rounded-lg px-[0.5rem] flex justify-center items-center gap-[0.5rem] bg-altGray'>
+                      <GitHub className='text-lightGray h-[2rem]'/>
+                      Github
+                    </button>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
