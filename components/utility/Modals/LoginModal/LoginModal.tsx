@@ -26,6 +26,12 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
 
   function closeModal() {
     setIsOpen(false)
+    setTimeout(()=>{
+      setEmail('')
+      setLoading(false)
+      setError(null)
+      setData(null)
+    },300)
   }
 
   function openModal() {
@@ -34,6 +40,8 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
 
   const handleLogin = async ()=>{
     setLoading(true)
+    setData(null)
+    setError(null)
     const {data, error} = await supabaseClient.auth.signInWithOtp({
       email,
     })
@@ -87,16 +95,16 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
                     </p>
                   </div>
                     
-                  {!error && !data && <input onChange={(e)=>setEmail(e.target.value)} value={email} placeholder='joe@lazyweb.com' className="bg-[#35363a] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]" />}
+                  {(!data || error) && <input onChange={(e)=>setEmail(e.target.value)} value={email} placeholder='joe@lazyweb.com' className="bg-[#35363a] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]" />}
 
                   <div className="mt-4">
                     <button
                       onClick={handleLogin}
                       type="button"
-                      disabled={!data?false:true}
+                      disabled={(!data||error)?false:true}
                       className="inline-flex min-w-[6rem] justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                     >
-                      {!data ? !loading ? 'Sign In': <PuffLoader size={20} color="#fff" />:'Email Sent'}
+                      {!data || error ? (!loading ? 'Sign In': <PuffLoader size={20} color="#fff" />):'Email Sent'}
                     </button>
                     
                   </div>
