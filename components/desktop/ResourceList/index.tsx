@@ -1,4 +1,4 @@
-import { useAllResources } from '@/hooks/Zustand';
+import { useAllResources, useCompleteResourceLength } from '@/hooks/Zustand';
 import {ResourceListBar, ResourceCard} from 'components'
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion"
@@ -7,9 +7,11 @@ type Props = {}
 
 const ResourceList = (props: Props) => {
   const fetchResources = useAllResources(state=>state.setAllResources)
+  const {setCompleteResourceLength} = useCompleteResourceLength()
   const resources = useAllResources(state=>state.allResources)
   useEffect(()=>{
-    fetchResources('all')
+    fetchResources('all', 4)
+    setCompleteResourceLength('all')
   },[])
 
   return (
@@ -24,7 +26,6 @@ const ResourceList = (props: Props) => {
                 key={e.id}
                 initial={{ scale:0 }}
                 animate={{ scale: 1 }}
-                exit={{scale:0}}
               >
                 <ResourceCard description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
               </motion.div>

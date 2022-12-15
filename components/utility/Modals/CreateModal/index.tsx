@@ -5,6 +5,7 @@ import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
 import { formatUrl } from 'lib/formatUrl';
 import { supabaseClient } from 'lib/supabaseClient';
 import { useUserData } from '@/hooks';
+import { unFormatUrl } from '@/lib/unFormatUrl';
 let placeholder = 'assets/placeholder-website.png'
 
 type Props = {
@@ -43,23 +44,30 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
   const handleAdd = async () =>{
     //add to supabase
     if(session && image!=='' && title!==''){
-      const {data, error} = await supabaseClient.from('website').insert([
-        {
-          title,
-          url,
-          created_by:session?.id,
-          desc:description,
-          image_url:image
-        }
-      ]).select()
-      console.log(data)
-      if(error){
-        console.log(error)
-
+      //check if it is already present in the data base by matching the url
+      const {data, error} = await supabaseClient.from('website').select().eq('url',unFormatUrl(url))
+      if(data && data.length>0){
+        //already present
+        setError('Already Present!')
       }else{
-        closeModal()
+        const {data, error} = await supabaseClient.from('website').insert([
+          {
+            title,
+            url:unFormatUrl(url),
+            created_by:session?.id,
+            desc:description,
+            image_url:image
+          }
+        ]).select()
+        console.log(data)
+        if(error){
+          console.log(error)
+  
+        }else{
+          closeModal()
+        }
       }
-    }
+      }
   }
 
   const handleFetchDetails = async ()=>{

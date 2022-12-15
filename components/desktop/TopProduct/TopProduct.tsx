@@ -17,20 +17,22 @@ const TopProduct = ({url, unformatUrl}: Props) => {
   useEffect(()=>{
     (
       async ()=>{
-        const imgData = await useWebsiteScreenshot(url)
-        if(imgData){
-          setImageData(imgData)
+        if(unformatUrl!==''){
+          const imgData = await useWebsiteScreenshot(url)
+          if(imgData){
+            setImageData(imgData)
+          }
+          const metaData = await useWebsiteMetaData(url)
+          const webData = {
+            title:metaData.title || 'Not Available',
+            description:metaData.description || 'Not Available',
+            image:metaData.banner || 'Not Available'
+          }
+          setWebsiteData(webData)
         }
-        const metaData = await useWebsiteMetaData(url)
-        const webData = {
-          title:metaData.title || 'Not Available',
-          description:metaData.description || 'Not Available',
-          image:metaData.banner || 'Not Available'
-        }
-        setWebsiteData(webData)
       }
     )()
-  },[])
+  },[unformatUrl])
 
   return (
     <div>

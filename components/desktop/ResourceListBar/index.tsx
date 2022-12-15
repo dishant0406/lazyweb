@@ -1,11 +1,12 @@
 type Props = {}
-import { useSelectedTab,useUserData,useAllResources } from 'hooks/Zustand';
-import { useState } from 'react';
+import { useSelectedTab,useUserData,useAllResources, useCompleteResourceLength } from 'hooks/Zustand';
+import { useState, useEffect } from 'react';
 
 const ResourceListBar = (props: Props) => {
   const {session} = useUserData()
-  const {setSelectedTab} = useSelectedTab()
-  const {setAllResources} = useAllResources()
+  const {setSelectedTab, selectedTab} = useSelectedTab()
+  const {setAllResources,allResources} = useAllResources()
+  const {completeResourceLength,setCompleteResourceLength} = useCompleteResourceLength()
   const [tabs, setTabs] = useState([
     {
       id:1,
@@ -35,8 +36,22 @@ const ResourceListBar = (props: Props) => {
     })
     newTabs[id-1].selected = true
     setSelectedTab(newTabs[id-1].slug)
-    setAllResources(newTabs[id-1].slug)
+    setAllResources(newTabs[id-1].slug, 4)
+    setCompleteResourceLength(newTabs[id-1].slug)
     setTabs(newTabs)
+  }
+
+  useEffect(() => {
+    // Call the API when the user scrolls to the end of the page
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [selectedTab, allResources.length,completeResourceLength]);
+
+  function handleScroll() {
+    if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
+    if(allResources.length >= completeResourceLength) return;
+    // Call the API here and update the page state
+    setAllResources(selectedTab, allResources.length+4)
   }
 
   return (
