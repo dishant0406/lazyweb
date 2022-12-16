@@ -4,6 +4,8 @@ type Props = {
 }
 import { useState, useEffect } from 'react';
 import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
+import { FcApproval,FcOpenedFolder,FcInfo } from "react-icons/fc";
+import {BsTrophy} from 'react-icons/bs'
 import {Layout, Award, Compass, ThumbsUp, Link2, Star, UserCheck, Info} from 'react-feather'
 
 const TopProduct = ({url, unformatUrl}: Props) => {
@@ -44,9 +46,9 @@ const TopProduct = ({url, unformatUrl}: Props) => {
               <div style={{backgroundImage:`url(${imgData})`, backgroundPosition:'center', backgroundSize:'cover', backgroundRepeat:'no-repeat'}} className="w-[95%] h-[6rem] rounded-[20px]"></div>
               <div className='w-[95%] flex items-center justify-between'>
                 <div className='flex items-center top_product ml-[0.5rem] mt-[0.5rem] gap-[5px]'>
-                  <Layout className='text-altGray h-[1.2rem] mt-[4px]'/>
-                  <p className='text-white mt-[0.2rem]'>{unformatUrl}</p>
-                  <Compass className='text-altGray rounded-full h-[1.2rem] mt-[4px]'/>
+                  <FcOpenedFolder/>
+                  <p className='text-white'>{unformatUrl}</p>
+                  <FcApproval/>
                 </div>
                 <div className='flex items-center top_product mt-[0.5rem] gap-[5px]'>
                   <div className='h-[10px] w-[10px] rounded-full bg-[#0eaf62]'></div>
@@ -86,7 +88,7 @@ const TopProduct = ({url, unformatUrl}: Props) => {
               </div>
               <div className='h-[8.5rem] gap-[4px] product-of-day flex flex-col items-center justify-center w-[9rem] bg-[#0eaf62] rounded-[20px]'>
                 <p className='w-[6rem] font-[600] text-center text-white'>Product of the day</p>
-                <Award className='text-[#0eaf62] scale-[1.3] h-[2rem]'/>
+                <BsTrophy className='text-[#fff] scale-[1.3] mt-[0.5rem] text-[1.5rem]'/>
               </div>
               <div className='h-[8.5rem] gap-[4px] product-of-day flex flex-col items-center justify-center w-[9rem] bg-[#0eaf62] rounded-[20px]'>
                 <p className='w-[6rem] font-[600] text-center text-white'>Liked Product</p>
@@ -97,7 +99,7 @@ const TopProduct = ({url, unformatUrl}: Props) => {
               <div className='w-fit flex items-center'>
                 <div className='flex gap-[1rem]'>
                   <div className='flex items-center  gap-[5px]'>
-                    <Info className='text-lightGray'/>
+                    <FcInfo className='text-[24px]'/>
                     <p className='text-white whitespace-nowrap w-fit'>{websiteData.title}</p>
                   </div>
                 </div>

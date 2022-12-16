@@ -27,7 +27,7 @@ const ResourceList = (props: Props) => {
                 initial={{ scale:0 }}
                 animate={{ scale: 1 }}
               >
-                <ResourceCard description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
+                <ResourceCard resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
               </motion.div>
               )
             })}

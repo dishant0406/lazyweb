@@ -2,6 +2,26 @@ import create from 'zustand'
 import {User} from '@supabase/gotrue-js/src/lib/types'
 import { supabaseClient } from 'lib/supabaseClient';
 
+export type Resource = {
+  id: number,
+  created_at: string,
+  created_by: string,
+  url: string,
+  tags: string[],
+  image_url: string,
+  title: string,
+  desc: string,
+  isPublicAvailable: boolean,
+  likes:number,
+  isAvailableForApproval:string
+}
+
+export type Bookmarked = {
+  id: number,
+  resource_id:number,
+  bookmarked_by:string
+}
+
 const useUserData = create<{
   session: User | null
   setSession: () => void
@@ -18,7 +38,7 @@ const useUserData = create<{
 }))
 
 const useAllResources = create<{
-  allResources: any[]
+  allResources: Resource[]
   setAllResources: (arg:String, arg2:number) => void
 }>((set) => ({
   allResources: [],
@@ -33,6 +53,17 @@ const useAllResources = create<{
       if(data){
         set({allResources:data})
       }
+    }else if(selectedTab==='saved'){
+      const {data,error} = await supabaseClient.from('bookmarks').select('resource_id').eq('bookmarked_by', useUserData.getState().session?.id)
+      //fetch all resources which are available in the bookmarks table
+      if(data){
+        const {data:errorData,error:errorError} = await supabaseClient.from('website').select('*').in('id', data.map((item)=>item.resource_id)).limit(size)
+        if(errorData){
+          set({allResources:errorData})
+        }
+
+      }
+
     }
   },
 }))
@@ -55,6 +86,17 @@ const useCompleteResourceLength = create<
       if(data){
         set({completeResourceLength:data.length})
       }
+    }else if(selectedTab==='saved'){
+      const {data,error} = await supabaseClient.from('bookmarks').select('resource_id').eq('bookmarked_by', useUserData.getState().session?.id)
+      //fetch all resources which are available in the bookmarks table
+      if(data){
+        const {data:errorData,error:errorError} = await supabaseClient.from('website').select('*').in('id', data.map((item)=>item.resource_id))
+        if(errorData){
+          set({completeResourceLength:errorData.length})
+        }
+
+      }
+
     }
   }
 }))
@@ -94,6 +136,79 @@ const useUrlAtIndex = create<
   }
 }))
 
+const useSetBookmark = create<
+  {
+    setComplete:Boolean,
+    setBookmark: (resourceId:number) => void
+  }
+>((set) => ({
+  setComplete:false,
+  setBookmark: async (resourceId:number) => {
+    //check if the resource if publicly available or not
+    let available = false;
+    const {data:publicAvilable,error:avaiableError} = await supabaseClient.from('website').select('*').eq('id', resourceId)
+    if(!publicAvilable){
+      console.log(avaiableError)
+      return
+    }
+    if(!publicAvilable[0].isPublicAvailable){
+      console.log('not publicly available')
+      return
+    }else{
+      available = true;
+    }
+    if(available){
+      //check if user has already bookmarked or not
+    const {data,error} = await supabaseClient.from('bookmarks').select('*').eq('resource_id', resourceId).eq('bookmarked_by', useUserData.getState().session?.id)
+    if(!data){
+      console.log(error)
+      return
+    }
+    if(data.length>0){
+      //if already bookmarked then remove the bookmark
+      const {data,error} = await supabaseClient.from('bookmarks').delete().eq('resource_id', resourceId).eq('bookmarked_by', useUserData.getState().session?.id)
+      set(state=>({setComplete:!state.setComplete}))
+      if(data){
+        console.log(data)
+      }
+    }else{
+      //if not bookmarked then add the bookmark
+      const {data,error} = await supabaseClient.from('bookmarks').insert([{resource_id:resourceId, bookmarked_by:useUserData.getState().session?.id}])
+      set(state=>({setComplete:!state.setComplete}))
+      if(data){
+        console.log(data)
+      } 
+    }
+    }
+
+    
+  }
+}))
+
+const useCheckIfResourceBookmarked = create<
+  {
+    isBookmarked: boolean
+    setIsBookmarked: (resourceId:number) => void
+  }
+>((set) => ({
+  isBookmarked: false,
+  setIsBookmarked: async (resourceId:number) => {
+    //check if user has already bookmarked or not
+    const {data,error} = await supabaseClient.from('bookmarks').select('*').eq('resource_id', resourceId).eq('bookmarked_by', useUserData.getState().session?.id)
+    if(!data){
+      console.log(error)
+      return
+    }
+    console.log(data)
+    if(data.length>0){
+      set({isBookmarked:true})
+    }else{
+      set({isBookmarked:false})
+    }
+  }
+}))
+
+
 
 
 
@@ -102,5 +217,7 @@ export {
   useAllResources,
   useSelectedTab,
   useUrlAtIndex,
-  useCompleteResourceLength
+  useCompleteResourceLength,
+  useSetBookmark,
+  useCheckIfResourceBookmarked
 }
