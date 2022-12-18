@@ -34,15 +34,21 @@ const useUserData = create<{
           set({session:data.session.user})
         }
   },
-  signOut: ()=>set({session:null})
+  signOut: ()=>{
+    set({session:null})
+    window.location.reload()
+  }
 }))
 
 const useAllResources = create<{
+  loading:Boolean,
   allResources: Resource[]
   setAllResources: (arg:String, arg2:number) => void
 }>((set) => ({
+  loading:false,
   allResources: [],
   setAllResources: async (selectedTab='all', size) => {
+    set(({loading:true}))
     if(selectedTab==='all'){
       const {data,error} = await supabaseClient.from('website').select('*').eq('isPublicAvailable', 'true')
       if(data){
@@ -65,6 +71,7 @@ const useAllResources = create<{
       }
 
     }
+    set(state=>({loading:false}))
   },
 }))
 

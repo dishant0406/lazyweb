@@ -36,7 +36,7 @@ const ResourceListBar = (props: Props) => {
     })
     newTabs[id-1].selected = true
     setSelectedTab(newTabs[id-1].slug)
-    setAllResources(newTabs[id-1].slug, 4)
+    setAllResources(newTabs[id-1].slug, 8)
     setCompleteResourceLength(newTabs[id-1].slug)
     setTabs(newTabs)
   }

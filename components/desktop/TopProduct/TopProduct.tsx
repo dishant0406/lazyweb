@@ -36,6 +36,11 @@ const TopProduct = ({url, unformatUrl}: Props) => {
     )()
   },[unformatUrl])
 
+  const handleVisit = ()=>{
+    window.open(url, '_blank');
+  }
+
+
   return (
     <div>
       <p className="text-white mt-[1rem] ml-[1rem]">Today's Top Product</p>
@@ -55,7 +60,7 @@ const TopProduct = ({url, unformatUrl}: Props) => {
                   <p className='text-[14px] text-[#0eaf62]'>Online</p>
                 </div>
               </div>
-              <button className='w-[95%] h-[2.5rem] rounded-[20px] mt-[1.5rem] bg-[#1c64ec] text-white'>View Website</button>
+              <button onClick={handleVisit} className='w-[95%] h-[2.5rem] rounded-[20px] mt-[1.5rem] bg-[#1c64ec] text-white'>View Website</button>
             </div>
           </div>
           <div>
