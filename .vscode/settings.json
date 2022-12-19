@@ -1,0 +1,65 @@
+{
+  "workbench.colorTheme": "Ayu Dark Bordered",
+  "files.autoSave": "onFocusChange",
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "explorer.confirmDelete": false,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "prettier.configPath": "C:\\Users\\dishu\\Documents\\.prettierrc",
+  "prettier.semi": false,
+  "security.workspace.trust.untrustedFiles": "open",
+  "explorer.confirmDragAndDrop": false,
+  "editor.fontFamily": "Gintronic",
+  "editor.fontLigatures": true,
+  "editor.fontWeight": "400",
+  "terminal.integrated.defaultProfile.windows": "Ubuntu (WSL)",
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "explorer.compactFolders": false,
+  "bracketPairColorizer.depreciation-notice": false,
+  "workbench.tree.indent": 25,
+  "workbench.iconTheme": "vscode-icons",
+  "search.actionsPosition": "auto",
+
+  "terminal.integrated.fontFamily": "MesloLGS NF",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "vsicons.dontShowNewVersionMessage": true,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "tabnine.experimentalAutoImports": true,
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [80],
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": false
+  },
+  "settingsSync.ignoredSettings": [],
+  "terminal.integrated.autoReplies": {},
+  "editor.fontSize": 18,
+  "workbench.colorCustomizations": {},
+  "editor.inlineSuggest.enabled": true,
+  "remote.SSH.remotePlatform": {
+    "138.197.156.131": "linux"
+  },
+  "git.autofetch": true,
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": false,
+    "plaintext": false,
+    "markdown": false,
+    "python": true
+  },
+  "terminal.integrated.automationProfile.linux": {},
+  "terminal.integrated.automationProfile.windows": {
+  
+  }
+}

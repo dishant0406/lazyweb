@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
 import { FcApproval,FcOpenedFolder,FcInfo } from "react-icons/fc";
 import {BsTrophy} from 'react-icons/bs'
-import {Layout, Award, Compass, ThumbsUp, Link2, Star, UserCheck, Info} from 'react-feather'
+import {ThumbsUp, Link2, Star, UserCheck} from 'react-feather'
 
 const TopProduct = ({url, unformatUrl}: Props) => {
   const [imgData, setImageData] = useState('')

@@ -2,7 +2,7 @@ import { formatUrl } from "lib/formatUrl"
 import { Resource } from "@/hooks/Zustand"
 import {HiOutlineStar,HiStar} from 'react-icons/hi'
 import { useEffect, useState } from "react"
-import {useCheckIfResourceBookmarked,useSetBookmark,useUserData} from 'hooks/Zustand'
+import {useSetBookmark,useUserData} from 'hooks/Zustand'
 import { supabaseClient } from "@/lib/supabaseClient"
 import { AnimatePresence, motion } from 'framer-motion';
 
