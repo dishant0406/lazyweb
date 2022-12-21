@@ -46,6 +46,20 @@ html{
 /*!=====  End of Top Product Style  ======*/
 
 
+/**=============================================
+=            React Select Styles            =
+/**=============================================*/
+
+.css-1dimb5e-singleValue,
+.css-166bipr-Input{
+  color:#fff !important;
+}
+
+/**=====  End of React Select Styles  ======*/
+
+
+
+
 
 /**=============================================
 =            CSS FOR CHECKBOX            =

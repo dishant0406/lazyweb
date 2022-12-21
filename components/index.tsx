@@ -15,6 +15,8 @@ import ResourceCard from './desktop/ResourceCard/index';
 import LoginModal from './utility/Modals/LoginModal/LoginModal';
 import CreateResource from './shared/CreateResource/index';
 import CreateModal from './utility/Modals/CreateModal/index';
+import PublishModal from './utility/Modals/PublishModal';
+
 
 export {
   NavBar,
@@ -33,5 +35,6 @@ export {
   ResourceCard,
   LoginModal,
   CreateResource,
-  CreateModal
+  CreateModal,
+  PublishModal
 }

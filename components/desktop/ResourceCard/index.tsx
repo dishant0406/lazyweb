@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import {useSetBookmark,useUserData} from 'hooks/Zustand'
 import { supabaseClient } from "@/lib/supabaseClient"
 import { AnimatePresence, motion } from 'framer-motion';
+import {PublishModal} from "components"
 
 type Props = {
   url:string,
@@ -21,6 +22,7 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
   const [isBookmarked,setIsBookmarked] = useState(false)
   const {session} = useUserData()
   const [isHovered, setIsHovered] = useState(false)
+  const [open, setOpen] = useState(false)
 
   const handleGoto = ():void=>{
     window.open(formattedUrl, '_blank');
@@ -58,7 +60,7 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
     <div className={`w-[18rem] relative transition h-[16rem] bg-altGray rounded-[20px]`}>
       <div className="relative">
         {resource.created_by===session?.id && !resource.isPublicAvailable && <div onMouseEnter={()=>setIsHovered(true)} onMouseLeave={()=>setIsHovered(false)} className="w-[18rem] absolute top-[0] left-[0] transition-all flex items-center justify-center duration-500 hover:bg-gray/[0.4] h-[10rem] rounded-t-[20px]">
-          <button className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Publish</button>
+          <button onClick={()=>setOpen(true)} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Publish</button>
         </div>}
         <img src={image} className="w-[18rem] h-[10rem] rounded-t-[20px]"/>
       </div>
@@ -88,6 +90,7 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
           )}
         </AnimatePresence>
       </motion.div>}
+      <PublishModal url={url} title={title} isOpen={open} setIsOpen={setOpen} />
     </div>
   )
 }
