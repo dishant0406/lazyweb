@@ -48,7 +48,7 @@ const useAllTags = create<{
 }>((set) => ({
   allTags: [],
   setAllTags: async () => {
-    const {data,error} = await supabaseClient.from('website').select('tags')
+    const {data,error} = await supabaseClient.from('website').select('tags').eq('isPublicAvailable',true)
     if(data){
       const allTags = data.map((item)=>item.tags).flat()
       const distinctTags = Array.from(new Set(allTags).values())
@@ -66,7 +66,7 @@ const useAllCategory = create<{
 }>((set) => ({
   allCategories: [],
   setAllCategories: async () => {
-    const {data,error} = await supabaseClient.from('website').select('category').neq('category', null)
+    const {data,error} = await supabaseClient.from('website').select('category').neq('category', null).eq('isPublicAvailable',true)
     if(data){
       const allCategories = data.map((item)=>item.category)
       const distinctCategories = Array.from(new Set(allCategories).values())
