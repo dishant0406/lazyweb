@@ -50,20 +50,20 @@ const useAllResources = create<{
   setAllResources: async (selectedTab='all', size) => {
     set(({loading:true}))
     if(selectedTab==='all'){
-      const {data,error} = await supabaseClient.from('website').select('*').eq('isPublicAvailable', 'true')
+      const {data,error} = await supabaseClient.from('website').select('*').eq('isPublicAvailable', 'true').order('id', { ascending: true })
       if(data){
         set({allResources:data})
       }
     }else if(selectedTab==='my'){
-      const {data,error} = await supabaseClient.from('website').select('*').eq('created_by', useUserData.getState().session?.id).limit(size)
+      const {data,error} = await supabaseClient.from('website').select('*').eq('created_by', useUserData.getState().session?.id).limit(size).order('id', { ascending: true })
       if(data){
         set({allResources:data})
       }
     }else if(selectedTab==='saved'){
-      const {data,error} = await supabaseClient.from('bookmarks').select('resource_id').eq('bookmarked_by', useUserData.getState().session?.id)
+      const {data,error} = await supabaseClient.from('bookmarks').select('resource_id').eq('bookmarked_by', useUserData.getState().session?.id).order('id', { ascending: true })
       //fetch all resources which are available in the bookmarks table
       if(data){
-        const {data:errorData,error:errorError} = await supabaseClient.from('website').select('*').in('id', data.map((item)=>item.resource_id)).limit(size)
+        const {data:errorData,error:errorError} = await supabaseClient.from('website').select('*').in('id', data.map((item)=>item.resource_id)).limit(size).order('id', { ascending: true })
         if(errorData){
           set({allResources:errorData})
         }

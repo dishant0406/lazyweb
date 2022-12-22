@@ -8,28 +8,38 @@ import { useUserData } from '@/hooks';
 import { unFormatUrl } from '@/lib/unFormatUrl';
 import CreatableSelect from 'react-select/creatable'
 let placeholder = 'assets/placeholder-website.png'
+import { MultiValue } from 'react-select';
+import { useCompleteResourceLength, useAllResources } from 'hooks/Zustand';
 
 type Props = {
   isOpen: boolean,
   setIsOpen: (argo:boolean)=>void,
   url:string,
-  title:string
+  title:string,
+  id:number
 }
 
-const PublishModal = ({isOpen, setIsOpen, url ,title}:Props) => {
+type MultiValueProps = MultiValue<{
+  value: string;
+  label: string;
+}>
+
+const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
-  const [tags, setTags] = useState('')
+  const [tags, setTags] = useState<String[]>([])
   const [image, setImage] = useState(placeholder)
   const [loadingFetch, setLoadingFetch] = useState(false)
   const [err, setError] = useState<String|null>(null)
   const session = useUserData(state=>state.session)
+  const {completeResourceLength} = useCompleteResourceLength()
+  const {setAllResources} = useAllResources()
 
   function closeModal() {
     setIsOpen(false)
     setTimeout(()=>{
       setDescription('')
-      setTags('')
+      setTags([])
       setImage(placeholder)
       setLoadingFetch(false)
       setError(null)
@@ -43,37 +53,50 @@ const PublishModal = ({isOpen, setIsOpen, url ,title}:Props) => {
 
   const options = [
 
-   { value:'javascript',label:'JavaScript'}
+   { value:'javascript',label:'JavaScript'},
+   { value:'css',label:'CSS'},
+   { value:'github',label:'Github'},
+  ]
+  const optionsTags = [
+
+   { value:'new',label:'new'},
+   { value:'retro',label:'retro'},
+   { value:'all time favourite',label:'all time favourite'},
+   { value:'great help',label:'great help'},
+   { value:'must use',label:'must use'},
   ]
   
+  
+
+  const handleTags = (e:MultiValueProps)=>{
+    let tagsArr:string[] = []
+    e.map((f)=>{
+      tagsArr.push(f.value)
+    })
+    setTags(tagsArr)
+  }
 
   const handleAdd = async () =>{
-    //add to supabase
-    if(session && image!=='' && title!==''){
-      //check if it is already present in the data base by matching the url
-      const {data, error} = await supabaseClient.from('website').select().eq('url',unFormatUrl(url))
-      if(data && data.length>0){
-        //already present
-        setError('Already Present!')
+    //check if category and tags are not empty if not then update tags and category in supabase and set isAvailableForApproval to true
+    if(category && tags?.length>0){
+      setLoadingFetch(true)
+      setError('')
+      const {data, error} = await supabaseClient
+      .from('website')
+      .update({category:category, tags:tags, isAvailableForApproval:true})
+      .match({id:id})
+      if(error){
+        setError(error.message)
       }else{
-        const {data, error} = await supabaseClient.from('website').insert([
-          {
-            title,
-            url:unFormatUrl(url),
-            created_by:session?.id,
-            desc:description,
-            image_url:image
-          }
-        ]).select()
-        console.log(data)
-        if(error){
-          console.log(error)
-  
-        }else{
-          closeModal()
-        }
+        setAllResources('my',completeResourceLength)
+        closeModal()
       }
-      }
+      setLoadingFetch(false)
+    }else{
+      setError('Enter Valid Data for Submitting for Public View')
+    }
+
+    
   }
 
 
@@ -107,7 +130,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title}:Props) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-md transform rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-white"
@@ -137,7 +160,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title}:Props) => {
                       
                     <input disabled value={title} placeholder='LazyWeb' className="bg-[#35363a] cursor-not-allowed opacity-[0.5] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]" />
                   </div>
-                  <div className='mb-[-2rem]'>
+                  <div className=''>
                     <div className="mt-4">
                       <p className="text-sm text-white">
                         Category
@@ -155,15 +178,33 @@ const PublishModal = ({isOpen, setIsOpen, url ,title}:Props) => {
                         }),
                       }} onChange={e=>e?setCategory(e?.value):setCategory('')} isClearable options={options} />
                   </div>
+                  <div className='mb-[-2rem]'>
+                    <div className="mt-4">
+                      <p className="text-sm text-white">
+                        Tags
+                      </p>
+                    </div>
+                      
+                    <CreatableSelect isMulti styles={{
+                        control: (baseStyles, state) => ({
+                          ...baseStyles,
+                          backgroundColor:'#35363a',
+                          border:'none',
+                          width:'90%',
+                          borderRadius:'12px',
+                          marginTop:'0.5rem'
+                        }),
+                      }} onChange={e=>handleTags(e)} isClearable options={optionsTags} />
+                  </div>
                   
                   <div className="mt-[3rem]">
                     <button
                       type="button"
-                      disabled={title=='' && image == placeholder}
+                      disabled={title=='' && image == placeholder && loadingFetch}
                       className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                       onClick={handleAdd}
                     >
-                      Add
+                     { loadingFetch?'Loading...':'Submit for Publishing'}
                     </button>                   
                   </div>
                 </Dialog.Panel>
