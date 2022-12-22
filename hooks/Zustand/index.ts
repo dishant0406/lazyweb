@@ -13,7 +13,8 @@ export type Resource = {
   desc: string,
   isPublicAvailable: boolean,
   likes:number,
-  isAvailableForApproval:string
+  isAvailableForApproval:string,
+  category:string
 }
 
 export type Bookmarked = {
@@ -40,7 +41,7 @@ const useUserData = create<{
   }
 }))
 
-//array of all distinct tags available in the database
+//array of all distinct tags available in the database and ignore if it is null
 const useAllTags = create<{
   allTags: string[]
   setAllTags: () => void
@@ -51,10 +52,29 @@ const useAllTags = create<{
     if(data){
       const allTags = data.map((item)=>item.tags).flat()
       const distinctTags = Array.from(new Set(allTags).values())
+      distinctTags.splice(distinctTags.indexOf(null),1)
       set({allTags:distinctTags})
     }
   },
 }))
+
+
+//array of distinct category and ignore if category is null
+const useAllCategory = create<{
+  allCategories: string[]
+  setAllCategories: () => void
+}>((set) => ({
+  allCategories: [],
+  setAllCategories: async () => {
+    const {data,error} = await supabaseClient.from('website').select('category').neq('category', null)
+    if(data){
+      const allCategories = data.map((item)=>item.category)
+      const distinctCategories = Array.from(new Set(allCategories).values())
+      set({allCategories:distinctCategories})
+    }
+  },
+}))
+
 
 
 const useAllResources = create<{
@@ -244,5 +264,6 @@ export {
   useCompleteResourceLength,
   useSetBookmark,
   useCheckIfResourceBookmarked,
-  useAllTags
+  useAllTags,
+  useAllCategory
 }

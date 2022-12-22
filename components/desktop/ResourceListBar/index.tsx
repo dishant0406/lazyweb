@@ -41,11 +41,11 @@ const ResourceListBar = (props: Props) => {
     setTabs(newTabs)
   }
 
-  useEffect(() => {
-    // Call the API when the user scrolls to the end of the page
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [selectedTab, allResources.length,completeResourceLength]);
+  // useEffect(() => {
+  //   // Call the API when the user scrolls to the end of the page
+  //   window.addEventListener('scroll', handleScroll);
+  //   return () => window.removeEventListener('scroll', handleScroll);
+  // }, [selectedTab, allResources.length,completeResourceLength]);
 
   function handleScroll() {
     if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
@@ -53,6 +53,16 @@ const ResourceListBar = (props: Props) => {
     // Call the API here and update the page state
     setAllResources(selectedTab, allResources.length+4)
   }
+  
+  useEffect(()=>{
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  },[selectedTab, allResources.length,completeResourceLength])
+
+  
+  
+
+
 
   return (
     <div className="w-[100%] flex justify-center">

@@ -9,7 +9,7 @@ import { unFormatUrl } from '@/lib/unFormatUrl';
 import CreatableSelect from 'react-select/creatable'
 let placeholder = 'assets/placeholder-website.png'
 import { MultiValue } from 'react-select';
-import { useCompleteResourceLength, useAllResources, useAllTags } from 'hooks/Zustand';
+import { useCompleteResourceLength, useAllResources, useAllTags,useAllCategory } from 'hooks/Zustand';
 
 type Props = {
   isOpen: boolean,
@@ -35,6 +35,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
   const {completeResourceLength} = useCompleteResourceLength()
   const {setAllResources} = useAllResources()
   const {setAllTags} = useAllTags()
+  const {setAllCategories,allCategories} = useAllCategory()
 
   function closeModal() {
     setIsOpen(false)
@@ -52,12 +53,10 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
     setIsOpen(true)
   }
 
-  const options = [
-
-   { value:'javascript',label:'JavaScript'},
-   { value:'css',label:'CSS'},
-   { value:'github',label:'Github'},
-  ]
+  const options = allCategories.map((e)=>{
+    return {value:e, label:e}
+  })
+  
   const optionsTags = [
 
    { value:'new',label:'new'},
@@ -91,6 +90,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
       }else{
         setAllResources('my',completeResourceLength)
         setAllTags()
+        setAllCategories()
         closeModal()
       }
       setLoadingFetch(false)
