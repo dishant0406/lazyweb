@@ -40,6 +40,23 @@ const useUserData = create<{
   }
 }))
 
+//array of all distinct tags available in the database
+const useAllTags = create<{
+  allTags: string[]
+  setAllTags: () => void
+}>((set) => ({
+  allTags: [],
+  setAllTags: async () => {
+    const {data,error} = await supabaseClient.from('website').select('tags')
+    if(data){
+      const allTags = data.map((item)=>item.tags).flat()
+      const distinctTags = Array.from(new Set(allTags).values())
+      set({allTags:distinctTags})
+    }
+  },
+}))
+
+
 const useAllResources = create<{
   loading:Boolean,
   allResources: Resource[]
@@ -226,5 +243,6 @@ export {
   useUrlAtIndex,
   useCompleteResourceLength,
   useSetBookmark,
-  useCheckIfResourceBookmarked
+  useCheckIfResourceBookmarked,
+  useAllTags
 }

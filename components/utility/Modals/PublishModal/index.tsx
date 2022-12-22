@@ -9,7 +9,7 @@ import { unFormatUrl } from '@/lib/unFormatUrl';
 import CreatableSelect from 'react-select/creatable'
 let placeholder = 'assets/placeholder-website.png'
 import { MultiValue } from 'react-select';
-import { useCompleteResourceLength, useAllResources } from 'hooks/Zustand';
+import { useCompleteResourceLength, useAllResources, useAllTags } from 'hooks/Zustand';
 
 type Props = {
   isOpen: boolean,
@@ -34,6 +34,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
   const session = useUserData(state=>state.session)
   const {completeResourceLength} = useCompleteResourceLength()
   const {setAllResources} = useAllResources()
+  const {setAllTags} = useAllTags()
 
   function closeModal() {
     setIsOpen(false)
@@ -89,6 +90,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
         setError(error.message)
       }else{
         setAllResources('my',completeResourceLength)
+        setAllTags()
         closeModal()
       }
       setLoadingFetch(false)
