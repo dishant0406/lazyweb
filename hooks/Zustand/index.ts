@@ -23,8 +23,13 @@ export type Bookmarked = {
   bookmarked_by:string
 }
 
+type Admin = {
+  isAdmin:Boolean
+}
+
+export type UserWithAdmin = User & Admin
 const useUserData = create<{
-  session: User | null
+  session: UserWithAdmin | null
   setSession: () => void
   signOut:()=>void
 }>((set) => ({
@@ -32,7 +37,24 @@ const useUserData = create<{
   setSession: async () => {
     const {data,error} = await supabaseClient.auth.getSession()     
         if(data.session?.user){
-          set({session:data.session.user})
+          set({session:{...data.session.user, isAdmin:false}})
+          //check if user is available in the users table by id if not then add id email and isAdmin to false
+          const {data:errorData,error:errorError} = await supabaseClient.from('users').select('*').eq('id', data.session.user.id)
+          if(errorData && errorData.length===0){
+            const {data:errorData,error:errorError} = await supabaseClient.from('users').insert([{id:data.session.user.id,email:data.session.user.email,isAdmin:false}])
+            if(errorData){
+              console.log("user added to users table")
+            }
+
+          }
+
+          //check if user is admin if he is admin set session isAdmin to true else set it to false
+          const {data:AdminData,error:AdminError} = await supabaseClient.from('users').select('isAdmin').eq('id', data.session.user.id)
+          if(AdminData && AdminData.length>0){
+            if(AdminData[0].isAdmin){
+              set({session:{...data.session.user, isAdmin:true}})
+            }
+          }
         }
   },
   signOut: ()=>{
@@ -62,15 +84,23 @@ const useAllTags = create<{
 //array of distinct category and ignore if category is null
 const useAllCategory = create<{
   allCategories: string[]
+  allPublicCategories:string[]
   setAllCategories: () => void
 }>((set) => ({
   allCategories: [],
+  allPublicCategories:[],
   setAllCategories: async () => {
     const {data,error} = await supabaseClient.from('website').select('category').neq('category', null).eq('isPublicAvailable',true)
     if(data){
       const allCategories = data.map((item)=>item.category)
       const distinctCategories = Array.from(new Set(allCategories).values())
       set({allCategories:distinctCategories})
+    }
+    const {data:PublicData,error:PublicError} = await supabaseClient.from('website').select('category').neq('category', null)
+    if(PublicData){
+      const allCategories = PublicData.map((item)=>item.category)
+      const distinctCategories = Array.from(new Set(allCategories).values())
+      set({allPublicCategories:distinctCategories})
     }
   },
 }))
@@ -107,6 +137,11 @@ const useAllResources = create<{
 
       }
 
+    }else if(selectedTab==='publish'){
+      const {data,error} = await supabaseClient.from('website').select('*').eq('isAvailableForApproval', 'true').limit(size).order('id', { ascending: true })
+      if(data){
+        set({allResources:data})
+      }
     }
     set(state=>({loading:false}))
   },
@@ -141,6 +176,11 @@ const useCompleteResourceLength = create<
 
       }
 
+    }else if(selectedTab==='publish'){
+      const {data,error} = await supabaseClient.from('website').select('id').eq('isAvailableForApproval', 'true')
+      if(data){
+        set({completeResourceLength:data.length})
+      }
     }
   }
 }))
@@ -212,6 +252,11 @@ const useSetBookmark = create<
       //if already bookmarked then remove the bookmark
       const {data,error} = await supabaseClient.from('bookmarks').delete().eq('resource_id', resourceId).eq('bookmarked_by', useUserData.getState().session?.id)
       set(state=>({setComplete:!state.setComplete}))
+      //if selected tab is saved then refetch all recouseces
+      if(useSelectedTab.getState().selectedTab==='saved'){
+        useAllResources.getState().setAllResources(useSelectedTab.getState().selectedTab,useCompleteResourceLength.getState().completeResourceLength)
+      }
+
       if(data){
         console.log(data)
       }
