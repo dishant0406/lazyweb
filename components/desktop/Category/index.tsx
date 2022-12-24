@@ -12,13 +12,15 @@ const Category = (props: Props) => {
     setAllTags()
   },[])
   return (
-    <div className="w-[100vw] border-b border-[#5e5f60] gap-[1rem] flex justify-start px-[3rem] items-center h-[60px] bg-[#202124]">
-      
-      {
-        allTags.length>0 && allTags.map((tag)=>{
-          return <CategoryPill key={tag} name={tag}/>
-        })
-      }
+    <div className='pt-[70px]'>
+      <div id='style-4' className="w-[100vw] overflow-x-scroll border-b border-[#5e5f60] gap-[1rem] flex justify-start px-[3rem] items-center h-[60px] bg-[#202124]">
+        
+        {
+          allTags.length>0 && allTags.map((tag)=>{
+            return <CategoryPill key={tag} name={tag}/>
+          })
+        }
+      </div>
     </div>
   )
 }

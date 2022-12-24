@@ -8,7 +8,7 @@ type Props = {}
 const CreateResource = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false)
   return (
-    <div>
+    <div className='md:flex hidden'>
       <a data-tip data-for='create'>
         <div>
           <PlusCircle onClick={()=>setIsOpen(true)} className='text-[#6c6c6c] hover:text-[#aeaeae] transition-all cursor-pointer'/>

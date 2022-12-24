@@ -7,6 +7,8 @@ import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
 import { FcApproval,FcOpenedFolder,FcInfo } from "react-icons/fc";
 import {BsTrophy} from 'react-icons/bs'
 import {ThumbsUp, Link2, Star, UserCheck} from 'react-feather'
+import { supabaseClient } from 'lib/supabaseClient';
+import { Resource } from '@/hooks/Zustand';
 
 const TopProduct = ({url, unformatUrl}: Props) => {
   const [imgData, setImageData] = useState('')
@@ -14,23 +16,28 @@ const TopProduct = ({url, unformatUrl}: Props) => {
     title:'',
     description:'',
     image:'',
+    createdAt:''
   })
 
   useEffect(()=>{
+    //get resource with url same as unformatUrl from supabase
     (
       async ()=>{
         if(unformatUrl!==''){
-          const imgData = await useWebsiteScreenshot(url)
-          if(imgData){
-            setImageData(imgData)
+          const {data} = await supabaseClient.from('website').select('*').eq('url', unformatUrl)
+          let dataCopy:Resource[]|null = data
+          if(dataCopy){
+            if(dataCopy.length>0){
+              setImageData(dataCopy[0].image_url)
+              const webData = {
+                title:dataCopy[0].title || 'Not Available',
+                description:dataCopy[0].desc || 'Not Available',
+                image:dataCopy[0].image_url || 'Not Available',
+                createdAt:new Date(dataCopy[0].created_at).toDateString() || 'Not Available'
+              }
+              setWebsiteData(webData)
+            }
           }
-          const metaData = await useWebsiteMetaData(url)
-          const webData = {
-            title:metaData.title || 'Not Available',
-            description:metaData.description || 'Not Available',
-            image:metaData.banner || 'Not Available'
-          }
-          setWebsiteData(webData)
         }
       }
     )()
@@ -45,7 +52,7 @@ const TopProduct = ({url, unformatUrl}: Props) => {
     <div>
       <p className="text-white mt-[1rem] ml-[1rem]">Today's Top Product</p>
       <div className="w-[100%] flex justify-center">
-        <div className="flex w-[95%] gap-[1.5rem] mt-[1rem]">
+        <div className="flex flex-wrap w-[95%] gap-[1.5rem] mt-[1rem]">
           <div className={`h-[15rem] ${imgData===''?'scale-[0]':'scale-[1]'} transition-all flex items-center justify-center rounded-[20px] w-[24rem] bg-altGray`}>
             <div className="w-[22rem] flex flex-col items-center h-[12rem]">
               <div style={{backgroundImage:`url(${imgData})`, backgroundPosition:'center', backgroundSize:'cover', backgroundRepeat:'no-repeat'}} className="w-[95%] h-[6rem] rounded-[20px]"></div>
@@ -64,7 +71,7 @@ const TopProduct = ({url, unformatUrl}: Props) => {
             </div>
           </div>
           <div>
-            <div className='flex gap-[1.5rem]'>
+            <div className='flex flex-wrap gap-[1.5rem]'>
               <div className='h-[8.5rem] w-[28rem] flex items-center justify-center bg-altGray rounded-[20px]'>
                 <div className='w-[90%] flex flex-col gap-[15px] h-[75%]'>
                   <div className='flex gap-[10px]'>
@@ -86,7 +93,7 @@ const TopProduct = ({url, unformatUrl}: Props) => {
                     <UserCheck className='text-lightGray scale-[0.6]'/>
                     <div className='flex gap-[5px] items-center'>
                       <p className='text-white'>Added:</p>
-                      <p className='text-[#7d9ddb] text-[14px]'>11 Dec 2022</p>
+                      <p className='text-[#7d9ddb] text-[14px]'>{websiteData.createdAt}</p>
                     </div>
                   </div>
                 </div>

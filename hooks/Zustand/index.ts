@@ -122,7 +122,7 @@ const useAllResources = create<{
         set({allResources:data})
       }
     }else if(selectedTab==='my'){
-      const {data,error} = await supabaseClient.from('website').select('*').eq('created_by', useUserData.getState().session?.id).limit(size).order('id', { ascending: true })
+      const {data,error} = await supabaseClient.from('website').select('*').eq('created_by', useUserData.getState().session?.id).limit(size).order('id', { ascending: true }).order('isPublicAvailable', { ascending: true })
       if(data){
         set({allResources:data})
       }

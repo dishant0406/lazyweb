@@ -1,5 +1,5 @@
 import { formatUrl } from "lib/formatUrl"
-import { Resource } from "@/hooks/Zustand"
+import { Resource, useAllCategory, useAllTags } from "@/hooks/Zustand"
 import {HiOutlineStar,HiStar} from 'react-icons/hi'
 import { useEffect, useState } from "react"
 import {useSetBookmark,useUserData,useSelectedTab,useAllResources,useCompleteResourceLength} from 'hooks/Zustand'
@@ -20,6 +20,10 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
   const [isHover, setISHover] = useState(false)
   const {setBookmark,setComplete} = useSetBookmark()
   const [isBookmarked,setIsBookmarked] = useState(false)
+  const {setAllResources} = useAllResources()
+  const {completeResourceLength} = useCompleteResourceLength()
+  const {setAllCategories} = useAllCategory()
+  const {setAllTags} = useAllTags()
   const {session} = useUserData()
   const {selectedTab} = useSelectedTab()
   const [isHovered, setIsHovered] = useState(false)
@@ -51,7 +55,23 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
   const handleBookMark = async ()=>{
     setBookmark(resource.id)
   }
-
+  const handleApproveOrReject = async (btnType:string)=>{
+    if(btnType==='approve'){
+      //set resource.isPublicAvailable to true in supabase
+      await supabaseClient.from('website').update({isPublicAvailable:true,isAvailableForApproval:false}).eq('id',resource.id)
+      //fetch resources again
+      setAllResources('publish', completeResourceLength)
+      setAllCategories()
+      setAllTags()
+    }else{
+      //update isAvailableForApproval to false
+      await supabaseClient.from('website').update({isAvailableForApproval:false}).eq('id',resource.id)
+      //fetch resources again
+      setAllResources('publish', completeResourceLength)
+      setAllCategories()
+      setAllTags()
+    }
+  }
   const varients = {
     booked:{rotate:360, scale:1.3},
     notBooked:{rotate:-360, scale:1}
@@ -64,8 +84,8 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
           <button onClick={()=>setOpen(true)} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Publish</button>
         </div>}
         {session?.isAdmin && resource.isAvailableForApproval && selectedTab==='publish' && <div onMouseEnter={()=>setIsHovered(true)} onMouseLeave={()=>setIsHovered(false)} className="w-[18rem] absolute top-[0] left-[0] transition-all flex items-center justify-center gap-[5px] duration-500 hover:bg-gray/[0.4] h-[10rem] rounded-t-[20px]">
-          <button onClick={()=>setOpen(true)} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Approve</button>
-          <button onClick={()=>setOpen(true)} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-red-600 rounded-[20px]`}>Reject</button>
+          <button onClick={()=>handleApproveOrReject('approve')} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Approve</button>
+          <button onClick={()=>handleApproveOrReject('reject')} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-red-600 rounded-[20px]`}>Reject</button>
         </div>}
         <img src={image} className="w-[18rem] h-[10rem] rounded-t-[20px]"/>
       </div>

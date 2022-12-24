@@ -58,10 +58,12 @@ const ResourceListBar = (props: Props) => {
     return () => window.removeEventListener('scroll', handleScroll);
   },[selectedTab, allResources.length,completeResourceLength])
 
-  
-  
-
-
+  useEffect(()=>{
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  },[selectedTab])
 
   return (
     <div className="w-[100%] flex justify-center">
