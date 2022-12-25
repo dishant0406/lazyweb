@@ -6,7 +6,7 @@ A Web app that includes all the usefull websites which you might require for you
 
 ## Tech Stack
 
-**Client:** Nextjs, TailwindCSS
+**Client:** Nextjs with TypeScript, TailwindCSS
 
-**Server:** Supabase
+**Server:** Supabase for Data storing and fetching, Nodejs for Website Screen Capture, metadata and serving the images of the websites
 
