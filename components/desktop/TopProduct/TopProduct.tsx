@@ -16,7 +16,8 @@ const TopProduct = ({url, unformatUrl}: Props) => {
     title:'',
     description:'',
     image:'',
-    createdAt:''
+    createdAt:'',
+    likes:0
   })
 
   useEffect(()=>{
@@ -33,7 +34,8 @@ const TopProduct = ({url, unformatUrl}: Props) => {
                 title:dataCopy[0].title || 'Not Available',
                 description:dataCopy[0].desc || 'Not Available',
                 image:dataCopy[0].image_url || 'Not Available',
-                createdAt:new Date(dataCopy[0].created_at).toDateString() || 'Not Available'
+                createdAt:new Date(dataCopy[0].created_at).toDateString() || 'Not Available',
+                likes:dataCopy[0].likes || 0
               }
               setWebsiteData(webData)
             }
@@ -70,7 +72,7 @@ const TopProduct = ({url, unformatUrl}: Props) => {
               <button onClick={handleVisit} className='w-[95%] h-[2.5rem] rounded-[20px] mt-[1.5rem] bg-[#1c64ec] text-white'>View Website</button>
             </div>
           </div>
-          <div>
+          <div className={`${imgData===''?'scale-[0]':'scale-[1]'}`}>
             <div className='flex flex-wrap gap-[1.5rem]'>
               <div className='h-[8.5rem] w-[28rem] flex items-center justify-center bg-altGray rounded-[20px]'>
                 <div className='w-[90%] flex flex-col gap-[15px] h-[75%]'>
@@ -84,9 +86,8 @@ const TopProduct = ({url, unformatUrl}: Props) => {
                   <div className='flex gap-[10px]'>
                     <Star className='text-lightGray scale-[0.6]'/>
                     <div className='flex gap-[5px] items-center'>
-                      <p className='text-white'>Rating:</p>
-                      <p className='text-[#7d9ddb] text-[14px]'>4.5</p>
-                      <p className='text-lightGray text-[14px]'>(15 reviews)</p>
+                      <p className='text-white'>Likes:</p>
+                      <p className='text-[#7d9ddb] mt-[3px] text-[14px]'>{websiteData.likes}</p>
                     </div>
                   </div>
                   <div className='flex gap-[10px]'>

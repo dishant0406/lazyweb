@@ -117,7 +117,7 @@ const useAllResources = create<{
   setAllResources: async (selectedTab='all', size) => {
     set(({loading:true}))
     if(selectedTab==='all'){
-      const {data,error} = await supabaseClient.from('website').select('*').eq('isPublicAvailable', 'true').order('id', { ascending: true })
+      const {data,error} = await supabaseClient.from('website').select('*').eq('isPublicAvailable', 'true').limit(size).order('id', { ascending: true })
       if(data){
         set({allResources:data})
       }
@@ -274,6 +274,80 @@ const useSetBookmark = create<
   }
 }))
 
+const useSetLikes = create<
+  {
+    setComplete:Boolean,
+    setLikes: (resourceId:number) => void
+  }
+>((set) => ({
+  setComplete:false,
+  setLikes: async (resourceId:number) => {
+    //check if the resource if publicly available or not
+    let available = false;
+    const {data:publicAvilable,error:avaiableError} = await supabaseClient.from('website').select('*').eq('id', resourceId)
+    if(!publicAvilable){
+      console.log(avaiableError)
+      return
+    }
+    if(!publicAvilable[0].isPublicAvailable){
+      console.log('not publicly available')
+      return
+    }else{
+      available = true;
+    }
+    if(available){
+      //check if user has already liked or not
+    const {data,error} = await supabaseClient.from('likes').select('*').eq('resource_id', resourceId).eq('liked_by', useUserData.getState().session?.id)
+    if(!data){
+      console.log(error)
+      return
+    }
+    if(data.length>0){
+      //if already liked then remove the like
+      const {data,error} = await supabaseClient.from('likes').delete().eq('resource_id', resourceId).eq('liked_by', useUserData.getState().session?.id)
+      //decrease the count of likes by 1 in resources likes
+      const {data:resourceData,error:resourceError} = await supabaseClient.from('website').select('*').eq('id', resourceId)
+      if(!resourceData){
+        console.log(resourceError)
+        return
+      }
+      const {data:updatedResourceData,error:updatedResourceError} = await supabaseClient.from('website').update({likes:resourceData[0].likes-1}).eq('id', resourceId)
+      // if(!updatedResourceData){
+      //   console.log(updatedResourceError)
+      //   return
+      // }
+
+      set(state=>({setComplete:!state.setComplete}))
+      //if selected tab is saved then refetch all recouseces
+      if(useSelectedTab.getState().selectedTab==='saved'){
+        useAllResources.getState().setAllResources(useSelectedTab.getState().selectedTab,useCompleteResourceLength.getState().completeResourceLength)
+      }
+
+      if(data){
+        console.log(data)
+      }
+    }else{
+      //if not liked then add the like
+      const {data,error} = await supabaseClient.from('likes').insert([{resource_id:resourceId, liked_by:useUserData.getState().session?.id}])
+      //increase the count of likes by 1 in resources likes
+      const {data:resourceData,error:resourceError} = await supabaseClient.from('website').select('*').eq('id', resourceId)
+      if(!resourceData){
+        console.log(resourceError)
+        return
+      }
+      const {data:updatedResourceData,error:updatedResourceError} = await supabaseClient.from('website').update({likes:resourceData[0].likes+1}).eq('id', resourceId)
+      // if(!updatedResourceData){
+      //   console.log(updatedResourceError)
+      //   return
+      // }
+      set(state=>({setComplete:!state.setComplete}))
+      if(data){
+        console.log(data)
+      } 
+    }
+    }
+  }}))
+
 const useCheckIfResourceBookmarked = create<
   {
     isBookmarked: boolean
@@ -310,5 +384,6 @@ export {
   useSetBookmark,
   useCheckIfResourceBookmarked,
   useAllTags,
-  useAllCategory
+  useAllCategory,
+  useSetLikes
 }

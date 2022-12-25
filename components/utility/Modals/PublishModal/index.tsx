@@ -71,7 +71,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
   const handleTags = (e:MultiValueProps)=>{
     let tagsArr:string[] = []
     e.map((f)=>{
-      tagsArr.push(f.value)
+      tagsArr.push(f.value.toLowerCase())
     })
     setTags(tagsArr)
   }
@@ -83,7 +83,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
       setError('')
       const {data, error} = await supabaseClient
       .from('website')
-      .update({category:category, tags:tags, isAvailableForApproval:true})
+      .update({category:category.toLowerCase(), tags:tags, isAvailableForApproval:true})
       .match({id:id})
       if(error){
         setError(error.message)

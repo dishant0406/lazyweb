@@ -1,11 +1,12 @@
 import { formatUrl } from "lib/formatUrl"
-import { Resource, useAllCategory, useAllTags } from "@/hooks/Zustand"
+import { Resource, useAllCategory, useAllTags, useSetLikes } from "@/hooks/Zustand"
 import {HiOutlineStar,HiStar} from 'react-icons/hi'
 import { useEffect, useState } from "react"
 import {useSetBookmark,useUserData,useSelectedTab,useAllResources,useCompleteResourceLength} from 'hooks/Zustand'
 import { supabaseClient } from "@/lib/supabaseClient"
 import { AnimatePresence, motion } from 'framer-motion';
 import {PublishModal} from "components"
+import { FcLike, FcLikePlaceholder } from "react-icons/fc"
 
 type Props = {
   url:string,
@@ -19,7 +20,9 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
   const formattedUrl = formatUrl(url)
   const [isHover, setISHover] = useState(false)
   const {setBookmark,setComplete} = useSetBookmark()
+  const {setComplete:setLikesComplete,setLikes} = useSetLikes()
   const [isBookmarked,setIsBookmarked] = useState(false)
+  const [isLiked,setIsLiked] = useState(false)
   const {setAllResources} = useAllResources()
   const {completeResourceLength} = useCompleteResourceLength()
   const {setAllCategories} = useAllCategory()
@@ -27,6 +30,7 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
   const {session} = useUserData()
   const {selectedTab} = useSelectedTab()
   const [isHovered, setIsHovered] = useState(false)
+  const [isLikeHovered, setIsLikeHovered] = useState(false)
   const [open, setOpen] = useState(false)
 
   const handleGoto = ():void=>{
@@ -36,6 +40,11 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
   useEffect(()=>{
     getBookMarked()
   },[setComplete])
+
+  useEffect(()=>{
+    getLikes()
+  }
+  ,[setLikesComplete])
 
   const getBookMarked = async ()=>{
     //check if the user has bookmarked the resource
@@ -52,9 +61,28 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
     }
   }
 
+  const getLikes = async () =>{
+    if(session && resource.isPublicAvailable){
+      const {data,error} = await supabaseClient.from('likes').select('*').eq('resource_id', resource.id).eq('liked_by', session.id)
+      console.log('data',data)
+      if(data){
+        if(data.length>0){
+          setIsLiked(true)
+        }else{
+          setIsLiked(false)
+        }
+      }
+    }
+  }
+
   const handleBookMark = async ()=>{
     setBookmark(resource.id)
   }
+
+  const handleLike = async ()=>{
+    setLikes(resource.id)
+  }
+
   const handleApproveOrReject = async (btnType:string)=>{
     if(btnType==='approve'){
       //set resource.isPublicAvailable to true in supabase
@@ -111,6 +139,27 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
               exit={{scale:0}}
               className="text-[#6c6c6c]">
               <HiOutlineStar className="text-[18px] "/>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>}
+       {session && resource.isPublicAvailable && <motion.div animate={isLiked?'booked':'notBooked'} variants={varients} onClick={handleLike} onMouseEnter={()=>setIsLikeHovered(true)} onMouseLeave={()=>setIsLikeHovered(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[1px] left-[10px]">
+        <AnimatePresence>
+          {(isLikeHovered || isLiked)?(
+            <motion.div
+              initial={{scale:0}}
+              animate={{scale:1}}
+              exit={{scale:0}}
+              className="text-[#1c64ec]">
+              <FcLike className="text-[18px]"/>
+            </motion.div>
+          ):(
+            <motion.div
+              initial={{scale:0}}
+              animate={{scale:1}}
+              exit={{scale:0}}
+              className="text-[#6c6c6c]">
+              <FcLikePlaceholder className="text-[18px] "/>
             </motion.div>
           )}
         </AnimatePresence>
