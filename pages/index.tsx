@@ -1,4 +1,4 @@
-import { Category, Sidebar, Dashboard, Favicon } from 'components'
+import { Category, Sidebar, Dashboard, Favicon,CommingSoon } from 'components'
 
 
 type Props = {}
@@ -8,6 +8,7 @@ const Home = (props: Props) => {
   return (
     <>
     <Favicon/>
+    <div className='md:flex hidden'>
       <div>
         <Category/>
         <div className='flex w-[100vw]'>
@@ -15,6 +16,8 @@ const Home = (props: Props) => {
           <Dashboard/>
         </div>
       </div>
+    </div>
+    <CommingSoon/>
     </>
   )
 }

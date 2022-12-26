@@ -22,7 +22,7 @@ const NavBar = (props: Props) => {
   }
 
   return (
-    <div className="w-[100vw] z-[2] fixed border-b border-[#5e5f60] flex justify-between items-center h-[70px] bg-[#202124]">
+    <div className="w-[100vw] z-[2] fixed border-b border-[#5e5f60] md:flex hidden justify-between items-center h-[70px] bg-[#202124]">
       <div className='flex items-center'>
         <div className="bg-white w-[140px] ml-[20px]">
           <img src={logo} className='h-[45px]' />
