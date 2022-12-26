@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import {X} from 'react-feather'
 import { emojiGenerator } from "lib/emojiGenerator"
+import { useManageSelectedTags } from "@/hooks/Zustand"
 
 type Props = {
   name: string
@@ -9,11 +10,21 @@ type Props = {
 const CategoryPill = ({name}: Props): JSX.Element => {
   const [selected, setSelected] = useState(false)
   const [emoji, setEmoji] = useState('')
+  const {selectedTags,setSelectedTags} = useManageSelectedTags()
   
 
   const clickHandler = ():void => {
-    setSelected(!selected)
+    console.log(name)
+    setSelectedTags(name.toLocaleLowerCase())
   }
+
+  useEffect(()=>{
+    if(selectedTags.includes(name.toLocaleLowerCase())){
+      setSelected(true)
+    }else{
+      setSelected(false)
+    }
+  },[selectedTags])
 
   useEffect(()=>{
     const emoji = emojiGenerator()

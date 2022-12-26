@@ -160,10 +160,17 @@ const useFilterUsingCategoriesArray = create<
       set({filteredResources:[]})
       return
     }
+
+    //set filtered resources of tags to empty array
+    useFilterUsingTagsArray.getState().setFilteredResources([])
+    //set manage selected tags array to empty array
+    useManageSelectedTags.getState().setSelectedTags('')
     const {data,error} = await supabaseClient.from('website').select('*').in('category', categories).eq('isPublicAvailable', 'true')
     if(data){
       set({filteredResources:data})
     }
+
+
   },
 }))
 
@@ -402,6 +409,13 @@ const useManageSelectedCategories = create<
 >((set) => ({
   selectedCategories: [],
   setSelectedCategories: (category:string) => {
+    //if category is '' then set seletedCategories to empty array
+    if(category===''){
+      set(state=>({selectedCategories:[]}))
+      return
+    }
+
+    //if category is already selected then remove it from the array
     if(useManageSelectedCategories.getState().selectedCategories.includes(category)){
       set(state=>({selectedCategories:state.selectedCategories.filter((item)=>item!==category)}))
     }else{
@@ -413,8 +427,60 @@ const useManageSelectedCategories = create<
   }
 }))
 
+const useFilterUsingTagsArray = create<
+  {
+    filteredResources: any[]
+    setFilteredResources: (tags:string[]) => void
+  }
+>((set) => ({
+  filteredResources: [],
+  setFilteredResources: async (tags:string[]) => {
+    //if tags array is empty return empty array
+    if(tags.length===0){
+      set({filteredResources:[]})
+      return
+    }
+    //set filteredResources of category to empty array
+    useFilterUsingCategoriesArray.getState().setFilteredResources([])
+
+    //set seletedCategories to empty array
+    useManageSelectedCategories.getState().setSelectedCategories('')
+
+    //if tags array is not empty then filter the resources
+    const { data, error } = await supabaseClient.from('website').select('*').overlaps('tags', tags)
+    if(!data){
+      console.log(error)
+      return
+    }
+    console.log(data)
+    set({filteredResources:data})
+  }
+}))
 
 
+const useManageSelectedTags = create<
+  {
+    selectedTags: string[]
+    setSelectedTags: (tag:string) => void
+  }
+>((set) => ({
+  selectedTags: [],
+  setSelectedTags: (tag:string) => {
+    //if tag is '' then set seletedTags to empty array
+    if(tag===''){
+      set({selectedTags:[]})
+      return
+    }
+    if(useManageSelectedTags.getState().selectedTags.includes(tag)){
+      set(state=>({selectedTags:state.selectedTags.filter((item)=>item!==tag)}))
+    }else{
+      set(state=>({selectedTags:[...state.selectedTags,tag]}))
+    }
+
+    //call setFilteredResource after the state is changed
+    useFilterUsingTagsArray.getState().setFilteredResources(useManageSelectedTags.getState().selectedTags)
+  }
+}))
 
 
 
@@ -432,5 +498,7 @@ export {
   useAllCategory,
   useSetLikes,
   useFilterUsingCategoriesArray,
-  useManageSelectedCategories
+  useManageSelectedCategories,
+  useFilterUsingTagsArray,
+  useManageSelectedTags
 }
