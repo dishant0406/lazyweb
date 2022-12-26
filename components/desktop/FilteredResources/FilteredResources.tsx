@@ -19,6 +19,7 @@ const FilteredResources = (props: Props) => {
                 key={e.id}
                 initial={{ scale:0 }}
                 animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
               >
                 <ResourceCard resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
               </motion.div>
