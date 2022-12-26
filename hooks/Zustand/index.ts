@@ -162,13 +162,13 @@ const useFilterUsingCategoriesArray = create<
     }
 
     //set filtered resources of tags to empty array
-    useFilterUsingTagsArray.getState().setFilteredResources([])
     //set manage selected tags array to empty array
     useManageSelectedTags.getState().setSelectedTags('')
     const {data,error} = await supabaseClient.from('website').select('*').in('category', categories).eq('isPublicAvailable', 'true')
     if(data){
       set({filteredResources:data})
     }
+    useFilterUsingTagsArray.getState().setFilteredResources([])
 
 
   },
@@ -441,19 +441,18 @@ const useFilterUsingTagsArray = create<
       return
     }
     //set filteredResources of category to empty array
-    useFilterUsingCategoriesArray.getState().setFilteredResources([])
-
+    
     //set seletedCategories to empty array
     useManageSelectedCategories.getState().setSelectedCategories('')
-
+    
     //if tags array is not empty then filter the resources
     const { data, error } = await supabaseClient.from('website').select('*').overlaps('tags', tags)
     if(!data){
       console.log(error)
       return
     }
-    console.log(data)
     set({filteredResources:data})
+    useFilterUsingCategoriesArray.getState().setFilteredResources([])
   }
 }))
 
