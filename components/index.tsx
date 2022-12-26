@@ -17,6 +17,7 @@ import CreateResource from './shared/CreateResource/index';
 import CreateModal from './utility/Modals/CreateModal/index';
 import PublishModal from './utility/Modals/PublishModal';
 import FilteredResources from './desktop/FilteredResources/FilteredResources';
+import CommingSoon from './mobile/CommingSoon/CommingSoon';
 
 
 export {
@@ -39,4 +40,5 @@ export {
   CreateModal,
   PublishModal,
   FilteredResources,
+  CommingSoon
 }
