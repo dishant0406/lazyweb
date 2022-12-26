@@ -16,6 +16,7 @@ import LoginModal from './utility/Modals/LoginModal/LoginModal';
 import CreateResource from './shared/CreateResource/index';
 import CreateModal from './utility/Modals/CreateModal/index';
 import PublishModal from './utility/Modals/PublishModal';
+import FilteredResources from './desktop/FilteredResources/FilteredResources';
 
 
 export {
@@ -36,5 +37,6 @@ export {
   LoginModal,
   CreateResource,
   CreateModal,
-  PublishModal
+  PublishModal,
+  FilteredResources,
 }

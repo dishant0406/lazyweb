@@ -44,7 +44,7 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
   const handleAdd = async () =>{
     //add to supabase
     if(session && image!=='' && title!==''){
-      //check if it is already present in the data base by matching the url
+      //check if it is already present in the data base by matching the url and if isPublicAvailable is true
       const {data, error} = await supabaseClient.from('website').select().eq('url',unFormatUrl(url))
       if(data && data.length>0){
         //already present

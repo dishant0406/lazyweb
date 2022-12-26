@@ -147,6 +147,28 @@ const useAllResources = create<{
   },
 }))
 
+const useFilterUsingCategoriesArray = create<
+  { 
+    filteredResources: Resource[]
+    setFilteredResources: (arg:string[]) => void
+  }
+>((set) => ({
+  filteredResources: [],
+  setFilteredResources: async (categories) => {
+    //if category is empty then return empty array
+    if(categories.length===0){
+      set({filteredResources:[]})
+      return
+    }
+    const {data,error} = await supabaseClient.from('website').select('*').in('category', categories).eq('isPublicAvailable', 'true')
+    if(data){
+      set({filteredResources:data})
+    }
+  },
+}))
+
+
+
 const useCompleteResourceLength = create<
   {
     completeResourceLength: number
@@ -372,6 +394,29 @@ const useCheckIfResourceBookmarked = create<
 }))
 
 
+const useManageSelectedCategories = create<
+  {
+    selectedCategories: string[]
+    setSelectedCategories: (category:string) => void
+  }
+>((set) => ({
+  selectedCategories: [],
+  setSelectedCategories: (category:string) => {
+    if(useManageSelectedCategories.getState().selectedCategories.includes(category)){
+      set(state=>({selectedCategories:state.selectedCategories.filter((item)=>item!==category)}))
+    }else{
+      set(state=>({selectedCategories:[...state.selectedCategories,category]}))
+    }
+
+    //call setFilteredResource after the state is changed
+    useFilterUsingCategoriesArray.getState().setFilteredResources(useManageSelectedCategories.getState().selectedCategories)
+  }
+}))
+
+
+
+
+
 
 
 
@@ -385,5 +430,7 @@ export {
   useCheckIfResourceBookmarked,
   useAllTags,
   useAllCategory,
-  useSetLikes
+  useSetLikes,
+  useFilterUsingCategoriesArray,
+  useManageSelectedCategories
 }

@@ -1,5 +1,5 @@
-import { useUrlAtIndex } from '@/hooks/Zustand'
-import {TopProduct, ResourceList} from 'components'
+import { useFilterUsingCategoriesArray, useUrlAtIndex } from '@/hooks/Zustand'
+import {TopProduct, ResourceList, FilteredResources} from 'components'
 import { formatUrl } from 'lib/formatUrl'
 import { useEffect } from 'react'
 
@@ -7,6 +7,7 @@ type Props = {}
 
 const Dashboard = (props: Props) => {
   const {urlAtIndex,setUrlAtIndex} = useUrlAtIndex()
+  const {filteredResources} = useFilterUsingCategoriesArray()
 
   useEffect(()=>{
     setUrlAtIndex()
@@ -15,8 +16,11 @@ const Dashboard = (props: Props) => {
   ,[])
   return (
     <div className="w-[calc(100vw-12rem)] min-h-[calc(100vh-130px)] bg-gray">
-      <TopProduct unformatUrl={urlAtIndex} url={formatUrl(urlAtIndex)}/>
-      <ResourceList/>
+      {filteredResources.length===0 && <div>
+        <TopProduct unformatUrl={urlAtIndex} url={formatUrl(urlAtIndex)}/>
+        <ResourceList/>
+      </div>}
+      {filteredResources.length>0 && <FilteredResources/>}
     </div>
   )
 }

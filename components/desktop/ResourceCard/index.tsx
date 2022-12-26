@@ -64,7 +64,6 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
   const getLikes = async () =>{
     if(session && resource.isPublicAvailable){
       const {data,error} = await supabaseClient.from('likes').select('*').eq('resource_id', resource.id).eq('liked_by', session.id)
-      console.log('data',data)
       if(data){
         if(data.length>0){
           setIsLiked(true)
