@@ -48,7 +48,19 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
       const {data, error} = await supabaseClient.from('website').select().eq('url',unFormatUrl(url))
       if(data && data.length>0){
         //already present
+        //add the user id to created_by_list if the user is not included in the created_by_list of the resource
+        if(data[0].created_by_list && !data[0].created_by_list.includes(session.id)){
+          const {data:dataAdd, error} = await supabaseClient.from('website').update({created_by_list:[...data[0].created_by_list, session.id]}).eq('url',unFormatUrl(url))
+          if(error){
+            console.log(error)
+          }
+          if(!error){
+            closeModal()
+          }
+          return
+        }
         setError('Already Present!')
+
       }else{
         const {data, error} = await supabaseClient.from('website').insert([
           {
@@ -56,7 +68,8 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
             url:unFormatUrl(url),
             created_by:session?.id,
             desc:description,
-            image_url:image
+            image_url:image,
+            created_by_list:[session?.id],
           }
         ]).select()
         console.log(data)

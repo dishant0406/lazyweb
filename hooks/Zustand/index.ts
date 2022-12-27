@@ -14,7 +14,8 @@ export type Resource = {
   isPublicAvailable: boolean,
   likes:number,
   isAvailableForApproval:string,
-  category:string
+  category:string,
+  created_by_list:string[]
 }
 
 export type Bookmarked = {
@@ -122,7 +123,7 @@ const useAllResources = create<{
         set({allResources:data})
       }
     }else if(selectedTab==='my'){
-      const {data,error} = await supabaseClient.from('website').select('*').eq('created_by', useUserData.getState().session?.id).limit(size).order('id', { ascending: true }).order('isPublicAvailable', { ascending: true })
+      const {data,error} = await supabaseClient.from('website').select('*').overlaps('created_by_list', [useUserData.getState().session?.id]).limit(size).order('id', { ascending: true }).order('isPublicAvailable', { ascending: true })
       if(data){
         set({allResources:data})
       }
@@ -190,7 +191,7 @@ const useCompleteResourceLength = create<
         set({completeResourceLength:data.length})
       }
     }else if(selectedTab==='my'){
-      const {data,error} = await supabaseClient.from('website').select('id').eq('created_by', useUserData.getState().session?.id)
+      const {data,error} = await supabaseClient.from('website').select('id').overlaps('created_by_list', [useUserData.getState().session?.id])
       if(data){
         set({completeResourceLength:data.length})
       }
