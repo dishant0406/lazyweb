@@ -3,6 +3,7 @@ import {ResourceListBar, ResourceCard} from 'components'
 import { useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion"
 import { emojiGenerator } from 'lib/emojiGenerator';
+import StackGrid, {easings,transitions} from 'react-stack-grid';
 
 type Props = {}
 
@@ -20,23 +21,15 @@ const ResourceList = (props: Props) => {
   return (
     <div>
       <ResourceListBar/>
-      <div className={`relative w-[100%] transition-all duration-300 ${loading ? 'opacity-[0.1]':'opacity-[1]'} flex justify-center`}>
-        <div className="flex ml-[2rem] w-[95%] justify-start gap-[2rem] flex-wrap my-[1rem]">
-        <AnimatePresence>
+      <div className={`relative w-[100%] transition-all duration-300 ${loading ? 'animate-pulse':''} justify-center`}>
+        {resources.length>=1 && <StackGrid enter={transitions.scaleDown.enter} appear={transitions.scaleDown.appear} appeared={transitions.scaleDown.appeared} leaved={transitions.scaleDown.leaved} entered={transitions.scaleDown.entered} easing={easings.backIn} className='z-[1] mt-[2rem]' component='div' gutterHeight={10}  columnWidth={300}>
           {resources.map((e)=>{
             return (
-              <motion.div
-                key={e.id}
-                initial={{ scale:0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-              >
-                <ResourceCard resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
-              </motion.div>
+              <ResourceCard key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
               )
-            })}
-            
-        </AnimatePresence>
+            })} 
+        </StackGrid>}
+        <div className="flex ml-[2rem] w-[95%] justify-start gap-[2rem] flex-wrap my-[1rem]">
         <AnimatePresence>
         {resources.length<1 && !loading && (
               <motion.div
