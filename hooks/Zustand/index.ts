@@ -36,7 +36,10 @@ const useUserData = create<{
 }>((set) => ({
   session: null,
   setSession: async () => {
-    const {data,error} = await supabaseClient.auth.getSession()     
+    const {data,error} = await supabaseClient.auth.getSession()
+        if(error){
+          console.log(error)
+        }     
         if(data.session?.user){
           set({session:{...data.session.user, isAdmin:false}})
           //check if user is available in the users table by id if not then add id email and isAdmin to false
