@@ -22,6 +22,7 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
   const [loadingFetch, setLoadingFetch] = useState(false)
   const [err, setError] = useState<String|null>(null)
   const session = useUserData(state=>state.session)
+  const [loading, setLoading] = useState(false)
 
   function closeModal() {
     setIsOpen(false)
@@ -33,6 +34,7 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
       setImage(placeholder)
       setLoadingFetch(false)
       setError(null)
+      setLoading(false)
     }
     ,300)
   }
@@ -43,6 +45,7 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
 
   const handleAdd = async () =>{
     //add to supabase
+    setLoading(true)
     if(session && image!=='' && title!==''){
       //check if it is already present in the data base by matching the url and if isPublicAvailable is true
       const {data, error} = await supabaseClient.from('website').select().eq('url',unFormatUrl(url))
@@ -81,9 +84,11 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
         }
       }
       }
+    setLoading(false)
   }
 
   const handleFetchDetails = async ()=>{
+    setLoadingFetch(true)
     setError(null)
     const websiteMetaDeta = await useWebsiteMetaData(formatUrl(url))
     if(websiteMetaDeta){
@@ -98,7 +103,7 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
     }else{
       setError('Please Check your Url')
     }
-    
+    setLoadingFetch(false)
   }
 
   return (
@@ -107,7 +112,7 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
       as={Fragment}
       enter="transition duration-100 ease-out"
     >
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog as="div" className={`relative z-10`} onClose={closeModal}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -131,7 +136,7 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className={`w-full ${loading?'animate-pulse':''} max-w-md transform overflow-hidden rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all`}>
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-white"
@@ -154,10 +159,11 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
                   <div className="mt-4">
                     <button
                       type="button"
+                      disabled={loadingFetch}
                       className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                       onClick={handleFetchDetails}
                     >
-                      Fetch Details
+                      {loadingFetch?'Fetching...':'Fetch Details'}
                     </button>                   
                   </div>
                   
@@ -185,11 +191,11 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
                   <div className="mt-4">
                     <button
                       type="button"
-                      disabled={title=='' && image == placeholder}
+                      disabled={title=='' || image === placeholder || loading}
                       className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                       onClick={handleAdd}
                     >
-                      Add
+                      {loading?'Adding...':'Add'}
                     </button>                   
                   </div>
                 </Dialog.Panel>
