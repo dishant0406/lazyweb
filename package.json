@@ -29,6 +29,7 @@
     "react-icons": "^4.7.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-input-checkbox": "^1.1.0",
+    "react-ip-details": "^1.2.6",
     "react-select": "^5.7.0",
     "react-spinners": "^0.13.7",
     "react-stack-grid": "^0.7.1",

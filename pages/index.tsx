@@ -1,9 +1,17 @@
 import { Category, Sidebar, Dashboard, Favicon,CommingSoon } from 'components'
+import { useEffect } from 'react'
+import { useStoreVisitersInfoIfDoesNotExist } from '@/hooks/Zustand';
 
 
 type Props = {}
 
 const Home = (props: Props) => {
+  const {setVisitersInfo} = useStoreVisitersInfoIfDoesNotExist()
+
+  useEffect(()=>{
+    setVisitersInfo()
+
+  },[])
 
   return (
     <>

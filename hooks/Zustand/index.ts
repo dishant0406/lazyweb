@@ -1,6 +1,7 @@
 import create from 'zustand'
 import {User} from '@supabase/gotrue-js/src/lib/types'
 import { supabaseClient } from 'lib/supabaseClient';
+import axios from 'axios';
 
 export type Resource = {
   id: number,
@@ -16,6 +17,19 @@ export type Resource = {
   isAvailableForApproval:string,
   category:string,
   created_by_list:string[]
+}
+
+export type VisitersInfo = {
+  id: number,
+  created_at:string,
+  city:string,
+  country:string,
+  isp:string,
+  query:string,
+  lat:string,
+  lan:string,
+  regionName:string,
+  zip:string,
 }
 
 export type Bookmarked = {
@@ -485,7 +499,50 @@ const useManageSelectedTags = create<
   }
 }))
 
+const useStoreVisitersInfoIfDoesNotExist = create<
+  {
+    setVisitersInfo: () => void
+  }
+>((set) => ({
+  setVisitersInfo: async () => {
+    //getting users ip address using api
+    const {data} = await axios.get('https://api.ipify.org?format=json')
+    if(!data){
+      console.log('error')
+      return
+    }
+    // getting ip adddress info using http://ip-api.com/json/ api
+    const {data:ipData} = await axios.get(`http://ip-api.com/json/${data.ip}`)
+    if(!ipData){
+      console.log('ipError')
+      return
+    }
 
+    if(ipData.status!=='success'){
+      return
+    }
+
+    //check if the ip address is already present in the database
+    const {data:visitersData,error:visitersError} = await supabaseClient.from('visiters').select('*').eq('query', data.ip)
+    if(!visitersData){
+      console.log(visitersError)
+      return
+    }
+
+    //if ip address is not present in the database then add it to the database
+    if(visitersData.length===0){
+      const {data:visitersData,error:visitersError} = await supabaseClient.from('visiters').insert([{city:ipData.city,country:ipData.country,isp:ipData.isp,query:ipData.query,regionName:ipData.regionName,zip:ipData.zip, lat:`${ipData.lat}`,lan:`${ipData.lon}`}])
+      if(!visitersData){
+        console.log(visitersError)
+        return
+      }
+    }
+
+
+
+  }}))
+    
+      
 
 
 
@@ -503,5 +560,6 @@ export {
   useFilterUsingCategoriesArray,
   useManageSelectedCategories,
   useFilterUsingTagsArray,
-  useManageSelectedTags
+  useManageSelectedTags,
+  useStoreVisitersInfoIfDoesNotExist
 }
