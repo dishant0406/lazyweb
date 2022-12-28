@@ -51,7 +51,7 @@ const TopProduct = ({url, unformatUrl}: Props) => {
 
 
   return (
-    <div>
+    <div className='lazyweb-top-product'>
       <p className="text-white mt-[1rem] ml-[1rem]">Today's Top Product</p>
       <div className="w-[100%] flex justify-center">
         <div className="flex flex-wrap w-[95%] gap-[1.5rem] mt-[1rem]">
