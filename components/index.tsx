@@ -40,5 +40,5 @@ export {
   CreateModal,
   PublishModal,
   FilteredResources,
-  CommingSoon
+  CommingSoon,
 }

@@ -66,7 +66,7 @@ const ResourceListBar = (props: Props) => {
   },[selectedTab])
 
   return (
-    <div className="w-[100%] flex justify-center">
+    <div className="w-[100%] lazyweb-resource-list flex justify-center">
       <div className="flex w-[95%] mt-[1rem]">
         {tabs.map(e=>{
           if(e.slug==='publish'){

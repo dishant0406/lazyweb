@@ -11,7 +11,7 @@ const CreateResource = (props: Props) => {
     <div className='md:flex hidden'>
       <a data-tip data-for='create'>
         <div>
-          <PlusCircle onClick={()=>setIsOpen(true)} className='text-[#6c6c6c] hover:text-[#aeaeae] transition-all cursor-pointer'/>
+          <PlusCircle onClick={()=>setIsOpen(true)} className='text-[#6c6c6c] hover:text-[#aeaeae] lazyweb-add transition-all cursor-pointer'/>
         </div>
       </a>
       <ReactTooltip className='bg-gray' type='warning' id='create' place='bottom'>
