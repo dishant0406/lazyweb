@@ -512,13 +512,9 @@ const useStoreVisitersInfoIfDoesNotExist = create<
       return
     }
     // getting ip adddress info using http://ip-api.com/json/ api
-    const {data:ipData} = await axios.get(`http://ip-api.com/json/${data.ip}`)
+    const {data:ipData} = await axios.post(`https://api.lazyweb.rocks/ipinfo`, {ip:data.ip})
     if(!ipData){
       console.log('ipError')
-      return
-    }
-
-    if(ipData.status!=='success'){
       return
     }
 
@@ -531,7 +527,7 @@ const useStoreVisitersInfoIfDoesNotExist = create<
 
     //if ip address is not present in the database then add it to the database
     if(visitersData.length===0){
-      const {data:visitersData,error:visitersError} = await supabaseClient.from('visiters').insert([{city:ipData.city,country:ipData.country,isp:ipData.isp,query:ipData.query,regionName:ipData.regionName,zip:ipData.zip, lat:`${ipData.lat}`,lan:`${ipData.lon}`}])
+      const {data:visitersData,error:visitersError} = await supabaseClient.from('visiters').insert([{city:ipData.City,country:ipData.Country,isp:ipData.provider,query:ipData.ipAddress,regionName:ipData.Region,zip:ipData.postalCode, lat:`${ipData.lat}`,lan:`${ipData.lon}`}])
       if(!visitersData){
         console.log(visitersError)
         return
