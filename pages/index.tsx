@@ -16,7 +16,7 @@ const Home = (props: Props) => {
   useEffect(()=>{
     setVisitersInfo()
     //if nosessiontour is available in localstorage then setisOpen to true
-    if(!localStorage.getItem('nosessiontour') && isDesktop){
+    if(!localStorage.getItem('nosessiontour') && isDesktop && !session){
       setIsOpen(true)
     }
   },[])
