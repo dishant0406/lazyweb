@@ -18,6 +18,7 @@ import CreateModal from './utility/Modals/CreateModal/index';
 import PublishModal from './utility/Modals/PublishModal';
 import FilteredResources from './desktop/FilteredResources/FilteredResources';
 import CommingSoon from './mobile/CommingSoon/CommingSoon';
+import SwipeUI from './mobile/SwipeUI/index';
 
 
 export {
@@ -41,4 +42,5 @@ export {
   PublishModal,
   FilteredResources,
   CommingSoon,
+  SwipeUI
 }

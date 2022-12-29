@@ -43,6 +43,10 @@ html{
   stroke: #fff;
 }
 
+.swipe {
+  position: absolute;
+}
+
 /*!=====  End of Top Product Style  ======*/
 /*=============================================
 =            Scrollbar Category            =
