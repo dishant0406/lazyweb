@@ -47,10 +47,10 @@ const ResourceListBar = (props: Props) => {
   }
 
   function handleScroll() {
-    if (Math.floor(window.innerHeight + document.documentElement.scrollTop) !== document.documentElement.offsetHeight) return;
+    if (Math.floor(window.innerHeight + document.documentElement.scrollTop) < document.documentElement.offsetHeight-20) return;
     if(allResources.length >= completeResourceLength) return;
     // Call the API here and update the page state
-    setAllResources(selectedTab, allResources.length+4)
+    setAllResources(selectedTab, allResources.length+8)
   }
   
   useEffect(()=>{
