@@ -23,7 +23,7 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
   const {setComplete:setLikesComplete,setLikes} = useSetLikes()
   const [isBookmarked,setIsBookmarked] = useState(false)
   const [isLiked,setIsLiked] = useState(false)
-  const {setAllResources} = useAllResources()
+  const {setAllResources,loading} = useAllResources()
   const {completeResourceLength} = useCompleteResourceLength()
   const {setAllCategories} = useAllCategory()
   const {setAllTags} = useAllTags()
@@ -104,9 +104,48 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
     notBooked:{rotate:-360, scale:1}
   }
 
+  //string capitalize function
+  const capitalize = (s:string) => {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1).toLocaleLowerCase()
+  }
+
+  //calculate the top value of absolute box according to the number of tags available such that the space between the card and the box is 1 rem
+  const calculateTopValue = (tags:string[])=>{
+    if(tags.length<=3){
+      return '-12rem'
+    }else if(tags.length>3 && tags.length<=6){
+      return '-14rem'
+    }else if(tags.length>6 && tags.length<=9){
+      return '-15rem'
+    }else if(tags.length>9 && tags.length<=12){
+      return '-16rem'
+    }else if(tags.length>12 && tags.length<=15){
+      return '-17rem'
+    }
+  }
+
+
   return (
     <div className={`w-[18rem] relative transition h-[16rem] bg-altGray rounded-[20px]`}>
       <div className="relative">
+        {selectedTab==='publish' && isHovered && !loading && (
+        <div>
+          <div style={{
+            top:calculateTopValue(resource.tags),
+          }} className={`absolute border border-lightGray right-[0rem] min-w-[18rem] min-h-[10rem] pb-[1rem] rounded-[20px] bg-altGray`}>
+            <p className="text-white mb-[5px] mt-[1rem] ml-[1rem]">Category:</p>
+            <span className="text-white rounded-2xl bg-lightGray px-[15px] py-[2px] ml-[1.5rem]">{capitalize(resource.category)}</span>
+            <p className="text-white mt-[0.5rem] ml-[1rem]">Tags:</p>
+            <div className="flex gap-[0.5rem] flex-wrap mt-[5px] ml-[1.5rem]">
+              {resource.tags.map((tag:string)=>(
+                <span className="text-gray bg-white text-[14px] px-[10px] rounded-2xl py-[2px]">{capitalize(tag)}</span>
+              ))}
+            </div>
+
+          </div>
+        </div>
+        )}
         {resource.created_by_list.includes(session?.id!) && !resource.isPublicAvailable && !resource.isAvailableForApproval && <div onMouseEnter={()=>setIsHovered(true)} onMouseLeave={()=>setIsHovered(false)} className="w-[18rem] absolute top-[0] left-[0] transition-all flex items-center justify-center duration-500 hover:bg-gray/[0.4] h-[10rem] rounded-t-[20px]">
           <button onClick={()=>setOpen(true)} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Publish</button>
         </div>}

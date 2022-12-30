@@ -29,7 +29,7 @@ const NavBar = (props: Props) => {
         <div className="bg-white lazyweb-logo w-[140px] ml-[20px]">
           <img src={logo} className='h-[45px]' />
         </div>
-        <SearchBar/>
+        {/* <SearchBar/> */}
       </div>
       <div className='flex gap-[1rem] mr-[2rem] items-center'>
         <div className='h-[2.5rem] md:flex hidden w-[2px] bg-[#5e5f60]'/>

@@ -176,7 +176,8 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
                           border:'none',
                           width:'90%',
                           borderRadius:'12px',
-                          marginTop:'0.5rem'
+                          marginTop:'0.5rem',
+                          color:'#fff'
                         }),
                       }} onChange={e=>e?setCategory(e?.value):setCategory('')} isClearable options={options} />
                   </div>
@@ -194,7 +195,8 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
                           border:'none',
                           width:'90%',
                           borderRadius:'12px',
-                          marginTop:'0.5rem'
+                          marginTop:'0.5rem',
+                          color:'#fff'
                         }),
                       }} onChange={e=>handleTags(e)} isClearable options={optionsTags} />
                   </div>
