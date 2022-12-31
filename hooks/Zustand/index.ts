@@ -128,19 +128,19 @@ const useAllCategory = create<{
 const useAllResources = create<{
   loading:Boolean,
   allResources: Resource[]
-  setAllResources: (arg:String, arg2:number) => void
+  setAllResources: (arg:String) => void
 }>((set) => ({
   loading:false,
   allResources: [],
-  setAllResources: async (selectedTab='all', size) => {
+  setAllResources: async (selectedTab='all') => {
     set(({loading:true}))
     if(selectedTab==='all'){
-      const {data,error} = await supabaseClient.from('website').select('*').eq('isPublicAvailable', 'true').limit(size).order('id', { ascending: true })
+      const {data,error} = await supabaseClient.from('website').select('*').eq('isPublicAvailable', 'true').order('id', { ascending: true })
       if(data){
         set({allResources:data})
       }
     }else if(selectedTab==='my'){
-      const {data,error} = await supabaseClient.from('website').select('*').overlaps('created_by_list', [useUserData.getState().session?.id]).limit(size).order('id', { ascending: true }).order('isPublicAvailable', { ascending: true })
+      const {data,error} = await supabaseClient.from('website').select('*').overlaps('created_by_list', [useUserData.getState().session?.id]).order('id', { ascending: true }).order('isPublicAvailable', { ascending: true })
       if(data){
         set({allResources:data})
       }
@@ -148,7 +148,7 @@ const useAllResources = create<{
       const {data,error} = await supabaseClient.from('bookmarks').select('resource_id').eq('bookmarked_by', useUserData.getState().session?.id).order('id', { ascending: true })
       //fetch all resources which are available in the bookmarks table
       if(data){
-        const {data:errorData,error:errorError} = await supabaseClient.from('website').select('*').in('id', data.map((item)=>item.resource_id)).limit(size).order('id', { ascending: true })
+        const {data:errorData,error:errorError} = await supabaseClient.from('website').select('*').in('id', data.map((item)=>item.resource_id)).order('id', { ascending: true })
         if(errorData){
           set({allResources:errorData})
         }
@@ -156,7 +156,7 @@ const useAllResources = create<{
       }
 
     }else if(selectedTab==='publish'){
-      const {data,error} = await supabaseClient.from('website').select('*').eq('isAvailableForApproval', 'true').limit(size).order('id', { ascending: true })
+      const {data,error} = await supabaseClient.from('website').select('*').eq('isAvailableForApproval', 'true').order('id', { ascending: true })
       if(data){
         set({allResources:data})
       }
@@ -301,7 +301,7 @@ const useSetBookmark = create<
       set(state=>({setComplete:!state.setComplete}))
       //if selected tab is saved then refetch all recouseces
       if(useSelectedTab.getState().selectedTab==='saved'){
-        useAllResources.getState().setAllResources(useSelectedTab.getState().selectedTab,useCompleteResourceLength.getState().completeResourceLength)
+        useAllResources.getState().setAllResources(useSelectedTab.getState().selectedTab)
       }
 
       if(data){
@@ -367,7 +367,7 @@ const useSetLikes = create<
       set(state=>({setComplete:!state.setComplete}))
       //if selected tab is saved then refetch all recouseces
       if(useSelectedTab.getState().selectedTab==='saved'){
-        useAllResources.getState().setAllResources(useSelectedTab.getState().selectedTab,useCompleteResourceLength.getState().completeResourceLength)
+        useAllResources.getState().setAllResources(useSelectedTab.getState().selectedTab)
       }
 
       if(data){

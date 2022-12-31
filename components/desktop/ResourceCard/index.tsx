@@ -6,17 +6,21 @@ import {useSetBookmark,useUserData,useSelectedTab,useAllResources,useCompleteRes
 import { supabaseClient } from "@/lib/supabaseClient"
 import { AnimatePresence, motion } from 'framer-motion';
 import {PublishModal} from "components"
+import { LazyLoadImage, ScrollPosition } from 'react-lazy-load-image-component';
 import { FcLike, FcLikePlaceholder } from "react-icons/fc"
+import 'react-lazy-load-image-component/src/effects/blur.css';
+
 
 type Props = {
   url:string,
   title:string,
   description:string,
   image:string,
-  resource:Resource
+  resource:Resource,
+  scrollPosition:ScrollPosition
 }
 
-const ResourceCard = ({url, title, description, image, resource}: Props) => {
+const ResourceCard = ({url, title, description, image, resource, scrollPosition}: Props) => {
   const formattedUrl = formatUrl(url)
   const [isHover, setISHover] = useState(false)
   const {setBookmark,setComplete} = useSetBookmark()
@@ -87,18 +91,19 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
       //set resource.isPublicAvailable to true in supabase
       await supabaseClient.from('website').update({isPublicAvailable:true,isAvailableForApproval:false}).eq('id',resource.id)
       //fetch resources again
-      setAllResources('publish', completeResourceLength)
+      setAllResources('publish')
       setAllCategories()
       setAllTags()
     }else{
       //update isAvailableForApproval to false
       await supabaseClient.from('website').update({isAvailableForApproval:false}).eq('id',resource.id)
       //fetch resources again
-      setAllResources('publish', completeResourceLength)
+      setAllResources('publish')
       setAllCategories()
       setAllTags()
     }
   }
+
   const varients = {
     booked:{rotate:360, scale:1.3},
     notBooked:{rotate:-360, scale:1}
@@ -153,7 +158,16 @@ const ResourceCard = ({url, title, description, image, resource}: Props) => {
           <button onClick={()=>handleApproveOrReject('approve')} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Approve</button>
           <button onClick={()=>handleApproveOrReject('reject')} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-red-600 rounded-[20px]`}>Reject</button>
         </div>}
-        <img src={image} className="w-[18rem] h-[10rem] rounded-t-[20px]"/>
+        {/* <img src={image} className="w-[18rem] h-[10rem] rounded-t-[20px]"/> */}
+        <LazyLoadImage
+        alt={title}
+        height={160}
+        className='rounded-t-[20px]'
+        effect="blur"
+        delayTime={1000}
+        placeholderSrc="assets/placeholder-website.png"
+        src={image} // use normal <img> attributes as props
+        width={288} />
       </div>
       <div className="w-[18rem] h-[6rem] flex flex-col ml-[1rem] justify-center">
         <div className="text-white text-[16px] font-[500]">{title.slice(0,28)}{title.length>28&&'...'}</div>

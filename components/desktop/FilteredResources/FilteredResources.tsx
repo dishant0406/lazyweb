@@ -3,9 +3,12 @@ import { ResourceCard } from 'components';
 import StackGrid,{Grid} from 'react-stack-grid';
 import { useState } from 'react';
 import { useEffect } from 'react';
-type Props = {}
+import { ScrollPosition, trackWindowScroll } from 'react-lazy-load-image-component';
+type Props = {
+  scrollPosition:ScrollPosition
+}
 
-const FilteredResources = (props: Props) => {
+const FilteredResources = ({scrollPosition}: Props) => {
   const [gridRef, setGridRef] = useState<Grid>()
   const {filteredResources} = useFilterUsingCategoriesArray()
   const {filteredResources:filteredTagsResources} = useFilterUsingTagsArray()
@@ -26,12 +29,12 @@ const FilteredResources = (props: Props) => {
         <StackGrid enableSSR  gridRef={grid=>setGridRef(grid)} className='z-[1] mt-[2rem]' component='div' gutterHeight={10}  columnWidth={300}>
           {filteredResources.map((e)=>{
             return (
-              <ResourceCard key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
+              <ResourceCard scrollPosition={scrollPosition} key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
               )
             })}
             {filteredTagsResources.map((e)=>{
             return (
-              <ResourceCard key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
+              <ResourceCard scrollPosition={scrollPosition} key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
               )
             })}
         </StackGrid>
@@ -41,4 +44,4 @@ const FilteredResources = (props: Props) => {
   )
 }
 
-export default FilteredResources
+export default trackWindowScroll(FilteredResources)

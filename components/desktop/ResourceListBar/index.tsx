@@ -41,22 +41,11 @@ const ResourceListBar = (props: Props) => {
     })
     newTabs[id-1].selected = true
     setSelectedTab(newTabs[id-1].slug)
-    setAllResources(newTabs[id-1].slug, 8)
+    setAllResources(newTabs[id-1].slug)
     setCompleteResourceLength(newTabs[id-1].slug)
     setTabs(newTabs)
   }
 
-  function handleScroll() {
-    if (Math.floor(window.innerHeight + document.documentElement.scrollTop) < document.documentElement.offsetHeight-20) return;
-    if(allResources.length >= completeResourceLength) return;
-    // Call the API here and update the page state
-    setAllResources(selectedTab, allResources.length+8)
-  }
-  
-  useEffect(()=>{
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  },[selectedTab, allResources.length,completeResourceLength])
 
   useEffect(()=>{
     window.scrollTo({

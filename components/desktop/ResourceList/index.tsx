@@ -4,16 +4,20 @@ import { useEffect } from 'react';
 import { motion, AnimatePresence } from "framer-motion"
 import { emojiGenerator } from 'lib/emojiGenerator';
 import StackGrid, {easings,transitions} from 'react-stack-grid';
+import { trackWindowScroll } from 'react-lazy-load-image-component';
+import { ScrollPosition } from 'react-lazy-load-image-component';
 
-type Props = {}
+type Props = {
+  scrollPosition:ScrollPosition
+}
 
-const ResourceList = (props: Props) => {
+const ResourceList = ({scrollPosition}: Props) => {
   const fetchResources = useAllResources(state=>state.setAllResources)
   const {setCompleteResourceLength} = useCompleteResourceLength()
   const {allResources:resources, loading} = useAllResources()
   const {selectedTab} = useSelectedTab()
   useEffect(()=>{
-    fetchResources('all', 8)
+    fetchResources('all')
     setCompleteResourceLength('all')
   },[])
 
@@ -25,7 +29,7 @@ const ResourceList = (props: Props) => {
         {resources.length>=1 && <StackGrid enter={transitions.scaleDown.enter} appear={transitions.scaleDown.appear} appeared={transitions.scaleDown.appeared} leaved={transitions.scaleDown.leaved} entered={transitions.scaleDown.entered} easing={easings.backIn} className='z-[1] mt-[2rem]' component='div' gutterHeight={10}  columnWidth={300}>
           {resources.map((e)=>{
             return (
-              <ResourceCard key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
+              <ResourceCard scrollPosition={scrollPosition} key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
               )
             })} 
         </StackGrid>}
@@ -57,4 +61,4 @@ const ResourceList = (props: Props) => {
   )
 }
 
-export default ResourceList
+export default trackWindowScroll(ResourceList)
