@@ -1,4 +1,4 @@
-import { Category, Sidebar, Dashboard, Favicon, SwipeUI } from 'components'
+import { Category, Sidebar, Dashboard, Favicon, CommingSoon } from 'components'
 import { useEffect} from 'react'
 import { useStoreVisitersInfoIfDoesNotExist, useUserData } from '@/hooks/Zustand';
 import { useTour } from '@reactour/tour';
@@ -52,7 +52,7 @@ const Home = (props: Props) => {
         </div>
       </div>
     </div>
-    <SwipeUI/>
+    <CommingSoon/>
     </>
   )
 }

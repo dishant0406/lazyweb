@@ -117,11 +117,11 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-white">
-                      {!data ? 'Enter Your Email':'Check Your Email'}
+                      {!data ? 'Enter Your Email':'Check your Email (and spam folder) for a login link'}
                     </p>
                   </div>
                     
-                  {(!data || error) && <input onChange={(e)=>setEmail(e.target.value)} value={email} placeholder='joe@lazyweb.com' className="bg-[#35363a] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]" />}
+                  {(!data || error) && <input onChange={(e)=>setEmail(e.target.value)} value={email} placeholder='joe@lazyweb.rocks' className="bg-[#35363a] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]" />}
 
                   <div className="mt-4 flex gap-[1rem] items-center">
                     <button
