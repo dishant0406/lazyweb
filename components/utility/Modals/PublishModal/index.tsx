@@ -88,7 +88,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
       if(error){
         setError(error.message)
       }else{
-        setAllResources('my',completeResourceLength)
+        setAllResources('my')
         setAllTags()
         setAllCategories()
         closeModal()
