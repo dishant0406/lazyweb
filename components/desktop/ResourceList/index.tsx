@@ -1,9 +1,8 @@
 import { useAllResources, useCompleteResourceLength, useSelectedTab } from '@/hooks/Zustand';
 import {ResourceListBar, ResourceCard} from 'components'
 import { useEffect } from 'react';
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence, Reorder } from "framer-motion"
 import { emojiGenerator } from 'lib/emojiGenerator';
-import StackGrid, {easings,transitions} from 'react-stack-grid';
 import { trackWindowScroll } from 'react-lazy-load-image-component';
 import { ScrollPosition } from 'react-lazy-load-image-component';
 
@@ -21,18 +20,21 @@ const ResourceList = ({scrollPosition}: Props) => {
     setCompleteResourceLength('all')
   },[])
 
-
   return (
     <div>
       <ResourceListBar/>
       <div className={`relative w-[100%] transition-all duration-300 ${loading ? 'animate-pulse':''} justify-center`}>
-        {resources.length>=1 && <StackGrid enter={transitions.scaleDown.enter} appear={transitions.scaleDown.appear} appeared={transitions.scaleDown.appeared} leaved={transitions.scaleDown.leaved} entered={transitions.scaleDown.entered} easing={easings.backIn} className='z-[1] mt-[2rem]' component='div' gutterHeight={10}  columnWidth={300}>
+        {resources.length>=1 && <Reorder.Group values={resources} axis={'x'} onReorder={()=>{}} className='z-[1] ml-[3rem] flex gap-[1rem] flex-wrap mt-[2rem]'>
           {resources.map((e)=>{
             return (
-              <ResourceCard scrollPosition={scrollPosition} key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
+              <Reorder.Item key={e.id} value={e} initial={{ scale:0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}>
+                <ResourceCard scrollPosition={scrollPosition} key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
+              </Reorder.Item>
               )
             })} 
-        </StackGrid>}
+        </Reorder.Group>}
         <div className="flex ml-[2rem] w-[95%] justify-start gap-[2rem] flex-wrap my-[1rem]">
         <AnimatePresence>
         {resources.length<1 && !loading && (
