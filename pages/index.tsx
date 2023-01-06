@@ -1,8 +1,9 @@
 import { Category, Sidebar, Dashboard, Favicon, CommingSoon } from 'components'
 import { useEffect} from 'react'
-import { useStoreVisitersInfoIfDoesNotExist, useUserData } from '@/hooks/Zustand';
+import { useAllResources, useStoreVisitersInfoIfDoesNotExist, useUserData } from '@/hooks/Zustand';
 import { useTour } from '@reactour/tour';
 import { isDesktop } from 'react-device-detect';
+import { motion } from 'framer-motion';
 
 
 type Props = {}
@@ -11,6 +12,7 @@ const Home = (props: Props) => {
   const {setVisitersInfo} = useStoreVisitersInfoIfDoesNotExist()
   const {setIsOpen,setSteps} = useTour()
   const {session} = useUserData()
+  const {allResources} = useAllResources()
  
 
   useEffect(()=>{
@@ -43,10 +45,15 @@ const Home = (props: Props) => {
   return (
     <>
     <Favicon/>
-    <div className='md:flex hidden'>
+    <div className={`h-[100vh] w-[100vw] flex justify-center ${allResources.length!==0&&'hidden'} bg-gray items-center`}>
+          <motion.div className='bg-white' id='logo'>
+          <img src='assets/LogoImage.png'/>
+          </motion.div>
+        </div>
+    <div className={`md:flex hidden ${allResources.length===0&&'hidden'}`}>
       <div>
         <Category/>
-        <div className='flex w-[100vw]'>
+        <div className={`flex w-[100vw] `}>
           <Sidebar/>
           <Dashboard/>
         </div>
