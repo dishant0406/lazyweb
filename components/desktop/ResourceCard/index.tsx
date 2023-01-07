@@ -105,7 +105,7 @@ const ResourceCard = ({url, title, description, image, resource, scrollPosition}
   }
 
   const varients = {
-    booked:{rotate:360, scale:1.3},
+    booked:{rotate:360, scale:1},
     notBooked:{rotate:-360, scale:1}
   }
 
@@ -174,14 +174,15 @@ const ResourceCard = ({url, title, description, image, resource, scrollPosition}
         <div className="text-[#6c6c6c] w-[90%] text-[14px]">{description.slice(0,55)}{description.length>55&&'.....'}</div>
       </div>
       <button onClick={handleGoto} className="text-white hover:scale-[1.05] transition-all absolute bottom-[10px] right-[10px] px-[10px] py-[2px] text-[12px] bg-[#1c64ec] rounded-[20px]">Link</button>
-       {session && !resource.created_by_list.includes(session?.id!) && <motion.div animate={isBookmarked?'booked':'notBooked'} variants={varients} onClick={handleBookMark} onMouseEnter={()=>setISHover(true)} onMouseLeave={()=>setISHover(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[1px] right-[10px]">
+       {session && !resource.created_by_list.includes(session?.id!) && <motion.div animate={isBookmarked?'booked':'notBooked'} variants={varients} onClick={handleBookMark} onMouseEnter={()=>setISHover(true)} onMouseLeave={()=>setISHover(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[10px] right-[10px]">
         <AnimatePresence>
           {(isHover || isBookmarked)?(
             <motion.div
               initial={{scale:0}}
               animate={{scale:1}}
               exit={{scale:0}}
-              className="text-[#1c64ec]">
+              style={{backgroundColor:'rgba(32, 33, 36, 0.5)'}}
+              className="text-[#92ec01] h-[2rem] w-[2rem] rounded-full flex items-center justify-center">
               <HiStar className="text-[18px] "/>
             </motion.div>
           ):(
@@ -189,20 +190,21 @@ const ResourceCard = ({url, title, description, image, resource, scrollPosition}
               initial={{scale:0}}
               animate={{scale:1}}
               exit={{scale:0}}
-              className="text-[#6c6c6c]">
-              <HiOutlineStar className="text-[18px] "/>
+              style={{backgroundColor:'rgba(32, 33, 36, 0.5)'}}
+              className="text-[#fff] h-[2rem] w-[2rem] rounded-full flex items-center justify-center">
+              <HiStar className="text-[18px] "/>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>}
-       {session && resource.isPublicAvailable && <motion.div animate={isLiked?'booked':'notBooked'} variants={varients} onClick={handleLike} onMouseEnter={()=>setIsLikeHovered(true)} onMouseLeave={()=>setIsLikeHovered(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[1px] left-[10px]">
+       {session && resource.isPublicAvailable && <motion.div animate={isLiked?'booked':'notBooked'} variants={varients} onClick={handleLike} onMouseEnter={()=>setIsLikeHovered(true)} onMouseLeave={()=>setIsLikeHovered(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[10px] left-[10px]">
         <AnimatePresence>
           {(isLikeHovered || isLiked)?(
             <motion.div
               initial={{scale:0}}
               animate={{scale:1}}
               exit={{scale:0}}
-              className="text-[#1c64ec]">
+              style={{backgroundColor:'rgba(32, 33, 36, 0.5)'}} className="text-[#1c64ec] h-[2rem] w-[2rem] rounded-full flex items-center justify-center">
               <FcLike className="text-[18px]"/>
             </motion.div>
           ):(
@@ -210,7 +212,7 @@ const ResourceCard = ({url, title, description, image, resource, scrollPosition}
               initial={{scale:0}}
               animate={{scale:1}}
               exit={{scale:0}}
-              className="text-[#6c6c6c]">
+              style={{backgroundColor:'rgba(32, 33, 36, 0.5)'}} className="text-[#6c6c6c] h-[2rem] w-[2rem] rounded-full flex items-center justify-center">
               <FcLikePlaceholder className="text-[18px] "/>
             </motion.div>
           )}
