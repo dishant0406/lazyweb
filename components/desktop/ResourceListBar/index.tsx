@@ -1,5 +1,5 @@
 type Props = {}
-import { useSelectedTab,useUserData,useAllResources, useCompleteResourceLength } from 'hooks/Zustand';
+import { useSelectedTab,useUserData,useAllResources, useCompleteResourceLength,useLoginModal } from 'hooks/Zustand';
 import { useState, useEffect } from 'react';
 
 const ResourceListBar = (props: Props) => {
@@ -7,6 +7,7 @@ const ResourceListBar = (props: Props) => {
   const {setSelectedTab, selectedTab} = useSelectedTab()
   const {setAllResources,allResources} = useAllResources()
   const {completeResourceLength,setCompleteResourceLength} = useCompleteResourceLength()
+  const {setIsLoginModalOpen} = useLoginModal()
   const [tabs, setTabs] = useState([
     {
       id:1,
@@ -33,17 +34,21 @@ const ResourceListBar = (props: Props) => {
   ])
 
   const selectionHandler = (id:number)=>{
-    const newTabs = tabs.map(e=>{
-      return {
-        ...e,
-        selected:false
-      }
-    })
-    newTabs[id-1].selected = true
-    setSelectedTab(newTabs[id-1].slug)
-    setAllResources(newTabs[id-1].slug)
-    setCompleteResourceLength(newTabs[id-1].slug)
-    setTabs(newTabs)
+    if(session){
+      const newTabs = tabs.map(e=>{
+        return {
+          ...e,
+          selected:false
+        }
+      })
+      newTabs[id-1].selected = true
+      setSelectedTab(newTabs[id-1].slug)
+      setAllResources(newTabs[id-1].slug)
+      setCompleteResourceLength(newTabs[id-1].slug)
+      setTabs(newTabs)
+    }else{
+      setIsLoginModalOpen(true)
+    }
   }
 
 
@@ -61,7 +66,7 @@ const ResourceListBar = (props: Props) => {
           if(e.slug==='publish'){
             if(session && session.isAdmin){
               return (
-                <button disabled={!session} onClick={()=>selectionHandler(e.id)} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b border-lightGray'}`}>
+                <button onClick={()=>selectionHandler(e.id)} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b border-lightGray'}`}>
                   <div className={`${e.selected?'text-white':"text-lightGray"} transition-all`}>{e.name}</div>
                 </button>
               )
@@ -70,7 +75,7 @@ const ResourceListBar = (props: Props) => {
             }
           }
           return (
-            <button disabled={!session} onClick={()=>selectionHandler(e.id)} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b border-lightGray'}`}>
+            <button onClick={()=>selectionHandler(e.id)} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b border-lightGray'}`}>
               <div className={`${e.selected?'text-white':"text-lightGray"} transition-all`}>{e.name}</div>
             </button>
           )

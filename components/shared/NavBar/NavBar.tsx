@@ -6,11 +6,13 @@ import { supabaseClient } from 'lib/supabaseClient';
 import {User} from '@supabase/gotrue-js/src/lib/types'
 import { useUserData } from '@/hooks';
 import { useTour } from '@reactour/tour';
+import { useLoginModal } from '@/hooks/Zustand';
 
 type Props = {}
 
 const NavBar = (props: Props) => {
-  const [isOpen, setIsOpen] = useState(false)
+  // const [isOpen, setIsOpen] = useState(false)
+  const {isLoginModalOpen:isOpen, setIsLoginModalOpen:setIsOpen} = useLoginModal()
   const {session,setSession, signOut} = useUserData()
   const {setIsOpen:setTourOpen} = useTour()
 
@@ -35,7 +37,7 @@ const NavBar = (props: Props) => {
         <div className='h-[2.5rem] md:flex hidden w-[2px] bg-[#5e5f60]'/>
         {!session && <Grid className='text-[#6c6c6c] md:flex hidden cursor-pointer'/>}
         {session && <CreateResource/>}
-        <ProfileIcon onClick={()=>!session && setIsOpen(true)} className='md:flex lazyweb-login hidden cursor-pointer' address={(session && session.email) ?session.email:'lazyweb'}/>
+        <ProfileIcon onClick={()=>!session && setIsOpen(true)} className='md:flex lazyweb-login hidden cursor-pointer' address={(session && session.email) ?session.email:'Login'}/>
         {session && <button onClick={signoutHandler} className='bg-altGray text-white whitespace-nowrap px-[1rem] rounded-[20px] py-[0.5rem]'>sign out</button>}
       </div>
       <LoginModal isOpen={isOpen} setIsOpen={setIsOpen}/>

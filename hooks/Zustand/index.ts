@@ -537,6 +537,21 @@ const useStoreVisitersInfoIfDoesNotExist = create<
 
 
   }}))
+
+
+  //login modal open state manage
+  const useLoginModal = create<
+  {
+    isLoginModalOpen: boolean
+    setIsLoginModalOpen: (value:boolean) => void
+  }
+>((set) => ({
+  isLoginModalOpen: false,
+  setIsLoginModalOpen: (value:boolean) => {
+    set({isLoginModalOpen:value})
+  }
+}))
+
     
       
 
@@ -557,5 +572,6 @@ export {
   useManageSelectedCategories,
   useFilterUsingTagsArray,
   useManageSelectedTags,
-  useStoreVisitersInfoIfDoesNotExist
+  useStoreVisitersInfoIfDoesNotExist,
+  useLoginModal
 }

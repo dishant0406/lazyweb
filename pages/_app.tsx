@@ -47,7 +47,7 @@ export default function App({ Component, pageProps }: AppProps) {
           },
           {
             selector: '.lazyweb-login',
-            content: 'Clear here to open the login modal and login',
+            content: 'Click here to open the login modal and login',
           },
           {
             selector: '.lazyweb-tags',
