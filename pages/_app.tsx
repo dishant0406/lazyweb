@@ -51,7 +51,7 @@ export default function App({ Component, pageProps }: AppProps) {
           },
           {
             selector: '.lazyweb-tags',
-            content: 'Click on any of the tags to see the resources related to that tag',
+            content: 'Click on any of the tags to see the resources related to that tag ( Scroll using ctrl + scroll )',
           },
           {
             selector: '.lazyweb-category',
