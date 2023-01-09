@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {PublishModal} from "components"
 import { LazyLoadImage, ScrollPosition } from 'react-lazy-load-image-component';
 import { FcLike, FcLikePlaceholder } from "react-icons/fc"
+import {BsBookmarksFill} from 'react-icons/bs'
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
 
@@ -183,7 +184,7 @@ const ResourceCard = ({url, title, description, image, resource, scrollPosition}
               exit={{scale:0}}
               style={{backgroundColor:'rgba(32, 33, 36, 0.5)'}}
               className="text-[#92ec01] h-[2rem] w-[2rem] rounded-full flex items-center justify-center">
-              <HiStar className="text-[18px] "/>
+              <BsBookmarksFill className="text-[18px] "/>
             </motion.div>
           ):(
             <motion.div
@@ -192,7 +193,7 @@ const ResourceCard = ({url, title, description, image, resource, scrollPosition}
               exit={{scale:0}}
               style={{backgroundColor:'rgba(32, 33, 36, 0.5)'}}
               className="text-[#fff] h-[2rem] w-[2rem] rounded-full flex items-center justify-center">
-              <HiStar className="text-[18px] "/>
+              <BsBookmarksFill className="text-[18px] "/>
             </motion.div>
           )}
         </AnimatePresence>
