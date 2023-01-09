@@ -39,6 +39,7 @@ jobs:
         script: |
           echo "Deploying... using"
           node -v
+          nvm use 19
           echo "Going in the Lazyweb Directory"
           cd lazyweb
           echo "Stopping the running server"
