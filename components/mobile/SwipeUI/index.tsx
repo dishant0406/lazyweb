@@ -4,8 +4,8 @@ import dynamic from "next/dynamic"
 const TinderCard = dynamic(() => import('react-tinder-card'), {
   ssr: false
 });
-import { Resource } from 'hooks/Zustand';
-import { ResourceCard } from 'components';
+// import { Resource } from 'hooks/Zustand';
+// import { ResourceCard } from 'components';
 import React, { useState, useRef, useMemo } from 'react';
 import { useEffect } from 'react';
 
@@ -83,7 +83,7 @@ const SwipeUI = (props: Props) => {
                     key={e.url}
                     onSwipe={(dir) => swiped(dir, e.url, index)}
                     onCardLeftScreen={() => outOfFrame(e.url, index)} preventSwipe={['up', 'down']}  className='absolute' >
-                      <ResourceCard key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
+                      {/* <ResourceCard key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/> */}
                     </TinderCard>
               )
             })}
