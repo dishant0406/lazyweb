@@ -29,7 +29,8 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: 22
         script: |
-          echo "Deploying..."
+          echo "Deploying... using"
+          node -v
           echo "Going in the Lazyweb Directory"
           cd lazyweb
           echo "Stopping the running server"
