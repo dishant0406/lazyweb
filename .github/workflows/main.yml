@@ -29,6 +29,7 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
+        cache: "npm"
     - name: Lazyweb Deployment
       uses: appleboy/ssh-action@master
       with:
@@ -39,7 +40,6 @@ jobs:
         script: |
           echo "Deploying... using"
           node -v
-          nvm use 19
           echo "Going in the Lazyweb Directory"
           cd lazyweb
           echo "Stopping the running server"
