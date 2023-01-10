@@ -5,9 +5,9 @@ import { useEffect, useState } from "react"
 import {useSetBookmark,useUserData,useSelectedTab,useAllResources,useCompleteResourceLength} from 'hooks/Zustand'
 import { supabaseClient } from "@/lib/supabaseClient"
 import { AnimatePresence, motion } from 'framer-motion';
-import {PublishModal} from "components"
+import {PublishModal, InfoModal} from "components"
 import { LazyLoadImage, ScrollPosition } from 'react-lazy-load-image-component';
-import { FcLike, FcLikePlaceholder } from "react-icons/fc"
+import { FcInfo, FcLike, FcLikePlaceholder } from "react-icons/fc"
 import {BsBookmarksFill} from 'react-icons/bs'
 import 'react-lazy-load-image-component/src/effects/blur.css';
 
@@ -37,6 +37,7 @@ const ResourceCard = ({url, title, description, image, resource, scrollPosition}
   const [isHovered, setIsHovered] = useState(false)
   const [isLikeHovered, setIsLikeHovered] = useState(false)
   const [open, setOpen] = useState(false)
+  const [isInfoModalOpen, setInfoModalOpen] = useState(false)
 
   const handleGoto = ():void=>{
     window.open(formattedUrl, '_blank');
@@ -175,6 +176,7 @@ const ResourceCard = ({url, title, description, image, resource, scrollPosition}
         <div className="text-[#6c6c6c] w-[90%] text-[14px]">{description.slice(0,55)}{description.length>55&&'.....'}</div>
       </div>
       <button onClick={handleGoto} className="text-white hover:scale-[1.05] transition-all absolute bottom-[10px] right-[10px] px-[10px] py-[2px] text-[12px] bg-[#1c64ec] rounded-[20px]">Link</button>
+       <FcInfo onClick={()=>setInfoModalOpen(true)} className="text-[18px] absolute bottom-[5rem] right-[5px] hover:scale-[1.1] cursor-pointer transition-all"/>
        {session && !resource.created_by_list.includes(session?.id!) && <motion.div animate={isBookmarked?'booked':'notBooked'} variants={varients} onClick={handleBookMark} onMouseEnter={()=>setISHover(true)} onMouseLeave={()=>setISHover(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[10px] right-[10px]">
         <AnimatePresence>
           {(isHover || isBookmarked)?(
@@ -220,6 +222,7 @@ const ResourceCard = ({url, title, description, image, resource, scrollPosition}
         </AnimatePresence>
       </motion.div>}
       <PublishModal id={resource.id} url={url} title={title} isOpen={open} setIsOpen={setOpen} />
+      <InfoModal resource={resource} isOpen={isInfoModalOpen} setIsOpen={setInfoModalOpen}/>
     </div>
   )
 }
