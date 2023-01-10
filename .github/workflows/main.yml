@@ -30,8 +30,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: "npm"
-    - name: Lazyweb Deployment
-      uses: appleboy/ssh-action@master
+    - uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
