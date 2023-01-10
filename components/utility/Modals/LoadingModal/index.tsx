@@ -53,7 +53,7 @@ const LoadingModal = ({isOpen, setIsOpen}:Props) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="h-[95vh] w-[100vw] transform overflow-hidden rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="h-[95vh] w-[100vw] flex justify-center items-center transform overflow-hidden rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all">
                   
                 <div className={`h-[90vh] w-[100vw] flex justify-center bg-gray items-center`}>
                   <div className='bg-white' id='logo'>
