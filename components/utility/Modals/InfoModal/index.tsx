@@ -62,8 +62,10 @@ const InfoModal = ({isOpen, setIsOpen, resource}:Props) => {
                     as="h3"
                     className="text-lg whitespace-nowrap flex items-center gap-[10px] font-medium leading-6 text-white"
                   >
+                    <div className='w-[16px]'>
+                      <FiExternalLink onClick={()=>window.open(formatUrl(resource.url), '_blank')} className='text-[16px] hover:scale-[1.2] transition-all cursor-pointer text-white'/>
+                    </div>
                     {resource.title}
-                    <FiExternalLink onClick={()=>window.open(formatUrl(resource.url), '_blank')} className='text-[16px] cursor-pointer text-white'/>
                   </Dialog.Title>
                   <div style={{
                     //background url as image_url and position as center
@@ -74,7 +76,7 @@ const InfoModal = ({isOpen, setIsOpen, resource}:Props) => {
                   }} className="mt-2 h-[12rem] rounded-2xl">
                   </div>
                   <div className='w-[full] flex justify-center'>
-                  <div className="mt-2 w-[90%]  flex">
+                  <div className="mt-2 w-[49rem]  flex">
                     <p className="text-[16px] text-start text-white">
                       {resource.desc}
                     </p>
