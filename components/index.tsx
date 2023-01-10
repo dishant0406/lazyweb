@@ -20,6 +20,7 @@ import FilteredResources from './desktop/FilteredResources/FilteredResources';
 import CommingSoon from './mobile/CommingSoon/CommingSoon';
 import SwipeUI from './mobile/SwipeUI/index';
 import InfoModal from './utility/Modals/InfoModal/index';
+import LoadingModal from './utility/Modals/LoadingModal/index';
 
 
 export {
@@ -44,5 +45,6 @@ export {
   FilteredResources,
   CommingSoon,
   SwipeUI,
-  InfoModal
+  InfoModal,
+  LoadingModal
 }

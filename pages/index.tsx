@@ -1,9 +1,8 @@
-import { Category, Sidebar, Dashboard, Favicon, CommingSoon } from 'components'
-import { useEffect} from 'react'
+import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal } from 'components'
+import { useEffect, useState} from 'react'
 import { useAllResources, useSelectedTab, useStoreVisitersInfoIfDoesNotExist, useUserData } from '@/hooks/Zustand';
 import { useTour } from '@reactour/tour';
 import { isDesktop } from 'react-device-detect';
-import { motion } from 'framer-motion';
 
 
 type Props = {}
@@ -14,6 +13,7 @@ const Home = (props: Props) => {
   const {session} = useUserData()
   const {allResources} = useAllResources()
   const {selectedTab} = useSelectedTab()
+  const [isLoadingModalOpen, setisLoadingModalOpen] = useState(true)
  
 
   useEffect(()=>{
@@ -43,15 +43,16 @@ const Home = (props: Props) => {
     }
   },[session])
 
+  useEffect(()=>{
+    if(allResources.length > 0){
+      setisLoadingModalOpen(false)
+    }
+  },[allResources])
+
   return (
     <>
     <Favicon/>
-    <div className={`h-[100vh] w-[100vw] flex justify-center ${(allResources.length!==0 || selectedTab!=='all') &&'hidden'} bg-gray items-center`}>
-          <motion.div className='bg-white' id='logo'>
-          <img src='assets/LogoImage.png'/>
-          </motion.div>
-        </div>
-    <div className={`md:flex hidden ${allResources.length===0 && selectedTab==='all' && 'hidden'}`}>
+    <div className={`md:flex hidden`}>
       <div>
         <Category/>
         <div className={`flex w-[100vw] `}>
@@ -61,6 +62,7 @@ const Home = (props: Props) => {
       </div>
     </div>
     <CommingSoon/>
+    <LoadingModal isOpen={isLoadingModalOpen} setIsOpen={setisLoadingModalOpen}/>
     </>
   )
 }
