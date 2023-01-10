@@ -19,6 +19,7 @@ import PublishModal from './utility/Modals/PublishModal';
 import FilteredResources from './desktop/FilteredResources/FilteredResources';
 import CommingSoon from './mobile/CommingSoon/CommingSoon';
 import SwipeUI from './mobile/SwipeUI/index';
+import InfoModal from './utility/Modals/InfoModal/index';
 
 
 export {
@@ -42,5 +43,6 @@ export {
   PublishModal,
   FilteredResources,
   CommingSoon,
-  SwipeUI
+  SwipeUI,
+  InfoModal
 }
