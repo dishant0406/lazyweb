@@ -52,6 +52,14 @@ jobs:
           echo "NPM install"
           npm i
           echo "Building the build..."
-          npm run build || (if [ $? -eq 137 ]; then npm run build; fi)
+          while true; do
+            npm run build
+            if [ $? -eq 137 ]; then
+              echo "npm run build command was killed, retrying..."
+              continue
+            else
+              break
+            fi
+          done
           echo "Starting PM2 Again"
           pm2 start lazyweb
