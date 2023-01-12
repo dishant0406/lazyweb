@@ -1,4 +1,4 @@
-import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal } from 'components'
+import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal, SwipeUI } from 'components'
 import { useEffect, useState} from 'react'
 import { useAllResources, useSelectedTab, useStoreVisitersInfoIfDoesNotExist, useUserData } from '@/hooks/Zustand';
 import { useTour } from '@reactour/tour';
@@ -61,7 +61,7 @@ const Home = (props: Props) => {
         </div>
       </div>
     </div>
-    <CommingSoon/>
+    <SwipeUI/>
     <LoadingModal isOpen={isLoadingModalOpen} setIsOpen={setisLoadingModalOpen}/>
     </>
   )
