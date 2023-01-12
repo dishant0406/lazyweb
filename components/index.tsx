@@ -21,6 +21,7 @@ import CommingSoon from './mobile/CommingSoon/CommingSoon';
 import SwipeUI from './mobile/SwipeUI/index';
 import InfoModal from './utility/Modals/InfoModal/index';
 import LoadingModal from './utility/Modals/LoadingModal/index';
+import MobileResourceCard from './mobile/MobileResourceCard/index';
 
 
 export {
@@ -46,5 +47,6 @@ export {
   CommingSoon,
   SwipeUI,
   InfoModal,
-  LoadingModal
+  LoadingModal,
+  MobileResourceCard
 }

@@ -32,12 +32,9 @@ const LoadingModal = ({isOpen, setIsOpen}:Props) => {
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
             as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
             leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
+            leaveFrom="scale-100"
+            leaveTo="scale-0"
           >
             <div className="fixed inset-0 bg-gray" />
           </Transition.Child>
@@ -46,12 +43,9 @@ const LoadingModal = ({isOpen, setIsOpen}:Props) => {
             <div className="flex min-h-full items-center justify-center p-4 text-center">
               <Transition.Child
                 as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
                 leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
+                leaveFrom="scale-100"
+                leaveTo="scale-0"
               >
                 <Dialog.Panel className="h-[95vh] w-[100vw] flex justify-center items-center transform overflow-hidden rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all">
                   
