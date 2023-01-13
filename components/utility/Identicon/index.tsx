@@ -14,7 +14,6 @@ const ProfileIcon = ({address, className, onClick}: Props):JSX.Element => {
   useEffect(()=>{
     (
       async ()=>{
-        console.log(address)
         const {data} = await axios.post('/api/identicon',{text:address})
         setImgData(data)
       }

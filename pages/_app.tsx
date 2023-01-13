@@ -1,4 +1,5 @@
 import 'styles/globals.css'
+import 'react-spring-bottom-sheet/dist/style.css'
 import type { AppProps } from 'next/app'
 import { NavBar } from 'components'
 import Head from 'next/head'
