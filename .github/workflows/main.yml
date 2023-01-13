@@ -55,7 +55,7 @@ jobs:
           npm i
           echo "Building the build..."
           while true; do
-            npm run build
+            total_memory=$(awk '/MemTotal/ {print $2}' /proc/meminfo); max_memory=$((total_memory*80/100)); max_memory_mb=$((max_memory/1024)); npm run --max_old_space_size_mb=$max_memory_mb build
             if [ $? -eq 137 ]; then
               echo "npm run build command was killed, retrying..."
               continue
