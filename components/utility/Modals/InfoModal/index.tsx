@@ -57,10 +57,10 @@ const InfoModal = ({isOpen, setIsOpen, resource}:Props) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="min-w-[28rem] transform overflow-hidden rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="md:min-w-[28rem] transform overflow-hidden rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg whitespace-nowrap flex items-center gap-[10px] font-medium leading-6 text-white"
+                    className="text-lg md:whitespace-nowrap flex items-center gap-[10px] font-medium leading-6 text-white"
                   >
                     <div className='w-[16px]'>
                       <FiExternalLink onClick={()=>window.open(formatUrl(resource.url), '_blank')} className='text-[16px] hover:scale-[1.2] transition-all cursor-pointer text-white'/>
@@ -68,9 +68,10 @@ const InfoModal = ({isOpen, setIsOpen, resource}:Props) => {
                     {
                       //resouce title is too long then break it into half
                       resource.title.length > 100 ?
-                      <div className='flex flex-col mb-[10px]'>
-                        <span>{resource.title.slice(0, 100)}</span>
-                        <span>{resource.title.slice(100)}</span>
+                      <div className=' flex-col mb-[10px]'>
+                        <span className='md:flex hidden'>{resource.title.slice(0, 100)}</span>
+                        <span className='md:flex hidden'>{resource.title.slice(100)}</span>
+                        <span className='md:hidden flex'>{resource.title.split('|')[0]}</span>
                       </div>
                       :
                       <span>{resource.title}</span>
