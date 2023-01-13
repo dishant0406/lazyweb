@@ -28,7 +28,7 @@ jobs:
       run: ls
 
     - name: Copy files to VPS
-      uses: appleboy/scp-action@v1
+      uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
