@@ -47,6 +47,7 @@ jobs:
           cd lazyweb
           echo "Stopping the running server"
           pm2 stop lazyweb
+          pm2 stop landing
           echo "Taking pull"
           git pull origin main
           echo "NPM install"
@@ -63,3 +64,4 @@ jobs:
           done
           echo "Starting PM2 Again"
           pm2 start lazyweb
+          pm2 start landing
