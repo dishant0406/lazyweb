@@ -27,8 +27,9 @@ jobs:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.PRIVATE_KEY }}
-        source: '/root/lazyweb/.env.local'
-        target: '.env'
+        source: 'ls -la'
+        target: '.'
+        mode: 'exec'
 
     - name: Build the app
       run: npm run build
