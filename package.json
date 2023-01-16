@@ -4,10 +4,10 @@
     "lazyweb",
     "landingpage"
   ],
-"scripts": {
+  "scripts": {
     "start": "concurrently \"yarn workspace lazyweb start\" \"yarn workspace landingpage start\"",
-   "dev:all": "concurrently \"yarn workspace lazyweb dev\" \"yarn workspace landingpage dev\"",
-  "build": "concurrently \"yarn workspace lazyweb build\" \"yarn workspace landingpage build\""
+    "dev:all": "concurrently \"yarn workspace lazyweb dev\" \"yarn workspace landingpage dev\"",
+    "build": "concurrently \"yarn workspace lazyweb build\" \"yarn workspace landingpage build\""
   },
   "devDependencies": {
     "concurrently": "^7.6.0"
