@@ -52,10 +52,10 @@ jobs:
           echo "Taking pull"
           git pull origin main
           echo "NPM install"
-          npm i
+          yarn
           echo "Building the build..."
           while true; do
-            npm run build
+            yarn build
             if [ $? -eq 137 ]; then
               echo "npm run build command was killed, retrying..."
               continue
@@ -65,5 +65,4 @@ jobs:
           done
           echo "Starting PM2 Again"
           pm2 start lazyweb
-          pm2 start landing
           pm2 start server
