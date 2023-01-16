@@ -1,4 +1,4 @@
-import create from 'zustand'
+import {create} from 'zustand'
 import {User} from '@supabase/gotrue-js/src/lib/types'
 import { supabaseClient } from 'lib/supabaseClient';
 import axios from 'axios';

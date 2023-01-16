@@ -7,6 +7,7 @@ import { isDesktop } from 'react-device-detect';
 
 type Props = {}
 
+
 const Home = (props: Props) => {
   const {setVisitersInfo} = useStoreVisitersInfoIfDoesNotExist()
   const {setIsOpen,setSteps} = useTour()
@@ -14,15 +15,6 @@ const Home = (props: Props) => {
   const {allResources} = useAllResources()
   const {selectedTab} = useSelectedTab()
   const [isLoadingModalOpen, setisLoadingModalOpen] = useState(true)
- 
-
-  useEffect(()=>{
-    setVisitersInfo()
-    //if nosessiontour is available in localstorage then setisOpen to true
-    if(!localStorage.getItem('nosessiontour') && isDesktop && !session){
-      setIsOpen(true)
-    }
-  },[])
 
   useEffect(()=>{
     if(session){
