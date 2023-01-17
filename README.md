@@ -1,9 +1,7 @@
-<img align="left" width="80" height="80" src="https://user-images.githubusercontent.com/90952604/212896554-1175ac00-9f63-465a-86eb-c67cf60d51bc.png">
-
-# LazyWeb
-
-
-*"Your project's success, just a click away"*
+<div id="header" align="center">
+  <img src="https://user-images.githubusercontent.com/90952604/212896554-1175ac00-9f63-465a-86eb-c67cf60d51bc.png" width="350"/>
+  <h1><em>"Your project's success, just a click away"</h1>
+</div>
 
 
 ## Description :
