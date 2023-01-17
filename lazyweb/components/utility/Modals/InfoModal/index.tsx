@@ -95,10 +95,10 @@ const InfoModal = ({isOpen, setIsOpen, resource}:Props) => {
                   </div>
                   <div className="mt-2 w-[90%]">
                     <p className="text-white mb-[5px] mt-[1rem] ml-[1rem]">Category:</p>
-                    <span className="text-white rounded-2xl bg-lightGray px-[15px] py-[2px] ml-[1.5rem]">{capitalize(resource.category)}</span>
+                    <span className="text-white rounded-2xl bg-lightGray px-[15px] py-[2px] ml-[1.5rem]">{resource.category && capitalize(resource.category)}</span>
                     <p className="text-white mt-[0.5rem] ml-[1rem]">Tags:</p>
                     <div className="flex gap-[0.5rem] flex-wrap mt-[5px] ml-[1.5rem]">
-                      {resource.tags.map((tag:string)=>(
+                      {resource.tags && resource.tags.map((tag:string)=>(
                         <span className="text-gray bg-white text-[14px] px-[10px] rounded-2xl py-[2px]">{capitalize(tag)}</span>
                       ))}
                     </div>
