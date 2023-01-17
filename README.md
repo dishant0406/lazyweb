@@ -1,8 +1,19 @@
 
 # LazyWeb
 
-A Web app that includes all the usefull websites which you might require for your next project
+*"Your project's success, just a click away"*
 
+
+## Description :
++ Welcome to our Web App, **LazyWeb**!
++ A Web app that includes all the usefull websites which you might require for your next project
++ We've curated a list of the best and most popular websites in various categories such as CSS, GitHub, UI/UX, Roadmaps etc
++ Whether you're looking for *a handy stock image site, an inspiring code repository, a captivating font library, or a magnificent colour palette* you'll find it here
++ The user-friendly interface allows you to easily navigate through the different categories and find the websites you need quickly
++ We are constantly updating our list of websites, so you can be sure that you're always getting the most up-to-date content
++ This app is a must-have for anyone working on a project, whether you're a designer, developer or researcher
+
+**Try it out now and see for yourself!**
 
 ## Tech Stack
 
