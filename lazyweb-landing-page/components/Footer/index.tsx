@@ -5,11 +5,11 @@ type Props = {}
 
 const Footer = (props: Props) => {
   return (
-    <div className="py-3 flex items-center justify-center w-[100vw] bg-gray">
+    <div className="py-3 md:pt-5 md:pb-2 flex items-center justify-center w-[100vw] bg-gray">
       <div className="h-full flex-col md:flex-row md:justify-between justify-center flex items-center w-[90vw] bg-gray">
         <div className="flex flex-col md:flex-row gap-1 md:mb-0 mb-3 md:gap-[1rem] items-center">
           <div className="md:bg-white bg-white">
-            <img src="assets/LogoMain.png" className="md:h-16 h-10" alt="Lazyweb Main Logo"/>
+            <img src="assets/LogoMain.png" className="md:h-14 h-10" alt="Lazyweb Main Logo"/>
           </div>
             <p className="text-white md:text-[16px] text-[10px]">Copyright by {new Date().getFullYear()} Lazyweb.rocks</p>
         </div>
