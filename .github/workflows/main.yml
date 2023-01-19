@@ -51,6 +51,8 @@ jobs:
           pm2 stop server
           echo "Taking pull"
           git pull origin main
+          git merge origin/main
+          git commit -a -m "Automatic merge from GitHub"
           echo "NPM install"
           yarn
           echo "Building the build..."
