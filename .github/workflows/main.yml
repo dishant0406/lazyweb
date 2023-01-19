@@ -50,6 +50,7 @@ jobs:
           pm2 stop landing
           pm2 stop server
           echo "Taking pull"
+          git commit -a -m "Automatic merge from GitHub"
           git pull origin main
           git merge origin/main
           git commit -a -m "Automatic merge from GitHub"
