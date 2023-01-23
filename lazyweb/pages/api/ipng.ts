@@ -16,7 +16,7 @@ handler.post(async (req, res) => {
       seed: text,
     });
     const png =  data.png({
-      includeExif:false
+      includeExif:true
     })
     const base64Image = await png.toDataUri()
     res.send(base64Image)
