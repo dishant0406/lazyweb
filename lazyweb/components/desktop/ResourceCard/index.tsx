@@ -153,10 +153,10 @@ const ResourceCard = ({url, title, description, image, resource, scrollPosition}
           </div>
         </div>
         )}
-        {resource.created_by_list.includes(session?.id!) && !resource.isPublicAvailable && !resource.isAvailableForApproval && <div onMouseEnter={()=>setIsHovered(true)} onMouseLeave={()=>setIsHovered(false)} className="w-[18rem] z-[100] absolute top-[0] left-[0] transition-all flex items-center justify-center duration-500 hover:bg-gray/[0.4] h-[11.5rem] rounded-t-[20px]">
+        {resource.created_by_list.includes(session?.id!) && !resource.isPublicAvailable && !resource.isAvailableForApproval && <div onMouseEnter={()=>setIsHovered(true)} onMouseLeave={()=>setIsHovered(false)} className="w-[18rem] z-[1] absolute top-[0] left-[0] transition-all flex items-center justify-center duration-500 hover:bg-gray/[0.4] h-[11.5rem] rounded-t-[20px]">
           <button onClick={()=>setOpen(true)} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Publish</button>
         </div>}
-        {session?.isAdmin && resource.isAvailableForApproval && selectedTab==='publish' && <div onMouseEnter={()=>setIsHovered(true)} onMouseLeave={()=>setIsHovered(false)} className="w-[18rem] absolute top-[0] left-[0] z-[100] transition-all flex items-center justify-center gap-[5px] duration-500 hover:bg-gray/[0.4] h-[11.5rem] rounded-t-[20px]">
+        {session?.isAdmin && resource.isAvailableForApproval && selectedTab==='publish' && <div onMouseEnter={()=>setIsHovered(true)} onMouseLeave={()=>setIsHovered(false)} className="w-[18rem] absolute top-[0] left-[0] z-[1] transition-all flex items-center justify-center gap-[5px] duration-500 hover:bg-gray/[0.4] h-[11.5rem] rounded-t-[20px]">
           <button onClick={()=>handleApproveOrReject('approve')} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Approve</button>
           <button onClick={()=>handleApproveOrReject('reject')} className={`text-white hover:scale-[1.05] ${isHovered?'opacity-100':'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-red-600 rounded-[20px]`}>Reject</button>
         </div>}
