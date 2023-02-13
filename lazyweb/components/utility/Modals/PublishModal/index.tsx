@@ -179,7 +179,15 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
                           marginTop:'0.5rem',
                           color:'#fff !important'
                         }),
-
+                       input:(base, props)=>( {
+                        ...base,
+                        color:'#fff !important'
+                       }),
+                       menuList:(base, props)=> ({
+                        ...base,
+                        height:'200px',
+                       }),
+                       
                       }} onChange={e=>e?setCategory(e?.value):setCategory('')} isClearable options={options} />
                   </div>
                   <div className='mb-[-2rem]'>
@@ -199,6 +207,15 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
                           marginTop:'0.5rem',
                           color:'#fff !important',
                         }),
+                        input:(base, props)=>( {
+                          ...base,
+                          color:'#fff !important'
+                         }),
+                         menuList:(base, props)=> ({
+                          ...base,
+                          maxHeight:'200px',
+                         }),
+
                       }} onChange={e=>handleTags(e)} isClearable options={optionsTags} />
                   </div>
                   
