@@ -185,7 +185,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
                        }),
                        menuList:(base, props)=> ({
                         ...base,
-                        height:'200px',
+                        maxHeight:'200px',
                        }),
                        
                       }} onChange={e=>e?setCategory(e?.value):setCategory('')} isClearable options={options} />
