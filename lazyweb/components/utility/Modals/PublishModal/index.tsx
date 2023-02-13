@@ -177,8 +177,9 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
                           width:'90%',
                           borderRadius:'12px',
                           marginTop:'0.5rem',
-                          color:'#fff'
+                          color:'#fff !important'
                         }),
+
                       }} onChange={e=>e?setCategory(e?.value):setCategory('')} isClearable options={options} />
                   </div>
                   <div className='mb-[-2rem]'>
@@ -196,7 +197,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
                           width:'90%',
                           borderRadius:'12px',
                           marginTop:'0.5rem',
-                          color:'#fff'
+                          color:'#fff !important',
                         }),
                       }} onChange={e=>handleTags(e)} isClearable options={optionsTags} />
                   </div>
