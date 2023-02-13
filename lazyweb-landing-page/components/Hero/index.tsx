@@ -4,7 +4,7 @@ const Hero = (props: Props) => {
   return (
     <div>
       <div className="w-[100vw] flex justify-center">
-        <img src='assets/Logo.png' className="mt-[3rem] h-[20vw] md:h-[6vw]" alt="LazyWeb Logo"/>
+        <img src='assets/Logo.webp' className="mt-[3rem] h-[20vw] md:h-[6vw]" alt="LazyWeb Logo"/>
       </div>
         <div className="w-[100vw] flex justify-center">
           <div className="w-[70vw] md:w-[40vw]">
@@ -12,7 +12,7 @@ const Hero = (props: Props) => {
           </div>
         </div>
         <div className="w-[100vw] flex justify-center md:mt-[3rem] mt-[1rem]">
-          <img src="assets/lazyweb-ss-2.png" className="md:w-[80vw] w-[90vw]" alt="Lazyweb Website ScreenShot" />
+          <img src="assets/lazyweb-ss-2.webp" className="md:w-[80vw] w-[90vw]" alt="Lazyweb Website ScreenShot" />
         </div>
     </div>
   )

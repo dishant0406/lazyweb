@@ -17,7 +17,7 @@ const NavBar = (props: Props) => {
   return (
    <div className="w-[100vw] flex justify-center">
      <div className="h-[64px] w-[90vw] flex items-center justify-between">
-      <img src="assets/LogoMain.png" className="h-[45px]" alt="Lazyweb Main Logo"/>
+      <img src="assets/LogoMain.webp" className="h-[45px]" alt="Lazyweb Main Logo"/>
       <div className="md:flex hidden gap-[2rem]">
       <p onClick={()=>handleClick('feature')} className="cursor-pointer text-gray">Features</p>
       <p onClick={()=>handleClick('services')} className="cursor-pointer text-gray">Services</p>
