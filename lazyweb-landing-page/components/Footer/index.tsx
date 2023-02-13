@@ -9,7 +9,7 @@ const Footer = (props: Props) => {
       <div className="h-full flex-col md:flex-row md:justify-between justify-center flex items-center w-[90vw] bg-gray">
         <div className="flex flex-col md:flex-row gap-1 md:mb-0 mb-3 md:gap-[1rem] items-center">
           <div className="md:bg-white bg-white">
-            <img src="assets/LogoMain.png" className="md:h-14 h-10" alt="Lazyweb Main Logo"/>
+            <img src="assets/LogoMain.webp" className="md:h-14 h-10" alt="Lazyweb Main Logo"/>
           </div>
             <p className="text-white md:text-[16px] text-[10px]">Copyright by {new Date().getFullYear()} Lazyweb.rocks</p>
         </div>

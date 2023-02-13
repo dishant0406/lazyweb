@@ -3,35 +3,35 @@ import {FcAddImage, FcApproval, FcBookmark, FcIdea} from 'react-icons/fc'
 type Props = {}
 
 const FeatureDetails = (props: Props) => {
-  const [selectedImage, setSelectedImage] = useState('assets/feat-1.png')
+  const [selectedImage, setSelectedImage] = useState('assets/feat-1.webp')
   const [Tabs, setTabs] = useState([
     {
       id: 1,
       title: '90+ Resources',
       icon:<FcApproval className="md:text-[1.8rem] text-[1.4rem]"/>,
       selected:true ,
-      image:'assets/feat-1.png'
+      image:'assets/feat-1.webp'
     },
     {
       id: 2,
       title: 'Add your resource',
       icon:<FcAddImage className="md:text-[1.8rem] text-[1.4rem]"/>,
       selected:false,
-      image:'assets/feat-2.png'
+      image:'assets/feat-2.webp'
     },
     {
       id: 3,
       title: 'Bookmark favourite resources',
       icon:<FcBookmark className="md:text-[1.8rem] text-[1.4rem]"/>,
       selected:false,
-      image:'assets/feat-3.png'
+      image:'assets/feat-3.webp'
     },
     {
       id: 4,
       title: 'Top Product every day',
       icon:<FcIdea className="md:text-[1.8rem] text-[1.4rem]"/>,
       selected:false,
-      image:'assets/lazyweb-ss-2.png'
+      image:'assets/lazyweb-ss-2.webp'
     },
     
   ])
