@@ -1,4 +1,4 @@
-import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal, SwipeUI } from 'components'
+import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal, SwipeUI, SEO } from 'components'
 import { useEffect, useState} from 'react'
 import { useAllResources, useSelectedTab, useStoreVisitersInfoIfDoesNotExist, useUserData } from '@/hooks/Zustand';
 import { useTour } from '@reactour/tour';
@@ -43,7 +43,7 @@ const Home = (props: Props) => {
 
   return (
     <>
-    <Favicon/>
+    <SEO title='Lazyweb App'/>
     <div className={`md:flex hidden`}>
       <div>
         <Category/>

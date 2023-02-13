@@ -14,7 +14,6 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <title>LazyWeb: Resources that you need</title>
-        <Favicon/>
       </Head>
       <TourProvider
       afterOpen={

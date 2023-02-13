@@ -22,6 +22,7 @@ import SwipeUI from './mobile/SwipeUI/index';
 import InfoModal from './utility/Modals/InfoModal/index';
 import LoadingModal from './utility/Modals/LoadingModal/index';
 import MobileResourceCard from './mobile/MobileResourceCard/index';
+import SEO from './utility/SEO';
 
 
 export {
@@ -48,5 +49,6 @@ export {
   SwipeUI,
   InfoModal,
   LoadingModal,
-  MobileResourceCard
+  MobileResourceCard,
+  SEO
 }
