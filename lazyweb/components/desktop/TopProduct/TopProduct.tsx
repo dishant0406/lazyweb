@@ -61,7 +61,7 @@ const TopProduct = ({url, unformatUrl}: Props) => {
               <div className='w-[95%] flex items-center justify-between'>
                 <div className='flex items-center top_product ml-[0.5rem] mt-[0.5rem] gap-[5px]'>
                   <FcOpenedFolder/>
-                  <p className='text-white'>{unformatUrl}</p>
+                  <p className='text-white'>{unformatUrl.length>20?unformatUrl.substring(0,17)+'...':unformatUrl}</p>
                   <FcApproval/>
                 </div>
                 <div className='flex items-center top_product mt-[0.5rem] gap-[5px]'>
