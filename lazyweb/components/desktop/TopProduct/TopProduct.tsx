@@ -49,7 +49,6 @@ const TopProduct = ({url, unformatUrl}: Props) => {
     window.open(url, '_blank');
   }
 
-
   return (
     <div className='lazyweb-top-product'>
       <p className="text-white mt-[1rem] ml-[1rem]">Today's Top Product</p>
@@ -80,7 +79,7 @@ const TopProduct = ({url, unformatUrl}: Props) => {
                     <Link2 className='text-lightGray scale-[0.6]'/>
                     <div className='flex gap-[5px] items-center'>
                       <p className='text-white'>Link:</p>
-                      <p className='text-[#7d9ddb] text-[14px]'>{url}</p>
+                      <a href={url} target='_blank' className='text-[#7d9ddb] hover:scale-105 hover:translate-x-1 transition-all text-[14px]'>{url.length>40?url.substring(0,37)+'...':url}</a>
                     </div>
                   </div>
                   <div className='flex gap-[10px]'>

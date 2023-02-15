@@ -46,7 +46,7 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
   const handleAdd = async () =>{
     //add to supabase
     setLoading(true)
-    if(session && image!=='' && title!==''){
+    if(session && image && title && description){
       //check if it is already present in the data base by matching the url and if isPublicAvailable is true
       const {data, error} = await supabaseClient.from('website').select().eq('url',unFormatUrl(url))
       if(data && data.length>0){
@@ -83,6 +83,8 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
           closeModal()
         }
       }
+      }else{
+        setError('Please Fill all the fields')
       }
     setLoading(false)
   }
@@ -99,6 +101,9 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
         if(imagelink){
           setImage(imagelink)
         }
+      }
+      if(!websiteMetaDeta.title || !websiteMetaDeta.description){
+        setError('In the event that the system is unable to retrieve the correct TITLE or DESCRIPTION, please enter them manually.')
       }
     }else{
       setError('Please Check your Url')
