@@ -48,7 +48,17 @@ const TopProduct = ({url, unformatUrl}: Props) => {
   const handleVisit = ()=>{
     window.open(url, '_blank');
   }
+  
+  const [isCopied,setIsCopied] = useState(false)
 
+  const copyToClipboard = () => {
+      if ('clipboard' in navigator) {
+        setIsCopied(true)
+        return navigator.clipboard.writeText(url)
+      }
+  }
+
+  
   return (
     <div className='lazyweb-top-product'>
       <p className="text-white mt-[1rem] ml-[1rem]">Today's Top Product</p>
@@ -80,6 +90,9 @@ const TopProduct = ({url, unformatUrl}: Props) => {
                     <div className='flex gap-[5px] items-center'>
                       <p className='text-white'>Link:</p>
                       <a href={url} target='_blank' className='text-[#7d9ddb] hover:scale-105 hover:translate-x-1 transition-all text-[14px]'>{url.length>40?url.substring(0,37)+'...':url}</a>
+                      <button  className="text-white hover:scale-[1.05] transition-all  bottom-[10px] right-[10px] ml-4 py-[2px] text-[12px] bg-[#1c64ec] rounded-[20px] " onClick={copyToClipboard}> 
+                        <span className='text-white text-md p-4 '>{isCopied ? 'Copied!' : 'Copy'}</span>
+                      </button>
                     </div>
                   </div>
                   <div className='flex gap-[10px]'>
