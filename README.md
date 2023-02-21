@@ -6,9 +6,9 @@
 
 ## Description :
 + Welcome to our Web App, **LazyWeb**!
-+ A Web app that includes all the usefull websites which you might require for your next project
-+ We've curated a list of the best and most popular websites in various categories such as CSS, GitHub, UI/UX, Roadmaps etc
-+ Whether you're looking for *a handy stock image site, an inspiring code repository, a captivating font library, or a magnificent colour palette* you'll find it here
++ A Web app that includes all the useful websites which you might require for your next project
++ We've curated a list of the best and most popular websites in various categories such as CSS, GitHub, UI/UX, Roadmaps etc.
++ Whether you're looking for *a handy stock image site, an inspiring code repository, a captivating font library, or a magnificent colour palette* you'll find it here. 
 + The user-friendly interface allows you to easily navigate through the different categories and find the websites you need quickly
 + We are constantly updating our list of websites, so you can be sure that you're always getting the most up-to-date content
 + Efficiency is key, that's why our app is designed to be fast, dependable and reliable
@@ -43,5 +43,42 @@
 + We strive to give our users the best experience and welcome any feedback or ideas to enhance the app and make it more beneficial for them.
 + Have a suggestion? raise an issue!
 + Please do not hesitate to reach out to us with your suggestions
+
+
+![Contributors]https://github.com/dishant0406/lazyweb/graphs/contributors
+<h2 align="center">Feedback</h2>
+
+If you have any feedback or suggestions please reach out to Project - Maintainer.  
+* [Dishant Sharma](#https://github.com/dishant0406/lazyweb )
+
+
+Or you can create a  <a href="https://github.com/dishant0406/lazyweb/issues">issue</a> and mention there , which new features or extension can make this Project more good.
+<br>
+  
+<br>
+
+<p align="right">(<a href="#top">Back to top</a>)</p>
+
+<hr>
+
+<div align="center">
+
+### Show some ❤️ by starring this awesome Repository!
+
+</div>
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
+<hr>
+
+<h3 align="center"> 
+
+ ‼️ For [JWOC'23](https://jwoc.tech/) program Admin and Mentor rights of lazyweb are given to 
+ * [Dishant Sharma](https://github.com/dishant0406 )
+
+</h3>
+  
+  
+<div id="Bottom"></div>
 
 
