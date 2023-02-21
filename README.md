@@ -45,7 +45,15 @@
 + Please do not hesitate to reach out to us with your suggestions
 
 
-![Contributors]https://github.com/dishant0406/lazyweb/graphs/contributors
+## Contributors
+<a href="https://github.com/dishant0406/lazyweb/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=dishant0406/lazyweb" />
+</a>
+</br></br>
+<a href="https://github.com/dishant0406/lazyweb/graphs/contributors">
+  <img src="https://img.shields.io/github/contributors/dishant0406/lazyweb.svg" />
+</a>
+
 <h2 align="center">Feedback</h2>
 
 If you have any feedback or suggestions please reach out to Project - Maintainer.  
