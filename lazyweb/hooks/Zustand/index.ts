@@ -261,7 +261,7 @@ const useUrlAtIndex = create<
     const {data,error} = await supabaseClient.from('website').select('*').eq('isPublicAvailable', 'true')
     if(data){
       const index = generateSequentialNumber(data.length)
-      set({urlAtIndex:data[index].url})
+      set({urlAtIndex:data[index]?.url})
     }
 
   }

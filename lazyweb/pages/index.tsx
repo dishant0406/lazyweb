@@ -15,7 +15,6 @@ const Home = (props: Props) => {
   const {allResources} = useAllResources()
   const {selectedTab} = useSelectedTab()
   const [isLoadingModalOpen, setisLoadingModalOpen] = useState(true)
-
   useEffect(()=>{
     if(session){
       setSteps([

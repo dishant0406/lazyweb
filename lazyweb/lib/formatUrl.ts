@@ -1,7 +1,7 @@
 const formatUrl = (url:string) => {
 
-  url = url.toLowerCase()
-  url = url.trim();
+  url = url?.toLowerCase()
+  url = url?.trim();
   // Add http:// to the beginning of the string if it doesn't already exist
   if (!/^https?:\/\//i.test(url)) {
     url = 'http://' + url;
