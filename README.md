@@ -110,13 +110,7 @@ Or you can create a  <a href="https://github.com/dishant0406/lazyweb/issues">iss
 <!-- ------------------------------------------------------------------------------------------------------------------------------------------------------------------ -->
 <hr>
 
-<h3 align="center"> 
 
- ‼️ For [JWOC'23](https://jwoc.tech/) program Admin and Mentor rights of lazyweb are given to 
- * [Dishant Sharma](https://github.com/dishant0406 )
-
-</h3>
-  
   
 <div id="Bottom"></div>
 
