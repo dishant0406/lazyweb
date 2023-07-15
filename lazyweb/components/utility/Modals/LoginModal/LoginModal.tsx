@@ -5,6 +5,8 @@ import { supabaseClient } from 'lib/supabaseClient';
 import { AuthError, Provider, Session, User} from '@supabase/supabase-js';
 import { PuffLoader } from 'react-spinners';
 import {GitHub} from 'react-feather'
+import axios from 'axios';
+import { useUserData } from '@/hooks';
 
 type Props = {
   isOpen: boolean,
@@ -32,6 +34,7 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<AuthError|null>(null)
   const [data, setData] = useState<Data|DataGithub|null>(null)
+  const {setSession} = useUserData()
 
   function closeModal() {
     setIsOpen(false)
@@ -51,10 +54,15 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
     setLoading(true)
     setData(null)
     setError(null)
-    const {data, error} = await supabaseClient.auth.signInWithOtp({
-      email,
+    // const {data, error} = await supabaseClient.auth.signInWithOtp({
+    //   email,
+    // })
+    await axios.post(`${process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}/api/auth/login`,{
+      email
     })
     setData(data)
+
+
     if(error){
       setError(error)
     }
@@ -65,10 +73,33 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
     setLoading(true)
     setData(null)
     setError(null)
-    const {data, error} = await supabaseClient.auth.signInWithOAuth({
-      provider: 'github',
-    })
-    setData(data)
+    // const {data, error} = await supabaseClient.auth.signInWithOAuth({
+    //   provider: 'github',
+    // })
+    // setData(data)
+    var width = 500;
+    var height = 600;
+    var left = (window.innerWidth) / 2;
+    var top = (window.innerHeight - height) / 2;
+    var url = `${process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}/oauth/github`;
+    var options = 
+      'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,' +
+      'width=' + width + ',height=' + height + ',top=' + top + ',left=' + left;
+
+    var popup = window.open(url, 'Github', options);
+
+    window.addEventListener('message', (event) => {
+      // if (event.origin !== window.location.origin) return;
+      if (event.data.jwt) {
+        // Handle your token here
+        const {jwt} = event.data
+        localStorage.setItem('token', jwt)
+        setSession()
+        setIsOpen(false)
+        // Close the popup
+        if (popup) popup.close();
+      }
+    }, false);
     if(error){
       setError(error)
     }
@@ -98,7 +129,7 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex items-center justify-center min-h-full p-4 text-center">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -108,7 +139,7 @@ const LoginModal = ({isOpen, setIsOpen}:Props) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform shadow-xl rounded-2xl bg-gray">
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-white"

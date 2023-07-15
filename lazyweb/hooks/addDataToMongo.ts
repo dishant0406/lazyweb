@@ -16,11 +16,11 @@ export const addDataToMongo = async () => {
     data.forEach(async (resource) => {
       try {
         const { data } = await axios.post(
-          'http://localhost:4000/api/websites/add',
+          'https://api.lazyweb.rocks/api/websites/add',
           resource,
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpc2h1NTU3MEBnbWFpbC5jb20iLCJleHBpcmF0aW9uRGF0ZSI6IjIwMjMtMDItMjhUMTI6MjY6MjYuMjE2WiIsImlhdCI6MTY3NzE1NTE4Nn0.oCLIBbTPfEX0mjcrTdHv-GnBs-B-dmd1y7MqHgzxsRg`,
+              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRpc2h1NTU3MEBnbWFpbC5jb20iLCJleHBpcmF0aW9uRGF0ZSI6IjIwMjMtMDMtMDNUMTA6NDI6MjkuNTgwWiIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2Nzc0MDgxNDl9.Q7c0QeHJDfmgHyOEPaBlnXEJXFtKf8R5X8lH1OK5w_Y`,
             },
           }
         );

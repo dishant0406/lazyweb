@@ -30,6 +30,7 @@
     "blob-util": "^2.0.2",
     "exiftool-vendored": "^16.5.1",
     "framer-motion": "^7.9.1",
+    "jwt-decode": "^3.1.2",
     "minidenticons": "^2.0.0",
     "next": "13.0.6",
     "next-connect": "^0.13.0",

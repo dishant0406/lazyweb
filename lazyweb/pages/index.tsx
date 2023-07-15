@@ -3,13 +3,13 @@ import { useEffect, useState} from 'react'
 import { useAllResources, useSelectedTab, useStoreVisitersInfoIfDoesNotExist, useUserData } from '@/hooks/Zustand';
 import { useTour } from '@reactour/tour';
 import { isDesktop } from 'react-device-detect';
+import { addDataToMongo } from '../hooks/addDataToMongo';
 
 
 type Props = {}
 
 
 const Home = (props: Props) => {
-  const {setVisitersInfo} = useStoreVisitersInfoIfDoesNotExist()
   const {setIsOpen,setSteps} = useTour()
   const {session} = useUserData()
   const {allResources} = useAllResources()
@@ -35,10 +35,10 @@ const Home = (props: Props) => {
   },[session])
 
   useEffect(()=>{
+    setisLoadingModalOpen(false)
     if(allResources.length > 0){
-      setisLoadingModalOpen(false)
     }
-  },[allResources])
+  },[])
 
   return (
     <>
