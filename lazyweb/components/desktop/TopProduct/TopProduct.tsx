@@ -8,9 +8,10 @@ import { FcApproval, FcOpenedFolder, FcInfo } from "react-icons/fc";
 import { BsTrophy } from 'react-icons/bs'
 import { ThumbsUp, Link2, Star, UserCheck } from 'react-feather'
 import { supabaseClient } from 'lib/supabaseClient';
-import { Resource } from '@/hooks/Zustand';
+import { Resource, useTopProduct } from '@/hooks/Zustand';
 
 const TopProduct = ({ url, unformatUrl }: Props) => {
+  const {topProduct} = useTopProduct()
   const [imgData, setImageData] = useState('')
   const [websiteData, setWebsiteData] = useState({
     title: '',
@@ -21,32 +22,28 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
   })
 
   useEffect(() => {
-    //get resource with url same as unformatUrl from supabase
-    (
-      async () => {
-        if (unformatUrl !== '') {
-          const { data } = await supabaseClient.from('website').select('*').eq('url', unformatUrl)
-          let dataCopy: Resource[] | null = data
-          if (dataCopy) {
-            if (dataCopy.length > 0) {
-              setImageData(dataCopy[0].image_url)
-              const webData = {
-                title: dataCopy[0].title || 'Not Available',
-                description: dataCopy[0].desc || 'Not Available',
-                image: dataCopy[0].image_url || 'Not Available',
-                createdAt: new Date(dataCopy[0].created_at).toDateString() || 'Not Available',
-                likes: dataCopy[0].likes || 0
-              }
-              setWebsiteData(webData)
-            }
-          }
-        }
+
+
+    //use topProduct from Zustand
+    if (topProduct) {
+      setImageData(topProduct.image_url)
+      const webData = {
+        title: topProduct.title || 'Not Available',
+        description: topProduct.desc || 'Not Available',
+        image: topProduct.image_url || 'Not Available',
+        createdAt: new Date(topProduct.created_at).toDateString() || 'Not Available',
+        likes: topProduct.likes || 0
       }
-    )()
-  }, [unformatUrl])
+      setWebsiteData(webData)
+    }
+
+
+  }, [topProduct])
 
   const handleVisit = () => {
-    window.open(url, '_blank');
+    if (topProduct) {
+      window.open(topProduct?.url, '_blank')
+    }
   }
 
   const [isCopied, setIsCopied] = useState(false)
@@ -54,7 +51,7 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
   const copyToClipboard = () => {
     if ('clipboard' in navigator) {
       setIsCopied(true)
-      return navigator.clipboard.writeText(url)
+      return navigator.clipboard.writeText(topProduct?.url!)
     }
   }
 
@@ -70,7 +67,10 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
               <div className='w-[95%] flex items-center justify-between'>
                 <div className='flex items-center top_product ml-[0.5rem] mt-[0.5rem] gap-[5px]'>
                   <FcOpenedFolder />
-                  <p className='text-white'>{unformatUrl.length > 20 ? unformatUrl.substring(0, 17) + '...' : unformatUrl}</p>
+                  {/* <p className='text-white'>{unformatUrl.length > 20 ? unformatUrl.substring(0, 17) + '...' : unformatUrl}</p> */}
+                  <p className='text-white'>{
+                    topProduct?.url ? topProduct?.url.length > 20 ? topProduct?.url.substring(0, 17) + '...' : topProduct?.url : 'Not Available'
+                  }</p>
                   <FcApproval />
                 </div>
                 <div className='flex items-center top_product mt-[0.5rem] gap-[5px]'>
@@ -89,7 +89,9 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                     <Link2 className='text-lightGray scale-[0.6]' />
                     <div className='flex gap-[5px] items-center'>
                       <p className='text-white'>Link:</p>
-                      <a href={url} target='_blank' className='text-[#7d9ddb] hover:scale-105 hover:translate-x-1 transition-all text-[14px]'>{url.length > 40 ? url.substring(0, 37) + '...' : url}</a>
+                      <a href={topProduct?.url ? topProduct?.url : 'Not Available'} target='_blank' className='text-[#7d9ddb] hover:scale-105 hover:translate-x-1 transition-all text-[14px]'>{
+                        topProduct?.url ? topProduct?.url.length > 20 ? topProduct?.url.substring(0, 17) + '...' : topProduct?.url : 'Not Available'
+                      }</a>
                       <button className="text-white scale-[0.7] hover:scale-[1.05] transition-all  duration-150 ml-[-5px] " onClick={copyToClipboard}>
                         {isCopied ? <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-6 h-6 text-green-400">
                           <path fillRule="evenodd" d="M18 5.25a2.25 2.25 0 00-2.012-2.238A2.25 2.25 0 0013.75 1h-1.5a2.25 2.25 0 00-2.238 2.012c-.875.092-1.6.686-1.884 1.488H11A2.5 2.5 0 0113.5 7v7h2.25A2.25 2.25 0 0018 11.75v-6.5zM12.25 2.5a.75.75 0 00-.75.75v.25h3v-.25a.75.75 0 00-.75-.75h-1.5z" clipRule="evenodd" />

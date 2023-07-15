@@ -1,7 +1,7 @@
 import {create} from 'zustand'
-import {User} from '@supabase/gotrue-js/src/lib/types'
 import { supabaseClient } from 'lib/supabaseClient';
-import axios from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
+import jwt_decode  from 'jwt-decode';
 
 export type Resource = {
   id: number,
@@ -42,6 +42,30 @@ type Admin = {
   isAdmin:Boolean
 }
 
+type User = {
+  email:string,
+  expirationDate:string,
+  iat:number
+}
+
+
+
+const axiosInstance = axios.create({
+  baseURL: 'https://api.lazyweb.rocks/api',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+const axiosIntanceWithAuth = axios.create({
+  baseURL: 'https://api.lazyweb.rocks/api',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`
+  },
+});
+
+
 export type UserWithAdmin = User & Admin
 const useUserData = create<{
   session: UserWithAdmin | null
@@ -50,33 +74,29 @@ const useUserData = create<{
 }>((set) => ({
   session: null,
   setSession: async () => {
-    const {data,error} = await supabaseClient.auth.getSession()
-        if(error){
-          console.log(error)
-        }     
-        if(data.session?.user){
-          set({session:{...data.session.user, isAdmin:false}})
-          //check if user is available in the users table by id if not then add id email and isAdmin to false
-          const {data:errorData,error:errorError} = await supabaseClient.from('users').select('*').eq('id', data.session.user.id)
-          if(errorData && errorData.length===0){
-            const {data:errorData,error:errorError} = await supabaseClient.from('users').insert([{id:data.session.user.id,email:data.session.user.email,isAdmin:false}])
-            if(errorData){
-              console.log("user added to users table")
-            }
+    //get token from localstorage
+    const token = localStorage.getItem('token')
+    if(!token){
+      return
+    }
+    //decode the token
+    const decodedToken = jwt_decode(token) as UserWithAdmin
+    //check if the token is expired or not
+    if(decodedToken.expirationDate < new Date().toISOString()){
+      localStorage.removeItem('token')
+      return
+    }
+    //check if the user is admin or not
+    if(decodedToken.isAdmin){
+      set({session:decodedToken})
+    }else{
+      set({session:decodedToken})
+    }
 
-          }
-
-          //check if user is admin if he is admin set session isAdmin to true else set it to false
-          const {data:AdminData,error:AdminError} = await supabaseClient.from('users').select('isAdmin').eq('id', data.session.user.id)
-          if(AdminData && AdminData.length>0){
-            if(AdminData[0].isAdmin){
-              set({session:{...data.session.user, isAdmin:true}})
-            }
-          }
-        }
   },
   signOut: ()=>{
     set({session:null})
+    localStorage.removeItem('token')
     window.location.reload()
   }
 }))
@@ -99,7 +119,9 @@ const useAllTags = create<{
 }))
 
 
-//array of distinct category and ignore if category is null
+/* The above code is defining a custom hook called `useAllCategory` using the `create` function from
+the `zustand` library. This hook has three properties: `allCategories`, `allPublicCategories`, and
+`setAllCategories`. */
 const useAllCategory = create<{
   allCategories: string[]
   allPublicCategories:string[]
@@ -128,37 +150,44 @@ const useAllCategory = create<{
 const useAllResources = create<{
   loading:Boolean,
   allResources: Resource[]
-  setAllResources: (arg:String) => void
+  setAllResources: (arg:String, arg2?:Resource[]|null) => void
 }>((set) => ({
   loading:false,
   allResources: [],
-  setAllResources: async (selectedTab='all') => {
+  setAllResources: async (selectedTab='all', resources=null) => {
     set(({loading:true}))
     if(selectedTab==='all'){
-      const {data,error} = await supabaseClient.from('website').select('*').eq('isPublicAvailable', 'true').order('id', { ascending: true })
+      if(!resources){
+        const {data} = await axiosInstance.get('/websites') 
       if(data){
-        set({allResources:data})
+        set({allResources:data.resources})
+        useTopProduct().setTopProduct(data?.dailyResource)
+      }
+      }
+      else{
+        set({allResources:resources})
       }
     }else if(selectedTab==='my'){
-      const {data,error} = await supabaseClient.from('website').select('*').overlaps('created_by_list', [useUserData.getState().session?.id]).order('id', { ascending: true }).order('isPublicAvailable', { ascending: true })
+      const {data} = await axiosIntanceWithAuth.get('/websites/user')
       if(data){
-        set({allResources:data})
+        set({allResources:data.userWebsites})
+        
+
+
       }
     }else if(selectedTab==='saved'){
-      const {data,error} = await supabaseClient.from('bookmarks').select('resource_id').eq('bookmarked_by', useUserData.getState().session?.id).order('id', { ascending: true })
-      //fetch all resources which are available in the bookmarks table
-      if(data){
-        const {data:errorData,error:errorError} = await supabaseClient.from('website').select('*').in('id', data.map((item)=>item.resource_id)).order('id', { ascending: true })
-        if(errorData){
-          set({allResources:errorData})
-        }
 
+
+      const {data} = await axiosIntanceWithAuth.get('/bookmarked')
+      if(data){
+        set({allResources:data.bookmarkedResources})
       }
 
+
     }else if(selectedTab==='publish'){
-      const {data,error} = await supabaseClient.from('website').select('*').eq('isAvailableForApproval', 'true').order('id', { ascending: true })
+      const {data} = await axiosIntanceWithAuth.get('/websites/is-available-for-approval')
       if(data){
-        set({allResources:data})
+        set({allResources:data.resources})
       }
     }
     set(state=>({loading:false}))
@@ -182,9 +211,9 @@ const useFilterUsingCategoriesArray = create<
     //set filtered resources of tags to empty array
     //set manage selected tags array to empty array
     useManageSelectedTags.getState().setSelectedTags('')
-    const {data,error} = await supabaseClient.from('website').select('*').in('category', categories).eq('isPublicAvailable', 'true')
+    const {data} = await axiosInstance.post('/websites/by-categories', {categories})
     if(data){
-      set({filteredResources:data})
+      set({filteredResources:data.resources})
     }
     useFilterUsingTagsArray.getState().setFilteredResources([])
 
@@ -203,30 +232,25 @@ const useCompleteResourceLength = create<
   completeResourceLength: 0,
   setCompleteResourceLength: async (selectedTab) => {
     if(selectedTab==='all'){
-      const {data,error} = await supabaseClient.from('website').select('id').eq('isPublicAvailable', 'true')
+      const {data} = await axiosInstance.get('/websites')
       if(data){
-        set({completeResourceLength:data.length})
+        set({completeResourceLength:data.resrouces.length})
       }
     }else if(selectedTab==='my'){
-      const {data,error} = await supabaseClient.from('website').select('id').overlaps('created_by_list', [useUserData.getState().session?.id])
+      const {data} = await axiosIntanceWithAuth.get('/websites/user')
       if(data){
-        set({completeResourceLength:data.length})
+        set({completeResourceLength:data.userWebsites.length})
       }
     }else if(selectedTab==='saved'){
-      const {data,error} = await supabaseClient.from('bookmarks').select('resource_id').eq('bookmarked_by', useUserData.getState().session?.id)
+      const {data} = await axiosIntanceWithAuth.get('/bookmarked')
       //fetch all resources which are available in the bookmarks table
       if(data){
-        const {data:errorData,error:errorError} = await supabaseClient.from('website').select('*').in('id', data.map((item)=>item.resource_id))
-        if(errorData){
-          set({completeResourceLength:errorData.length})
-        }
-
+        set({completeResourceLength:data.bookmarkedResources.length})
       }
-
     }else if(selectedTab==='publish'){
-      const {data,error} = await supabaseClient.from('website').select('id').eq('isAvailableForApproval', 'true')
+      const {data} = await axiosIntanceWithAuth.get('/websites/is-available-for-approval')
       if(data){
-        set({completeResourceLength:data.length})
+        set({completeResourceLength:data.resources.length})
       }
     }
   }
@@ -249,21 +273,19 @@ const useUrlAtIndex = create<
   }
 >((set) => ({
   urlAtIndex: '',
-  setUrlAtIndex: async () => {
+  setUrlAtIndex: () => {
+  }
+}))
 
-    function generateSequentialNumber(size:number) {
-      const today = new Date();
-      const daysSinceEpoch = Math.floor(today.getTime() / (1000 * 60 * 60 * 24));
-      const index = daysSinceEpoch % size;
-      return index;
-    }
-
-    const {data,error} = await supabaseClient.from('website').select('*').eq('isPublicAvailable', 'true')
-    if(data){
-      const index = generateSequentialNumber(data.length)
-      set({urlAtIndex:data[index]?.url})
-    }
-
+const useTopProduct = create<
+  {
+    topProduct: Resource|null
+    setTopProduct: (res:Resource) => void
+  }
+>((set) => ({
+  topProduct: null,
+  setTopProduct: async (res:Resource) => {
+    set({topProduct:res})
   }
 }))
 
@@ -577,5 +599,6 @@ export {
   useFilterUsingTagsArray,
   useManageSelectedTags,
   useStoreVisitersInfoIfDoesNotExist,
-  useLoginModal
+  useLoginModal,
+  useTopProduct
 }
