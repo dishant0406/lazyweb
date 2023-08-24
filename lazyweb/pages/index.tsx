@@ -1,9 +1,10 @@
 import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal, SwipeUI, SEO } from 'components'
 import { useEffect, useState} from 'react'
-import { useAllResources, useSelectedTab, useStoreVisitersInfoIfDoesNotExist, useUserData } from '@/hooks/Zustand';
+import { useAllResources, useSelectedTab, useUserData } from '@/hooks/Zustand';
 import { useTour } from '@reactour/tour';
 import { isDesktop } from 'react-device-detect';
 import { addDataToMongo } from '../hooks/addDataToMongo';
+import { useRouter } from 'next/router';
 
 
 type Props = {}
@@ -12,6 +13,7 @@ type Props = {}
 const Home = (props: Props) => {
   const {setIsOpen,setSteps} = useTour()
   const {session} = useUserData()
+  const {query} = useRouter()
   const {allResources} = useAllResources()
   const {selectedTab} = useSelectedTab()
   const [isLoadingModalOpen, setisLoadingModalOpen] = useState(true)
@@ -35,6 +37,18 @@ const Home = (props: Props) => {
   },[session])
 
   useEffect(()=>{
+    //token is available in url
+    console.log(query)
+    if(query.token){
+      //add token to localstorage
+      localStorage.setItem('token',query.token as string)
+      //remove token from url
+      window.history.replaceState({}, document.title, "/");
+
+      window.location.reload()
+    }
+    
+
     setisLoadingModalOpen(false)
     if(allResources.length > 0){
     }

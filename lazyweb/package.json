@@ -27,6 +27,7 @@
     "@types/react-stack-grid": "^0.7.3",
     "@types/svg64": "^1.1.0",
     "axios": "^1.2.1",
+    "axios-cache-adapter": "^2.7.3",
     "blob-util": "^2.0.2",
     "exiftool-vendored": "^16.5.1",
     "framer-motion": "^7.9.1",

@@ -38,7 +38,7 @@ const MobileResourceCard = ({resource}: Props) => {
       <div className='w-[11rem] flex justify-center my-[10px]'>
         <div className='w-[90%]'>
           <h1 className='text-white font-[600]'>{resource.title.slice(0,14)}...</h1>
-          <p className='text-white text-[14px] opacity-80'>{resource.desc.slice(0,45)}...</p>
+          <p className='text-white text-[14px] opacity-80'>{resource?.desc?.slice(0,45)}...</p>
         </div>
       </div>
       <InfoModal isOpen={open} resource={resource} setIsOpen={setOpen}/>
