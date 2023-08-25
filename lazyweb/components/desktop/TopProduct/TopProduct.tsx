@@ -7,7 +7,6 @@ import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
 import { FcApproval, FcOpenedFolder, FcInfo } from "react-icons/fc";
 import { BsTrophy } from 'react-icons/bs'
 import { ThumbsUp, Link2, Star, UserCheck } from 'react-feather'
-import { supabaseClient } from 'lib/supabaseClient';
 import { Resource, useTopProduct } from '@/hooks/Zustand';
 
 const TopProduct = ({ url, unformatUrl }: Props) => {
@@ -131,7 +130,7 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
               </div>
             </div>
             <div className={`w-fit ${websiteData.title == '' ? 'scale-[0]' : 'scale-[1]'} transition-all px-[2rem] flex items-center justify-center h-[5rem] rounded-[20px] mt-[1.5rem] bg-altGray`}>
-              <div className='w-fit flex items-center'>
+              <div className='flex items-center w-fit'>
                 <div className='flex gap-[1rem]'>
                   <div className='flex items-center  gap-[5px]'>
                     <FcInfo className='text-[24px]' />

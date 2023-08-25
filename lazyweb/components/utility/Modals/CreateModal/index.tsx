@@ -3,9 +3,9 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useState } from 'react';
 import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
 import { formatUrl } from 'lib/formatUrl';
-import { supabaseClient } from 'lib/supabaseClient';
 import { useUserData } from '@/hooks';
 import { unFormatUrl } from '@/lib/unFormatUrl';
+import { axiosInstance } from '@/hooks/Zustand';
 let placeholder = 'assets/placeholder-website.png'
 
 type Props = {
@@ -43,51 +43,98 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
     setIsOpen(true)
   }
 
-  const handleAdd = async () =>{
-    //add to supabase
-    setLoading(true)
-    if(session && image && title && description){
-      //check if it is already present in the data base by matching the url and if isPublicAvailable is true
-      const {data, error} = await supabaseClient.from('website').select().eq('url',unFormatUrl(url))
-      if(data && data.length>0){
-        //already present
-        //add the user id to created_by_list if the user is not included in the created_by_list of the resource
-        if(data[0].created_by_list && !data[0].created_by_list.includes(session.id)){
-          const {data:dataAdd, error} = await supabaseClient.from('website').update({created_by_list:[...data[0].created_by_list, session.id]}).eq('url',unFormatUrl(url))
-          if(error){
-            console.log(error)
-          }
-          if(!error){
-            closeModal()
-          }
-          return
-        }
-        setError('Already Present!')
+  // const handleAdd = async () =>{
+  //   //add to supabase
+  //   setLoading(true)
+  //   if(session && image && title && description){
+  //     //check if it is already present in the data base by matching the url and if isPublicAvailable is true
+  //     const {data, error} = await supabaseClient.from('website').select().eq('url',unFormatUrl(url))
+  //     if(data && data.length>0){
+  //       //already present
+  //       //add the user id to created_by_list if the user is not included in the created_by_list of the resource
+  //       if(data[0].created_by_list && !data[0].created_by_list.includes(session.id)){
+  //         const {data:dataAdd, error} = await supabaseClient.from('website').update({created_by_list:[...data[0].created_by_list, session.id]}).eq('url',unFormatUrl(url))
+  //         if(error){
+  //           console.log(error)
+  //         }
+  //         if(!error){
+  //           closeModal()
+  //         }
+  //         return
+  //       }
+  //       setError('Already Present!')
 
-      }else{
-        const {data, error} = await supabaseClient.from('website').insert([
-          {
-            title,
-            url:unFormatUrl(url),
-            created_by:session?.id,
-            desc:description,
-            image_url:image,
-            created_by_list:[session?.id],
-          }
-        ]).select()
-        console.log(data)
-        if(error){
-          console.log(error)
+  //     }else{
+  //       const {data, error} = await supabaseClient.from('website').insert([
+  //         {
+  //           title,
+  //           url:unFormatUrl(url),
+  //           created_by:session?.id,
+  //           desc:description,
+  //           image_url:image,
+  //           created_by_list:[session?.id],
+  //         }
+  //       ]).select()
+  //       console.log(data)
+  //       if(error){
+  //         console.log(error)
   
-        }else{
-          closeModal()
+  //       }else{
+  //         closeModal()
+  //       }
+  //     }
+  //     }else{
+  //       setError('Please Fill all the fields')
+  //     }
+  //   setLoading(false)
+  // }
+
+  const handleAdd = async () => {
+    setLoading(true);
+    
+    if(session && image && title && description) {
+        try {
+            const token = localStorage.getItem('token'); // Retrieve the token from localStorage
+
+            const requestBody = {
+                url: unFormatUrl(url),
+                image_url: image,
+                title: title,
+                desc: description,
+                // Assuming you also want to send isPublicAvailable, category, and tags 
+                // (you might need to define them in your component or receive them as input)
+                // isPublicAvailable: isPublicAvailable, 
+                // category: category,
+                // tags: tags
+            };
+
+            // Setting up headers for axios request
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            };
+
+            const response = await axiosInstance.post('/websites/add', requestBody, config);
+
+            // Assuming server responds with JSON containing data
+            if(response.data.error) {
+                throw new Error(response.data.error);
+            }
+            
+            closeModal();
+        } catch(error:any) {
+            console.error(error);
+            setError(error.message || 'An error occurred.');
         }
-      }
-      }else{
-        setError('Please Fill all the fields')
-      }
-    setLoading(false)
-  }
+    } else {
+        setError('Please Fill all the fields');
+    }
+
+    setLoading(false);
+}
+
 
   const handleFetchDetails = async ()=>{
     setLoadingFetch(true)
@@ -131,7 +178,7 @@ const CreateModal = ({isOpen, setIsOpen}:Props) => {
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex items-center justify-center min-h-full p-4 text-center">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"

@@ -3,13 +3,12 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useState } from 'react';
 import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
 import { formatUrl } from 'lib/formatUrl';
-import { supabaseClient } from 'lib/supabaseClient';
 import { useUserData } from '@/hooks';
 import { unFormatUrl } from '@/lib/unFormatUrl';
 import CreatableSelect from 'react-select/creatable'
 let placeholder = 'assets/placeholder-website.png'
 import { MultiValue } from 'react-select';
-import { useCompleteResourceLength, useAllResources, useAllTags,useAllCategory } from 'hooks/Zustand';
+import { useCompleteResourceLength, useAllResources, useAllTags,useAllCategory, axiosInstance } from 'hooks/Zustand';
 
 type Props = {
   isOpen: boolean,
@@ -76,30 +75,67 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
     setTags(tagsArr)
   }
 
-  const handleAdd = async () =>{
-    //check if category and tags are not empty if not then update tags and category in supabase and set isAvailableForApproval to true
-    if(category && tags?.length>0){
-      setLoadingFetch(true)
-      setError('')
-      const {data, error} = await supabaseClient
-      .from('website')
-      .update({category:category.toLowerCase(), tags:tags, isAvailableForApproval:true})
-      .match({id:id})
-      if(error){
-        setError(error.message)
-      }else{
-        setAllResources('my')
-        setAllTags()
-        setAllCategories()
-        closeModal()
-      }
-      setLoadingFetch(false)
-    }else{
-      setError('Enter Valid Data for Submitting for Public View')
-    }
+
+  // const handleAdd = async () =>{
+  //   //check if category and tags are not empty if not then update tags and category in supabase and set isAvailableForApproval to true
+  //   if(category && tags?.length>0){
+  //     setLoadingFetch(true)
+  //     setError('')
+  //     const {data, error} = await supabaseClient
+  //     .from('website')
+  //     .update({category:category.toLowerCase(), tags:tags, isAvailableForApproval:true})
+  //     .match({id:id})
+  //     if(error){
+  //       setError(error.message)
+  //     }else{
+  //       setAllResources('my')
+  //       setAllTags()
+  //       setAllCategories()
+  //       closeModal()
+  //     }
+  //     setLoadingFetch(false)
+  //   }else{
+  //     setError('Enter Valid Data for Submitting for Public View')
+  //   }
 
     
-  }
+  // }
+
+  const handleAdd = async () => {
+    if(category && tags?.length > 0) {
+      setLoadingFetch(true);
+      setError('');
+      
+      try {
+        const response = await axiosInstance.put(`/websites/publish/${id}`, {
+          category: category.toLowerCase(),
+          tags: tags
+        }, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+  
+        if(response.data.error) {
+          throw new Error(response.data.error);
+        }
+  
+        // These methods are presumably fetching or updating state related to resources, categories, and tags.
+        setAllResources('my');
+        setAllTags();
+        setAllCategories();
+        closeModal();
+  
+      } catch(error:any) {
+        setError(error.message || 'An error occurred.');
+      } finally {
+        setLoadingFetch(false);
+      }
+    } else {
+      setError('Enter Valid Data for Submitting for Public View');
+    }
+  };
+  
 
 
   return (
@@ -122,7 +158,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex items-center justify-center min-h-full p-4 text-center">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -132,7 +168,7 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-md p-6 text-left align-middle transition-all transform shadow-xl rounded-2xl bg-gray">
                   <Dialog.Title
                     as="h3"
                     className="text-lg font-medium leading-6 text-white"

@@ -1,9 +1,8 @@
 import { formatUrl } from "lib/formatUrl"
-import { Resource, useAllCategory, useAllTags, useSetLikes } from "@/hooks/Zustand"
+import { Resource, axiosIntanceWithAuth, useAllCategory, useAllTags, useSetLikes } from "@/hooks/Zustand"
 import {HiOutlineStar,HiStar} from 'react-icons/hi'
 import { useEffect, useState } from "react"
 import {useSetBookmark,useUserData,useSelectedTab,useAllResources,useCompleteResourceLength} from 'hooks/Zustand'
-import { supabaseClient } from "@/lib/supabaseClient"
 import { AnimatePresence, motion } from 'framer-motion';
 import {PublishModal, InfoModal} from "components"
 import { LazyLoadImage, ScrollPosition } from 'react-lazy-load-image-component';
@@ -73,21 +72,33 @@ const ResourceCard = ({url, title, description, image, resource, scrollPosition}
   }
 
   const handleApproveOrReject = async (btnType:string)=>{
-    // if(btnType==='approve'){
-    //   //set resource.isPublicAvailable to true in supabase
-    //   await supabaseClient.from('website').update({isPublicAvailable:true,isAvailableForApproval:false}).eq('id',resource.id)
-    //   //fetch resources again
-    //   setAllResources('publish')
-    //   setAllCategories()
-    //   setAllTags()
-    // }else{
-    //   //update isAvailableForApproval to false
-    //   await supabaseClient.from('website').update({isAvailableForApproval:false}).eq('id',resource.id)
-    //   //fetch resources again
-    //   setAllResources('publish')
-    //   setAllCategories()
-    //   setAllTags()
-    // }
+   try{
+    if(btnType==='approve'){
+      const data = await axiosIntanceWithAuth.put(`/websites/approve/${resource._id}`, {}, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      setAllResources('publish')
+      setAllCategories()
+      setAllTags()
+    }else{
+      const data = await axiosIntanceWithAuth.put(`/websites/reject/${resource._id}`, {}, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      setAllResources('publish')
+      setAllCategories()
+      setAllTags()
+    }
+   }
+    catch(err){
+      console.log(err)
+    }
+    
   }
 
   const varients = {
