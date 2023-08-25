@@ -8,7 +8,6 @@ import { BottomSheet, BottomSheetRef } from 'react-spring-bottom-sheet'
 import axios from 'axios';
 import {FiLayers} from 'react-icons/fi'
 import {RiGlobalLine} from 'react-icons/ri'
-import { supabaseClient } from 'lib/supabaseClient';
 import { AuthError, Provider, Session, User} from '@supabase/supabase-js';
 import { PuffLoader } from 'react-spinners';
 import { Reorder } from 'framer-motion';
@@ -40,7 +39,7 @@ const SwipeUI = (props: Props) => {
   })
   const [loginOpen, setLoginOpen] = useState(false)
   const [imgData, setImgData] = useState('')
-  const {session, signOut} = useUserData()
+  const {session,setSession, signOut} = useUserData()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<AuthError|null>(null)
@@ -68,10 +67,15 @@ const SwipeUI = (props: Props) => {
     setLoading(true)
     setData(null)
     setError(null)
-    const {data, error} = await supabaseClient.auth.signInWithOtp({
-      email,
+    // const {data, error} = await supabaseClient.auth.signInWithOtp({
+    //   email,
+    // })
+    await axios.post(`${process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}/api/auth/login`,{
+      email
     })
     setData(data)
+
+
     if(error){
       setError(error)
     }
@@ -82,10 +86,32 @@ const SwipeUI = (props: Props) => {
     setLoading(true)
     setData(null)
     setError(null)
-    const {data, error} = await supabaseClient.auth.signInWithOAuth({
-      provider: 'github',
-    })
-    setData(data)
+    // const {data, error} = await supabaseClient.auth.signInWithOAuth({
+    //   provider: 'github',
+    // })
+    // setData(data)
+    var width = 500;
+    var height = 600;
+    var left = (window.innerWidth) / 2;
+    var top = (window.innerHeight - height) / 2;
+    var url = `${process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}/oauth/github`;
+    var options = 
+      'scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,' +
+      'width=' + width + ',height=' + height + ',top=' + top + ',left=' + left;
+
+    var popup = window.open(url, 'Github', options);
+
+    window.addEventListener('message', (event) => {
+      // if (event.origin !== window.location.origin) return;
+      if (event.data.jwt) {
+        // Handle your token here
+        const {jwt} = event.data
+        localStorage.setItem('token', jwt)
+        setSession()
+        // Close the popup
+        if (popup) popup.close();
+      }
+    }, false);
     if(error){
       setError(error)
     }
@@ -121,7 +147,6 @@ const SwipeUI = (props: Props) => {
 
   const handleProfileClick = async ()=>{
     if(session){
-      await supabaseClient.auth.signOut()
       await signOut()
     }else{
       setLoginOpen(true)
@@ -150,7 +175,7 @@ const SwipeUI = (props: Props) => {
           {
             filteredResources.length===0 && allResources.map((resource, index) => {
               return (
-                <Reorder.Item key={resource.id} value={resource} initial={{ scale:0 }}
+                <Reorder.Item key={resource._id} value={resource} initial={{ scale:0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}>
 
@@ -165,7 +190,7 @@ const SwipeUI = (props: Props) => {
           {
             filteredResources.length>0 && filteredResources.map((resource, index) => {
               return (
-                <Reorder.Item key={resource.id} value={resource} initial={{ scale:0 }}
+                <Reorder.Item key={resource._id} value={resource} initial={{ scale:0 }}
                 animate={{ scale: 1 }}
                 exit={{ scale: 0 }}>
 

@@ -1,7 +1,6 @@
 import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useState } from 'react';
-import { supabaseClient } from 'lib/supabaseClient';
 import { AuthError, Provider, Session, User} from '@supabase/supabase-js';
 import { PuffLoader } from 'react-spinners';
 import {GitHub} from 'react-feather'

@@ -7,13 +7,16 @@ import { addDataToMongo } from '../hooks/addDataToMongo';
 import { useRouter } from 'next/router';
 
 
-type Props = {}
+type Props = {
+  token?:string
+}
 
 
-const Home = (props: Props) => {
+const Home = ({
+  token
+}: Props) => {
   const {setIsOpen,setSteps} = useTour()
   const {session} = useUserData()
-  const {query} = useRouter()
   const {allResources} = useAllResources()
   const {selectedTab} = useSelectedTab()
   const [isLoadingModalOpen, setisLoadingModalOpen] = useState(true)
@@ -38,10 +41,9 @@ const Home = (props: Props) => {
 
   useEffect(()=>{
     //token is available in url
-    console.log(query)
-    if(query.token){
+    if(token!==''){
       //add token to localstorage
-      localStorage.setItem('token',query.token as string)
+      localStorage.setItem('token',token as string)
       //remove token from url
       window.history.replaceState({}, document.title, "/");
 
@@ -71,5 +73,12 @@ const Home = (props: Props) => {
     </>
   )
 }
+
+export async function getServerSideProps({ query }:{query:{token:string}}) {
+  return { props: {
+    token: query?.token || ''
+  } };
+}
+
 
 export default Home
