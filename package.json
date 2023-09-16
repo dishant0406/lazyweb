@@ -12,5 +12,8 @@
   },
   "devDependencies": {
     "concurrently": "^7.6.0"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.7.2"
   }
 }

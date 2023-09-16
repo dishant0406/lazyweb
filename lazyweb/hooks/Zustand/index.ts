@@ -55,14 +55,16 @@ type User = {
 
 
 export const axiosInstance = axios.create({
-  baseURL: 'http://localhost:4000/api',
+  // baseURL: 'https://api.lazyweb.rocks/api',
+  baseURL: `${process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}/api`,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
 export const axiosIntanceWithAuth = axios.create({
-  baseURL: 'http://localhost:4000/api',
+  baseURL: `${process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}/api`,
+  // baseURL: 'http://localhost:4000/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -533,6 +535,19 @@ const useManageSelectedTags = create<
   }
 }))
 
+const useSearchModal = create<
+  {
+    isSearchModalOpen: boolean
+    setIsSearchModalOpen: (value:boolean) => void
+  }
+>((set) => ({
+  isSearchModalOpen: false,
+  setIsSearchModalOpen: (value:boolean) => {
+    set({isSearchModalOpen:value})
+  }
+}))
+
+
 
 
 
@@ -557,5 +572,6 @@ export {
   useFilterUsingTagsArray,
   useManageSelectedTags,
   useLoginModal,
-  useTopProduct
+  useTopProduct,
+  useSearchModal
 }
