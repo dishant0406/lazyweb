@@ -21,19 +21,19 @@ const FilteredResources = ({scrollPosition}: Props) => {
         <Reorder.Group values={filteredResources} axis={'x'} onReorder={()=>{}} className='z-[1] flex flex-wrap gap-[1rem] mt-[2rem]'>
           {filteredResources.map((e)=>{
             return (
-              <Reorder.Item key={e.id} value={e} initial={{ scale:0 }}
+              <Reorder.Item key={e._id} value={e} initial={{ scale:0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}>
-              <ResourceCard scrollPosition={scrollPosition} key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
+              <ResourceCard scrollPosition={scrollPosition} key={e._id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
               </Reorder.Item>
               )
             })}
             {filteredTagsResources.map((e)=>{
             return (
-              <Reorder.Item key={e.id} value={e} initial={{ scale:0 }}
+              <Reorder.Item key={e._id} value={e} initial={{ scale:0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}>
-              <ResourceCard scrollPosition={scrollPosition} key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
+              <ResourceCard scrollPosition={scrollPosition} key={e._id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
               </Reorder.Item>
               )
             })}

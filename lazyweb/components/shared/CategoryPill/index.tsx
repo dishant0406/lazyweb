@@ -37,7 +37,7 @@ const CategoryPill = ({name}: Props): JSX.Element => {
 
 
   return (
-    <div onClick={selected ? ()=>{} : clickHandler} className={` flex whitespace-nowrap items-center relative transition-all rounded-[20px] text-[14px] w-fit px-[1rem] text-white h-[2rem] ${selected?`bg-[#1c64ec] justify-between`:'bg-[#35363a] cursor-pointer  justify-center'} `}>
+    <div onClick={selected ? ()=>{} : clickHandler} className={` flex select-none whitespace-nowrap items-center relative transition-all rounded-[20px] text-[14px] w-fit px-[1rem] text-white h-[2rem] ${selected?`bg-[#1c64ec] justify-between`:'bg-[#35363a] cursor-pointer  justify-center'} `}>
       <p className={`transition-all whitespace-nowrap text-white ${selected?'mr-[1rem]':''}`}> {emoji +' '+ name}</p>
       {selected && <X onClick={clickHandler} className="h-[13px] absolute right-[0] cursor-pointer mr-[4px]"/>}
     </div>

@@ -60,8 +60,8 @@ const ResourceListBar = (props: Props) => {
   },[selectedTab])
 
   return (
-    <div className="w-[100%] lazyweb-resource-list flex justify-center">
-      <div className="flex w-[95%] mt-[1rem]">
+    <div className="w-[100%] lazyweb-resource-list flex justify-start">
+      <div className="flex  mt-[1rem]">
         {tabs.map(e=>{
           if(e.slug==='publish'){
             if(session && session.isAdmin){
@@ -81,6 +81,16 @@ const ResourceListBar = (props: Props) => {
           )
         })}
       </div>
+      <div className="flex scale-75 items-center ml-[0rem] mt-[1rem]">
+                      <kbd className="px-2 py-1 text-white bg-gray-900 border border-gray-700 rounded">
+                          ctrl
+                      </kbd> 
+                      <span className="ml-2 text-trueGray-200">+</span>
+                      <kbd className="px-2 py-1 ml-2 text-white bg-gray-900 border border-gray-700 rounded">
+                          space
+                      </kbd> 
+                      <span className="ml-2 text-trueGray-200">for AI search</span>
+                  </div>
     </div>
   )
 }
