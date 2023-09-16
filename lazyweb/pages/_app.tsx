@@ -1,14 +1,17 @@
 import 'styles/globals.css'
 import 'react-spring-bottom-sheet/dist/style.css'
+import 'react-toastify/dist/ReactToastify.css';
+import "allotment/dist/style.css";
 import type { AppProps } from 'next/app'
 import { NavBar } from 'components'
 import Head from 'next/head'
 import Favicon from 'components/utility/Favicon/Favicon'
 import { TourProvider, useTour } from '@reactour/tour'
+import { ToastContainer } from 'react-toastify'
 import { useUserData } from '@/hooks';
 
 export default function App({ Component, pageProps }: AppProps) {
-  const {session} = useUserData()
+  const { session } = useUserData()
 
   return (
     <>
@@ -16,31 +19,31 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>LazyWeb: Resources that you need</title>
       </Head>
       <TourProvider
-      afterOpen={
-        () => {
-          if(session){
-            localStorage.setItem('sessiontour', 'true')
-          }else{
-            localStorage.setItem('nosessiontour', 'true')
+        afterOpen={
+          () => {
+            if (session) {
+              localStorage.setItem('sessiontour', 'true')
+            } else {
+              localStorage.setItem('nosessiontour', 'true')
+            }
           }
         }
-      }
-      styles={{
-        popover: (base) => ({
-          ...base,
-          '--reactour-accent': '#5e5f60',
-          borderRadius: 20,
-          padding: 20,
-          backgroundColor:'#202124',
-          color:'#fff',
-        }),
-        maskArea: (base) => ({ ...base }),
-        maskWrapper: (base) => ({ ...base }),
-        badge: (base) => ({ ...base, left: 'auto', right: '-0.8125em' }),
-        controls: (base) => ({ ...base }),
-        close: (base) => ({ ...base, right: 'auto', visibility:'hidden' }),
-      }}
-      steps={ [
+        styles={{
+          popover: (base) => ({
+            ...base,
+            '--reactour-accent': '#5e5f60',
+            borderRadius: 20,
+            padding: 20,
+            backgroundColor: '#202124',
+            color: '#fff',
+          }),
+          maskArea: (base) => ({ ...base }),
+          maskWrapper: (base) => ({ ...base }),
+          badge: (base) => ({ ...base, left: 'auto', right: '-0.8125em' }),
+          controls: (base) => ({ ...base }),
+          close: (base) => ({ ...base, right: 'auto', visibility: 'hidden' }),
+        }}
+        steps={[
           {
             selector: '.lazyweb-logo',
             content: 'Welcome to Lazyweb',
@@ -66,9 +69,10 @@ export default function App({ Component, pageProps }: AppProps) {
             content: 'Access Saved resources and resources that you add after siging in',
           }
         ]
-      }>
-      <NavBar/>
-      <Component {...pageProps} />
+        }>
+        <NavBar />
+        <Component {...pageProps} />
+        <ToastContainer theme='dark' hideProgressBar={true} closeButton={false} pauseOnHover={false} />
       </TourProvider>
     </>
   )
