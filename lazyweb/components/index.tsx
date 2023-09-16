@@ -23,6 +23,9 @@ import InfoModal from './utility/Modals/InfoModal/index';
 import LoadingModal from './utility/Modals/LoadingModal/index';
 import MobileResourceCard from './mobile/MobileResourceCard/index';
 import SEO from './utility/SEO';
+import PlaygroundComponent from './desktop/Playground';
+import SearchBarModal from './utility/Modals/SearchBarModal/index';
+import QrCodeModal from './utility/Modals/QRCodeModal';
 
 
 export {
@@ -50,5 +53,8 @@ export {
   InfoModal,
   LoadingModal,
   MobileResourceCard,
-  SEO
+  SEO,
+  PlaygroundComponent,
+  SearchBarModal,
+  QrCodeModal
 }

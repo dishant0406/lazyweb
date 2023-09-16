@@ -2,7 +2,6 @@ const logo = '/assets/Logo.png'
 import {SearchBar, ProfileIcon, LoginModal, CreateResource} from 'components'
 import {Grid} from 'react-feather'
 import { useState, useEffect } from 'react';
-import { supabaseClient } from 'lib/supabaseClient';
 import {User} from '@supabase/gotrue-js/src/lib/types'
 import { useUserData } from '@/hooks';
 import { useTour } from '@reactour/tour';
@@ -21,7 +20,6 @@ const NavBar = (props: Props) => {
   },[])
 
   const signoutHandler = async ()=>{
-   await supabaseClient.auth.signOut()
    signOut()
   }
 
@@ -37,7 +35,7 @@ const NavBar = (props: Props) => {
         <div className='h-[2.5rem] md:flex hidden w-[2px] bg-[#5e5f60]'/>
         {!session && <Grid className='text-[#6c6c6c] md:flex hidden cursor-pointer'/>}
         {session && <CreateResource/>}
-        <ProfileIcon onClick={()=>!session && setIsOpen(true)} className='md:flex lazyweb-login hidden cursor-pointer' address={(session && session.email) ?session.email:'Login'}/>
+        <ProfileIcon onClick={()=>!session && setIsOpen(true)} className='hidden cursor-pointer md:flex lazyweb-login' address={(session && session.email) ?session.email:'Login'}/>
         {session && <button onClick={signoutHandler} className='bg-altGray text-white whitespace-nowrap px-[1rem] rounded-[20px] py-[0.5rem]'>sign out</button>}
       </div>
       <LoginModal isOpen={isOpen} setIsOpen={setIsOpen}/>

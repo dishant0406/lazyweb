@@ -27,10 +27,10 @@ const ResourceList = ({scrollPosition}: Props) => {
         {resources.length>=1 && <Reorder.Group values={resources} axis={'x'} onReorder={()=>{}} className='z-[1] ml-[3rem] flex gap-[1rem] flex-wrap mt-[2rem]'>
           {resources.map((e)=>{
             return (
-              <Reorder.Item key={e.id} value={e} initial={{ scale:0 }}
+              <Reorder.Item key={e._id} value={e} initial={{ scale:0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}>
-                <ResourceCard scrollPosition={scrollPosition} key={e.id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
+                <ResourceCard scrollPosition={scrollPosition} key={e._id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
               </Reorder.Item>
               )
             })} 
@@ -54,7 +54,7 @@ const ResourceList = ({scrollPosition}: Props) => {
             )}
         </AnimatePresence>
         {loading && selectedTab==='my' && <div className="w-[100%] mb-[2rem] flex items-center justify-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-lightGray"></div>
+          <div className="w-16 h-16 border-b-2 rounded-full animate-spin border-lightGray"></div>
           </div>
           }
         </div>

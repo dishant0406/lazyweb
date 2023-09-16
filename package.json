@@ -7,9 +7,13 @@
   "scripts": {
     "start": "concurrently \"yarn workspace lazyweb start\" \"yarn workspace lazyweb-landing-page start\"",
     "dev:all": "concurrently \"yarn workspace lazyweb dev\" \"yarn workspace lazyweb-landing-page dev\"",
+    "dev:app": "yarn workspace lazyweb dev",
     "build": "concurrently \"yarn workspace lazyweb build\" \"yarn workspace lazyweb-landing-page build\""
   },
   "devDependencies": {
     "concurrently": "^7.6.0"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.7.2"
   }
 }

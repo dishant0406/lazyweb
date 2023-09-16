@@ -3,6 +3,12 @@ import { Dialog, Transition } from '@headlessui/react'
 import { Resource } from '@/hooks/Zustand';
 import {FiExternalLink} from 'react-icons/fi'
 import { formatUrl } from '@/lib/formatUrl';
+import { useRouter } from 'next/router';
+import * as ShareSocialType from 'react-share-social';
+import Head from 'next/head';
+const {ShareSocial} = ShareSocialType as any;
+
+
 
 type Props = {
   isOpen: boolean,
@@ -17,10 +23,17 @@ const capitalize = (s:string) => {
 
 
 const InfoModal = ({isOpen, setIsOpen, resource}:Props) => {
+  const router = useRouter()
 
-  function closeModal() {
-    setIsOpen(false)
-  }
+  const closeModal = () => {
+    const { query } = router;
+    delete query.id;
+
+    router.replace({
+      pathname: router.pathname,
+      query: query,
+    }, undefined, { shallow: true });
+  };
 
   function openModal() {
     setIsOpen(true)
@@ -28,11 +41,37 @@ const InfoModal = ({isOpen, setIsOpen, resource}:Props) => {
 
 
   return (
+    <>
+   {isOpen && (
+  <Head>
+    <title>{resource.title ? ''+ resource.title : 'Lazyweb'}</title>
+    <meta name="description" content={resource.desc ? resource.desc : 'Lazyweb Rocks'} />
+
+    {/* Basic Open Graph Tags */}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Lazyweb" />
+    <meta property="og:title" content={resource.title ? ''+ resource.title : 'Lazyweb'} />
+    <meta property="og:description" content={resource.desc ? resource.desc : 'Lazyweb Rocks'} />
+    <meta property="og:image" content={resource.image_url ? resource.image_url : 'Default Image URL'} />
+    
+    {/* Additional Open Graph Tags */}
+    <meta property="og:url" content={typeof window !== 'undefined' ? window.location.href : ''} />
+    <meta property="og:locale" content="en_US" />
+
+    {/* Twitter-specific meta tags */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={resource.title ? ''+ resource.title : 'Lazyweb'} />
+    <meta name="twitter:description" content={resource.desc ? resource.desc : 'Lazyweb Rocks'} />
+    <meta name="twitter:image" content={resource.image_url ? resource.image_url : 'Default Image URL'} />
+  </Head>
+)}
+
     <Transition appear 
       show={isOpen} 
       as={Fragment}
       enter="transition duration-100 ease-out"
     >
+    
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
           <Transition.Child
             as={Fragment}
@@ -47,7 +86,7 @@ const InfoModal = ({isOpen, setIsOpen, resource}:Props) => {
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex items-center justify-center min-h-full p-4 text-center">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -69,9 +108,9 @@ const InfoModal = ({isOpen, setIsOpen, resource}:Props) => {
                       //resouce title is too long then break it into half
                       resource.title.length > 100 ?
                       <div className=' flex-col mb-[10px]'>
-                        <span className='md:flex hidden'>{resource.title.slice(0, 100)}</span>
-                        <span className='md:flex hidden'>{resource.title.slice(100)}</span>
-                        <span className='md:hidden flex'>{resource.title.split('|')[0]}</span>
+                        <span className='hidden md:flex'>{resource.title.slice(0, 100)}</span>
+                        <span className='hidden md:flex'>{resource.title.slice(100)}</span>
+                        <span className='flex md:hidden'>{resource.title.split('|')[0]}</span>
                       </div>
                       :
                       <span>{resource.title}</span>
@@ -103,13 +142,45 @@ const InfoModal = ({isOpen, setIsOpen, resource}:Props) => {
                       ))}
                     </div>
                   </div>
-                  
+                  <div className='flex mt-[1rem] justify-center w-full'>
+                  <ShareSocial
+                      url={typeof window !== 'undefined' && window.location.href}
+                      style={{
+                        root: {
+                          width: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          background: 'transparent', // subtle background color
+                          borderRadius: '12px', // rounded edges
+                          padding: '0',
+                          boxShadow: '0 4px 12px 0 rgba(0, 0, 0, 0.05)', // subtle shadow
+                          marginTop:'-1.5rem',
+                          fontFamily:'poppins'
+                        },
+                        copyContainer: {
+                          background: '#ffffff', // white background
+                          padding: '0.5rem 1rem',
+                          borderRadius: '8px', // rounded edges for copy container
+                          marginBottom: '1rem',
+                          boxShadow: '0 2px 6px 0 rgba(0, 0, 0, 0.05)', // subtle shadow
+                          fontFamily:'poppins'
+                        },
+                        
+                      }}
+                      onSocialButtonClicked={ ()=>{}}   
+                      socialTypes={['facebook', 'twitter', 'reddit', 'linkedin', 'email', 'whatsapp']}
+                    />
+
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
           </div>
         </Dialog>
       </Transition>
+      </>
   )
 }
 
