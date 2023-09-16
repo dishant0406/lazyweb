@@ -12,7 +12,7 @@ export default function SEO({
   author = 'Dishant Sharma',
   meta,
   title = 'Lazyweb Rocks: The ultimate resource for developers',
-}:Props) {
+}: Props) {
   const metaData = [
     {
       name: `description`,
@@ -54,7 +54,7 @@ export default function SEO({
       <meta charSet="utf-8" />
       <link rel="icon" href="assets/favicon.ico" />
       <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="use-credentials" />
       {metaData.map(({ name, content }, i) => (
         <meta key={i} name={name} content={content} />
       ))}

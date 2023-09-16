@@ -55,7 +55,7 @@
     "react-reflex": "^4.1.0",
     "react-resizable": "^3.0.5",
     "react-select": "^5.7.0",
-    "react-share-social": "^0.1.55",
+    "react-share": "^4.4.1",
     "react-spinners": "^0.13.7",
     "react-split-pane": "^0.1.92",
     "react-spring-bottom-sheet": "^3.4.1",
