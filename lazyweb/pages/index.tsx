@@ -1,6 +1,6 @@
 import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal, SwipeUI, SEO, SearchBarModal } from 'components'
 import { useEffect, useState } from 'react'
-import { useAllResources, useSearchModal, useSelectedTab, useUserData } from '@/hooks/Zustand';
+import { useAllResources,useSetAllResourcesServerSide, useSearchModal, useSelectedTab, useUserData } from '@/hooks/Zustand';
 import { useTour } from '@reactour/tour';
 import { isDesktop } from 'react-device-detect';
 import { addDataToMongo } from '../hooks/addDataToMongo';
@@ -8,12 +8,14 @@ import { useRouter } from 'next/router';
 
 
 type Props = {
-  token?: string
+  token?: string,
+  data?: any
 }
 
 
 const Home = ({
-  token
+  token,
+  data
 }: Props) => {
   const { setIsOpen, setSteps } = useTour()
   const { session } = useUserData()
@@ -21,6 +23,7 @@ const Home = ({
   const { selectedTab } = useSelectedTab()
   const {isSearchModalOpen, setIsSearchModalOpen} = useSearchModal()
   const [isLoadingModalOpen, setisLoadingModalOpen] = useState(true)
+  const {setAllResourcesServerSide} = useSetAllResourcesServerSide()
   useEffect(() => {
     if (session) {
       setSteps!([
@@ -61,6 +64,7 @@ const Home = ({
 
       window.location.reload()
     }
+    setAllResourcesServerSide(data)
 
 
     setisLoadingModalOpen(false)
@@ -93,9 +97,13 @@ const Home = ({
 }
 
 export async function getServerSideProps({ query }: { query: { token: string } }) {
+  const res = await fetch(process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL + '/api/websites')
+  const data = await res.json()
+
   return {
     props: {
-      token: query?.token || ''
+      token: query?.token || '',
+      data
     }
   };
 }
