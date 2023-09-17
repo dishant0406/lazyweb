@@ -79,7 +79,7 @@ const Home = ({
 
   return (
     <>
-      <SEO title='Lazyweb App' />
+      <SEO />
       <div className={`md:flex hidden`}>
         <div>
           <Category />
