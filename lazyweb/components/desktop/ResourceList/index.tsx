@@ -16,8 +16,8 @@ const ResourceList = (props: Props) => {
   const { allResources: resources, loading } = useAllResources()
   const { selectedTab } = useSelectedTab()
   useEffect(() => {
-    fetchResources('all')
-    setCompleteResourceLength('all')
+    // fetchResources('all')
+    // setCompleteResourceLength('all')
   }, [])
 
   return (
