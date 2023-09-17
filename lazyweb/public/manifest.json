@@ -1,0 +1,22 @@
+{
+  "name": "Lazyweb Rocks",
+  "short_name": "Lazyweb",
+  "description": "The ultimate resource for developers. Find all the tools, libraries, and code snippets you need for your next big project.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#202124",
+  "theme_color": "#202124",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/LazywebUpScaledLogo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/LazywebUpScaledLogo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
