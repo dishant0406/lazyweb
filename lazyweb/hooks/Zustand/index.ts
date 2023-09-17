@@ -213,6 +213,24 @@ const useAllResources = create<{
   },
 }))
 
+const useSetAllResourcesServerSide = create<{
+  setAllResourcesServerSide: (arg:{
+    resources:Resource[],
+    tags:string[],
+    categories:string[],
+    allCategories:string[],
+    dailyResource:Resource,
+    allTags:string[]
+  }) => void
+}>((set) => ({
+  setAllResourcesServerSide: async (arg) => {
+    useAllResources.getState().setAllResources('all',arg.resources)
+    useAllTags.getState().setAllTags(arg.allTags)
+    useAllCategory.getState().setAllCategories(arg.categories,arg.allCategories)
+    useTopProduct.getState().setTopProduct(arg.dailyResource)
+  },
+}))
+
 const useFilterUsingCategoriesArray = create<
   { 
     filteredResources: Resource[]
@@ -573,5 +591,6 @@ export {
   useManageSelectedTags,
   useLoginModal,
   useTopProduct,
-  useSearchModal
+  useSearchModal,
+  useSetAllResourcesServerSide
 }
