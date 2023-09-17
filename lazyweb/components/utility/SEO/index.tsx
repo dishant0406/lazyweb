@@ -2,50 +2,34 @@ import React from 'react';
 import Head from 'next/head';
 
 type Props = {
-  description?: string;
   author?: string;
-  meta?: any;
-  title: string;
-}
+  meta?: any[];
+  title?: string;
+  description?: string;
+  image?: string;
+  keywords?: string;
+};
 
 export default function SEO({
   author = 'Dishant Sharma',
-  meta,
+  meta = [],
   title = 'Lazyweb Rocks: The ultimate resource for developers',
-}:Props) {
+  description = 'Find all the tools, libraries, and code snippets you need for your next big project.',
+  image = 'https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/LazywebUpScaledLogo.png',
+  keywords = 'web development, coding, programming, JavaScript, HTML, CSS, React, Node.js, frontend, backend, fullstack, databases, Git, software engineering, tutorials, libraries, frameworks, best practices, tips and tricks, API, GraphQL, REST, DevOps, Docker, Kubernetes'
+}: Props) {
   const metaData = [
-    {
-      name: `description`,
-      content: 'Find all the tools, libraries, and code snippets you need for your next big project at Lazyweb Rocks. Our collection of useful resources is constantly updated to help you save time and focus on building great things.',
-    },
-    {
-      property: `og:title`,
-      content: 'Lazyweb Rocks: The ultimate resource for developers',
-    },
-    {
-      property: `og:description`,
-      content: 'Find all the tools, libraries, and code snippets you need for your next big project at Lazyweb Rocks. Our collection of useful resources is constantly updated to help you save time and focus on building great things.',
-    },
-    {
-      property: `og:type`,
-      content: `website`,
-    },
-    {
-      name: `twitter:card`,
-      content: `summary`,
-    },
-    {
-      name: `twitter:creator`,
-      content: 'Dishant Sharma',
-    },
-    {
-      name: `twitter:title`,
-      content: 'Lazyweb Rocks: The ultimate resource for developers',
-    },
-    {
-      name: `twitter:description`,
-      content: 'Find all the tools, libraries, and code snippets you need for your next big project at Lazyweb Rocks. Our collection of useful resources is constantly updated to help you save time and focus on building great things.',
-    },
+    { name: 'description', content: description },
+    { property: 'og:title', content: title },
+    { property: 'og:description', content: description },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:image', content: image },
+    { name: 'twitter:card', content: 'summary_large_image' },
+    { name: 'twitter:creator', content: author },
+    { name: 'twitter:title', content: title },
+    { name: 'twitter:description', content: description },
+    { name: 'twitter:image', content: image },
+    { name: 'keywords', content: keywords },
   ].concat(meta);
   return (
     <Head>
