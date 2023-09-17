@@ -60,13 +60,13 @@ const ResourceListBar = (props: Props) => {
   },[selectedTab])
 
   return (
-    <div className="w-[100%] lazyweb-resource-list flex justify-start">
-      <div className="flex  mt-[1rem]">
+    <div className="w-[100%] sticky mt-[0.5rem] items-center top-[70px] z-[2] bg-gray lazyweb-resource-list flex justify-start">
+      <div className="flex items-center ">
         {tabs.map(e=>{
           if(e.slug==='publish'){
             if(session && session.isAdmin){
               return (
-                <button onClick={()=>selectionHandler(e.id)} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b border-lightGray'}`}>
+                <button onClick={()=>selectionHandler(e.id)} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b-[3px] border-lightGray'}`}>
                   <div className={`${e.selected?'text-white':"text-lightGray"} transition-all`}>{e.name}</div>
                 </button>
               )
@@ -75,13 +75,13 @@ const ResourceListBar = (props: Props) => {
             }
           }
           return (
-            <button onClick={()=>selectionHandler(e.id)} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b border-lightGray'}`}>
+            <button onClick={()=>selectionHandler(e.id)} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b-[3px] border-lightGray'}`}>
               <div className={`${e.selected?'text-white':"text-lightGray"} transition-all`}>{e.name}</div>
             </button>
           )
         })}
       </div>
-      <div className="flex scale-75 items-center ml-[0rem] mt-[1rem]">
+      <div className="flex scale-75 items-center ml-[0rem]">
                       <kbd className="px-2 py-1 text-white bg-gray-900 border border-gray-700 rounded">
                           ctrl
                       </kbd> 

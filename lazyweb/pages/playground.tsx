@@ -12,19 +12,25 @@ const Playground = (props: Props) => {
       <Head>
         <meta charSet="UTF-8" />
         <title>LazyWeb: JS Playground</title>
-        <meta name="description" content="LazyWeb Javascript Playground" />
+        <meta name="description" content={
+          'JavaScript Playground by LazyWeb, a place to play with JavaScript and share your code with others. Create a new playground and start playing with JavaScript, create Rooms and share the link with your friends to collaborate on the same code.'
+        } />
         <meta name="keywords" content="JavaScript, Playground, LazyWeb" />
         <meta name="author" content="Dishant Sharma" />
 
         <meta property="og:title" content="LazyWeb: JS Playground" />
-        <meta property="og:description" content="LazyWeb Javascript Playground" />
+        <meta property="og:description" content={
+          'JavaScript Playground by LazyWeb, a place to play with JavaScript and share your code with others. Create a new playground and start playing with JavaScript, create Rooms and share the link with your friends to collaborate on the same code.'
+        } />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://app.lazyweb.rocks/playground" />
         <meta property="og:image" content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/LazywebPlayground.png" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="LazyWeb: JS Playground" />
-        <meta name="twitter:description" content="LazyWeb Javascript Playground" />
+        <meta name="twitter:description" content={
+          'JavaScript Playground by LazyWeb, a place to play with JavaScript and share your code with others. Create a new playground and start playing with JavaScript, create Rooms and share the link with your friends to collaborate on the same code.'
+        } />
         <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/LazywebPlayground.png" />
         <meta name="twitter:site" content="@dishant0406" />
         <meta name="twitter:creator" content="@dishant0406" />
