@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import Editor, { Monaco } from "@monaco-editor/react";
 import { Resizable } from 'react-resizable';
 import CreateRoomModal from "@/components/utility/Modals/CreateRoomModal";
+import { isDesktop } from "react-device-detect";
 import {
   ReflexContainer,
   ReflexSplitter,
@@ -211,7 +212,7 @@ const PlaygroundComponent = () => {
 
   return (
     <>
-      <div className="pt-[70px] relative">
+      <div className="md:pt-[70px] relative">
         {/* <button className="absolute bottom-[10px] right-[10px] bg-[#1e1e1e] text-white px-[10px] py-[5px] rounded-md">Create Room</button> */}
         {!isRoomJoined && <div className="fixed z-[2] bottom-[10px] right-[10px]">
           <div className="relative inline-flex group">
@@ -263,11 +264,17 @@ const PlaygroundComponent = () => {
             </abbr>
           </div>
         }
-        <ReflexContainer orientation="vertical">
-          <ReflexElement className="left-pane">
+        <ReflexContainer orientation={
+          isDesktop ? 'vertical' : 'horizontal'
+        }>
+          <ReflexElement className={
+            isDesktop ? "left-pane" :''
+            }>
             <div className="pane-content">
               <Editor
-                height="calc(100vh - 70px)"
+                height={
+                  isDesktop ? 'calc(100vh - 70px)' : '50vh'
+                }
                 theme="vs-dark"
 
                 value={code}
@@ -289,12 +296,14 @@ const PlaygroundComponent = () => {
               />
             </div>
           </ReflexElement>
-          <ReflexSplitter className="!h-[calc(100vh-70px)]" />
-          <ReflexElement className="right-pane"
+          <ReflexSplitter className="!h-[50vh] md:!h-[calc(100vh-70px)]" />
+          <ReflexElement className={
+            isDesktop?"right-pane":""
+          }
             minSize={200}
             maxSize={800}>
             <div className="pane-content">
-              <div className="console">
+              <div className="console md:h-[calc(100vh-70px)] h-[50vh]">
                 <div className="console-header mb-[10px]">
                   <h3>| Console |</h3>
                 </div>
