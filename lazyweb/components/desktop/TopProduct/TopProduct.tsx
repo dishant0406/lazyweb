@@ -3,12 +3,13 @@ type Props = {
   unformatUrl: string
 }
 import { useState, useEffect } from 'react';
-import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
+import moment from 'moment'
 import { FcApproval, FcOpenedFolder, FcInfo } from "react-icons/fc";
 import { BsTrophy } from 'react-icons/bs'
 import { ThumbsUp, Link2, Star, UserCheck } from 'react-feather'
 import { Resource, useTopProduct } from '@/hooks/Zustand';
 import { formatUrl } from '@/lib/formatUrl';
+import QrCode from 'react-qr-code'
 
 const TopProduct = ({ url, unformatUrl }: Props) => {
   const { topProduct } = useTopProduct()
@@ -21,18 +22,50 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
     likes: 0
   })
 
+  function formatDateDifference(timestamp: number) {
+    const dateFromTimestamp = moment(timestamp);
+    const now = moment();
+
+    const minutesDifference = now.diff(dateFromTimestamp, 'minutes');
+    const hoursDifference = now.diff(dateFromTimestamp, 'hours');
+    const daysDifference = now.diff(dateFromTimestamp, 'days');
+    const monthsDifference = now.diff(dateFromTimestamp, 'months');
+    const yearsDifference = now.diff(dateFromTimestamp, 'years');
+
+    if (minutesDifference === 1) {
+      return '1 minute ago';
+  } else if (minutesDifference < 60) {
+      return minutesDifference + ' minutes ago';
+  } else if (hoursDifference === 1) {
+      return '1 hour ago';
+  } else if (hoursDifference < 24) {
+      return hoursDifference + ' hours ago';
+  } else if (daysDifference === 1) {
+      return '1 day ago';
+  } else if (daysDifference < 30) {
+      return daysDifference + ' days ago';
+  } else if (monthsDifference === 1) {
+      return '1 month ago';
+  } else if (monthsDifference < 12) {
+      return monthsDifference + ' months ago';
+  } else if (yearsDifference === 1) {
+      return '1 year ago';
+  } else {
+      return yearsDifference + ' years ago';
+  }
+}
+
   useEffect(() => {
 
 
     //use topProduct from Zustand
     if (topProduct) {
       setImageData(topProduct.image_url)
-      console.log((topProduct.created_at))
       const webData = {
         title: topProduct.title || 'Not Available',
         description: topProduct.desc || 'Not Available',
         image: topProduct.image_url || 'Not Available',
-        createdAt: new Date(topProduct.created_at).toDateString() || 'Not Available',
+        createdAt: formatDateDifference(Number(topProduct.created_at)),
         likes: topProduct.likes || 0
       }
       setWebsiteData(webData)
@@ -65,9 +98,9 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
       <p className="text-white mt-[1rem] ml-[1rem]">Today's Top Product</p>
       <div className="w-[100%] flex justify-center">
         <div className="flex flex-wrap w-[95%] gap-[1.5rem] mt-[1rem]">
-          <div className={`h-[15rem] ${imgData === '' ? 'scale-[0]' : 'scale-[1]'} transition-all flex items-center justify-center rounded-[20px] w-[24rem] bg-altGray`}>
-            <div className="w-[22rem] flex flex-col items-center h-[12rem]">
-              <div style={{ backgroundImage: `url(${imgData})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} className="w-[95%] h-[6rem] rounded-[20px]"></div>
+          <div className={`h-[15rem] ${imgData === '' ? 'scale-[0]' : 'scale-[1]'} transition-all flex items-center justify-center rounded-[10px] w-[24rem] bg-[#0d0d0e]`}>
+            <div className="w-[23rem] flex flex-col items-center h-[14rem]">
+              <div style={{ backgroundImage: `url(${imgData})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} className="w-full h-[7.5rem] rounded-[10px]"></div>
               <div className='w-[95%] flex items-center justify-between'>
                 <div className='flex items-center top_product ml-[0.5rem] mt-[0.5rem] gap-[5px]'>
                   <FcOpenedFolder />
@@ -82,18 +115,20 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                   <p className='text-[14px] text-[#0eaf62]'>Online</p>
                 </div>
               </div>
-              <button onClick={handleVisit} className='w-[95%] h-[2.5rem] rounded-[20px] mt-[1.5rem] bg-[#1c64ec] text-white'>View Website</button>
+              <button title={
+                `Visit ${topProduct?.url ? topProduct?.url.length > 20 ? topProduct?.url.substring(0, 17) + '...' : topProduct?.url : 'Not Available'}`
+              } onClick={handleVisit} className='w-full h-[2.5rem] rounded-[10px] mt-[1.5rem] bg-altGray text-white'>View Website</button>
             </div>
           </div>
           <div className={`${imgData === '' ? 'scale-[0]' : 'scale-[1]'}`}>
             <div className='flex flex-wrap gap-[1.5rem]'>
-              <div className='h-[8.5rem] w-[28rem] flex items-center justify-center bg-altGray rounded-[20px]'>
+              <div className='h-[8.5rem] w-[28rem] flex items-center justify-center bg-[#0d0d0e] border-[5px] border-altGray rounded-[10px]'>
                 <div className='w-[90%] flex flex-col gap-[15px] h-[75%]'>
                   <div className='flex gap-[10px]'>
                     <Link2 className='text-lightGray scale-[0.6]' />
                     <div className='flex gap-[5px] items-center'>
                       <p className='text-white'>Link:</p>
-                      <a href={topProduct?.url ? topProduct?.url : 'Not Available'} target='_blank' className='text-[#7d9ddb] transition-all text-[14px]'>{
+                      <a href={topProduct?.url ? formatUrl(topProduct?.url) : 'Not Available'} target='_blank' className='text-[#7d9ddb] transition-all text-[14px]'>{
                         topProduct?.url ? topProduct?.url.length > 20 ? topProduct?.url.substring(0, 17) + '...' : topProduct?.url : 'Not Available'
                       }</a>
                       <button className="text-white scale-[0.7] transition-all  duration-150 ml-[-5px] " onClick={copyToClipboard}>
@@ -125,21 +160,27 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                   </div>
                 </div>
               </div>
-              <div className='h-[8.5rem] gap-[4px] product-of-day flex flex-col items-center justify-center w-[9rem] bg-[#0eaf62] rounded-[20px]'>
-                <p className='w-[6rem] font-[600] text-center text-white'>Product of the day</p>
-                <BsTrophy className='text-[#fff] scale-[1.3] mt-[0.5rem] text-[1.5rem]' />
+              <div title={
+                `Scan QR code to visit ${topProduct?.url ? topProduct?.url.length > 20 ? topProduct?.url.substring(0, 17) + '...' : topProduct?.url : 'Not Available'}`
+              } className='h-[8.5rem] gap-[4px] product-of-day flex flex-col items-center justify-center w-[8.5rem] bg-[#0d0d0e] rounded-[10px]'>
+                {/* <p className='w-[6rem] font-[600] text-center text-white'>Product of the day</p>
+                <BsTrophy className='text-[#fff] scale-[1.3] mt-[0.5rem] text-[1.5rem]' /> */}
+                <QrCode 
+                fgColor='#fff'
+                bgColor='#0d0d0e'
+                value={topProduct?.url ? formatUrl(topProduct?.url) : 'Not Available'} size={120} />
               </div>
-              <div className='h-[8.5rem] gap-[4px] product-of-day flex flex-col items-center justify-center w-[9rem] bg-[#0eaf62] rounded-[20px]'>
-                <p className='w-[6rem] font-[600] text-center text-white'>Liked Product</p>
+              <div className='h-[8.5rem] border-[5px] border-altGray gap-[4px] product-of-day flex flex-col items-center justify-center w-[8.5rem] bg-[#0d0d0e] rounded-[10px]'>
+                <p className='w-[6rem] font-[600] text-center text-white'>Product of the Day</p>
                 <ThumbsUp className='text-[#fff] scale-[1.2] h-[2rem]' />
               </div>
             </div>
-            <div className={`w-fit ${websiteData.title == '' ? 'scale-[0]' : 'scale-[1]'} transition-all px-[2rem] flex items-center justify-center h-[5rem] rounded-[20px] mt-[1.5rem] bg-altGray`}>
+            <div className={`w-fit ${websiteData.title == '' ? 'scale-[0]' : 'scale-[1]'} transition-all px-[2rem] flex items-center justify-center h-[5rem] rounded-[10px] mt-[1.5rem] border-[5px] border-altGray bg-[#0d0d0e]`}>
               <div className='flex items-center w-fit'>
                 <div className='flex gap-[1rem]'>
                   <div className='flex items-center  gap-[5px]'>
                     <FcInfo className='text-[24px]' />
-                    <p className='text-white whitespace-nowrap w-fit'>{websiteData.title}</p>
+                    <p className='text-white w-[45vw] truncate'>{websiteData.description}</p>
                   </div>
                 </div>
               </div>

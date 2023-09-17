@@ -4,7 +4,7 @@ const nextConfig = {
   swcMinify: true,
   //image source
   images: {
-    domains: ['api.lazyweb.rocks'],
+    domains: ['api.lazyweb.rocks', 'via.placeholder.com'],
   },
 }
 

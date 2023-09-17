@@ -6,12 +6,13 @@ import { formatUrl } from '@/lib/formatUrl';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useAllResources, useCompleteResourceLength, useSelectedTab } from '@/hooks/Zustand';
-import {ResourceListBar, ResourceCard} from 'components'
+import {ResourceListBar, ResourceCard, MobileResourceCard} from 'components'
 import { useEffect } from 'react';
 import { motion, AnimatePresence, Reorder } from "framer-motion"
 import { emojiGenerator } from 'lib/emojiGenerator';
 import { trackWindowScroll } from 'react-lazy-load-image-component';
 import { ScrollPosition } from 'react-lazy-load-image-component';
+import { isDesktop } from 'react-device-detect';
 
 type Props = {
   isOpen: boolean,
@@ -86,20 +87,25 @@ const SearchBarModal = ({isOpen, setIsOpen}:Props) => {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="md:min-w-[80vw]  h-auto transform bg-none overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="md:min-w-[80vw] min-w-[100vw]  h-auto transform bg-none overflow-hidden rounded-2xl md:p-6 p-2 text-left align-middle shadow-xl transition-all">
                   <form onSubmit={handleSubmit} className='relative'>
-                    <input value={search} onChange={(e)=>setSearch(e.target.value)} type="text" className='w-full h-[60px] text-white rounded-[40px] border-white bg-gray border-2 outline-none px-[2rem]' placeholder='I want to add this to my website...'/>
+                    <input value={search} onChange={(e)=>setSearch(e.target.value)} type="text" className='w-full h-[60px] text-white rounded-[40px] border-white bg-gray border-2 outline-none px-[2rem] pr-[3rem] md:pr-[2rem] md:px-[2rem]' placeholder={
+                      isDesktop ? 'I want to add this to my website...':'Search with AI'
+                    }/>
                     <div className='absolute right-[1rem] top-[25%]'>
                       <button  className='text-white'>
                         <PiMagicWandLight className='text-sky-400 h-[2rem] w-[2rem]'/>
                       </button>
                     </div>
-                    <div className="absolute right-4 bottom-[-2.8rem] bg-gray-800 p-2 rounded-md shadow-lg">
+                    {isDesktop && <div className="absolute right-4 bottom-[-2.8rem] bg-gray-800 p-2 rounded-md shadow-lg">
                       <kbd className="px-2 py-1 text-white bg-gray-900 border border-gray-700 rounded">
                           esc
                       </kbd> 
                       <span className="ml-2 text-trueGray-200">to close</span>
-                  </div>
+                  </div>}
+                    {!isDesktop && <div onClick={closeModal} className="absolute cursor-pointer right-4 bottom-[-2.8rem] bg-gray-800 p-2 rounded-md shadow-lg">
+                      <span className="ml-2 text-trueGray-200">Close</span>
+                  </div>}
 
                   </form>
                   {
@@ -111,13 +117,14 @@ const SearchBarModal = ({isOpen, setIsOpen}:Props) => {
                   }
 
                   <div className='mt-[3rem] w-full'>
-                  {resources.length>=1 && !loading && <Reorder.Group values={resources} axis={'x'} onReorder={()=>{}} className='z-[1] ml-[3rem] flex gap-[1rem] flex-wrap mt-[2rem]'>
+                  {resources.length>=1 && !loading && <Reorder.Group values={resources} axis={'x'} onReorder={()=>{}} className='z-[1] md:ml-[3rem] flex gap-[1rem] flex-wrap mt-[2rem]'>
                     {resources.map((e)=>{
                       return (
                         <Reorder.Item key={e._id} value={e} initial={{ scale:0 }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}>
-                          <ResourceCard  key={e._id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>
+                          {isDesktop && <ResourceCard  key={e._id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url}/>}
+                          {!isDesktop && <MobileResourceCard key={e._id} resource={e} />}
                         </Reorder.Item>
                         )
                       })} 

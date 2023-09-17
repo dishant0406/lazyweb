@@ -1,5 +1,5 @@
 type Props = {}
-import { useAllResources, useAllCategory, useFilterUsingCategoriesArray, useUserData } from 'hooks/Zustand';
+import { useAllResources, useAllCategory, useFilterUsingCategoriesArray, useUserData, useSearchModal } from 'hooks/Zustand';
 import React, { useState, useRef, useEffect } from 'react';
 import { BsFilter } from 'react-icons/bs';
 import { MdOutlineSaveAlt } from 'react-icons/md';
@@ -11,6 +11,7 @@ import { RiGlobalLine } from 'react-icons/ri'
 import { AuthError, Provider, Session, User } from '@supabase/supabase-js';
 import { PuffLoader } from 'react-spinners';
 import { Reorder } from 'framer-motion';
+import {FiSearch} from 'react-icons/fi'
 
 type Data = {
   user: User | null;
@@ -45,6 +46,7 @@ const SwipeUI = (props: Props) => {
   const [error, setError] = useState<AuthError | null>(null)
   const [data, setData] = useState<Data | DataGithub | null>(null)
   const [isSent, setIsSent] = useState(false)
+  const {setIsSearchModalOpen} = useSearchModal()
 
   useEffect(() => {
     (
@@ -162,6 +164,11 @@ const SwipeUI = (props: Props) => {
 
   return (
     <div className='min-h-[100vh] relative w-[100vw] flex-col md:hidden flex bg-gray'>
+      <div onClick={()=>{
+        setIsSearchModalOpen(true)
+      }} className='w-[3rem] h-[3rem] bg-[rgba(0,0,0,0.5)] rounded-full absolute top-[1rem] right-[1rem] flex items-center justify-center'>
+        <FiSearch className='text-white h-[1.5rem] w-[1.5rem]' />
+      </div>
       <div className='h-[70px] flex items-end w-[100vw] justify-center'>
         <div className='h-fit w-[9rem] bg-white'>
           <img src='assets/Logo.png' />

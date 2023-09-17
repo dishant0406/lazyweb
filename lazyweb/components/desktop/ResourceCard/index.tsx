@@ -11,6 +11,7 @@ import 'react-lazy-load-image-component/src/effects/blur.css';
 import { useRouter } from "next/router"
 import { IoQrCode } from 'react-icons/io5';
 import Image from "next/image";
+import {HiOutlineExternalLink} from 'react-icons/hi'
 
 
 type Props = {
@@ -20,6 +21,33 @@ type Props = {
   image: string,
   resource: Resource,
   scrollPosition?: ScrollPosition
+}
+
+function MyImageComponent({ title, image}:{
+  title: string,
+  image: string
+}) {
+  const [currentImage, setCurrentImage] = useState(image);
+
+  const handleImageError = () => {
+    if (currentImage !== 'https://via.placeholder.com/288x160?text=Not+Available') {
+      setCurrentImage('https://via.placeholder.com/288x160?text=Not+Available');
+    }
+  };
+
+  return (
+    <Image
+      alt={title}
+      height={160}
+      width={288}
+      layout="fixed"
+      placeholder="blur"
+      blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAA21BMVEUAssb09PSxsbH/Skqqqqry8vLv7+/z///S0tL/NTUAsMXz8/MAuc/t9fX/SEfPY2i1tbX++Pdew9G/v7/Gxsbl5eX6+vrY2Njg4OD/QD75Skpdnq//RESnp6f/OzvQ19d6lKO6eIHOZ27HcXmPiZYtrcCdhJDeWV1OpbeyeILuT1D1a2vkoaHiqKjsjIz9YWH5ra33u7v5paXcurrN39/zcnL6m5vqVFbaW1/7iYn/MDDnlZX+VVXZwMDVzMzyd3f3zMz15OT21tbh7/Cx3eR9zNeZ093K5+uBzNhz/ARFAAAD40lEQVR4nO3d63LSUBSGYQIhhACRcNgQC0FrD2prD0Krbak9WK33f0UmASqMA7hZO2Tt+D0/HOM4kHcSshJCSy4HAAAAAAAAAAAAAAAAAAAAAAAAAAAA/6cqRyrz3rzdfcXOu719RZHVA9/vuQz1gl1HSeGhX+Cq5+/QN2P1sJd2xyr+e3LgByaBbvhSWVjy3fgvH6mF+0x20eDo+NNJb9YYnJ6dfx7Hq+bvEQsPeGxCfziy7cHgYrI25fOSMGqly3K08IX2Sqx+dVMtmwqGAzsyOo1WJzgrGZHSVRTs79MKX6cdF3GPRnGgPRgG0bIxZV2HC/5OBgp7J5NNGAoL3YvStLAUrV02Cm9eCsOji3v3Ujh2M1LoXkz3Uvs22objWaERHWoyUVgIvk0CR3fRkaZ8Lyab8CyaF9kodMeDaD8d3cQHmoL/EG3F0n08LbJRWHB7x7ffhkez04/y5ePD41UcmJXCMCQI/D+z2S8HwfRcJDOFS6EQhUGZu2taoVNiTzRohQZ7HgpRyB6DQpEYLoV2Yiwuha1mIlqMCvOJqKMQhShEoV6FwupIaQvdCjumOXtc8+VPc35h/l/zptkSehUK6WfvW5oV1mWfva/bXlqs900J/Xxbt0JDzB861lv433oUUqAQhdspFEVLhn6vQ6sucygNTw+6uk38zM/D7J/TGF25ndQ0bc320vBA05ViaXdtQYJCFG6ncKP327UqtOtSWkXNCkXTXP+EC0zNpoWQDdRu4gtbMtGsa7YNDdFtSeloOPE3P5TqUkiAQhSiEIXbKJQ75ftXTT6Fmf+0idT7kFIqTAoThsItFIqKeqwKw4tL9eauzhgUyt1dTauQ8j5NEgfTud1U0V3upuQ0bhtbo+h9GtkzKlPurnj6hdLnjKa1Zr0yVSiK6rEq1OJYSixUH8irMJFpwWovTRoKUaigUGT9dZjMtGBVmMTVk8mpMDxvz/g5TdJQiEIVhdTRsPpaM/1C8pl3v7UykUEheVrYzAvJ06LCfS9NGgpRqKKwTbBmVLAopE2LfkeDQumP/S08UJd/Ie3u2ro+FoUJQyEKFRRWKNMixvy8lP6u/uqJwaBQ+ubjXw+2cmKkX2gkfLOUQWHCUIhCBYVF8rRYOTKohd/jQspPyYo8dVpMRsayA6pH+43lzpMXPYolmzj3k870aTGx7CM6NeJ3XDS8yWqufz3ME0sXNrZ0J30iFjrPStYvOSJHLcxt79NNm/B+kL+IxWlwTvR+KvimGSf37KUdsoRXayj5Kh3HaTzVOHr+5aj5rqA4kidVfQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAivwGFDhI5ov2G60AAAAASUVORK5CYII="
+      src={currentImage}
+      className='rounded-t-[10px]'
+      onError={handleImageError}
+    />
+  );
 }
 
 const ResourceCard = ({ url, title, description, image, resource, scrollPosition }: Props) => {
@@ -132,13 +160,13 @@ const ResourceCard = ({ url, title, description, image, resource, scrollPosition
 
 
   return (
-    <div className={`w-[18rem] relative transition h-[16rem] bg-altGray rounded-[20px]`}>
+    <div className={`w-[18rem] relative px-[0.5rem] pt-[0.5rem] transition h-[17rem] bg-[#0d0d0e] border-[3px] border-altGray rounded-[20px]`}>
       <div className="relative">
         {selectedTab === 'publish' && isHovered && !loading && (
           <div>
             <div style={{
               top: calculateTopValue(resource.tags),
-            }} className={`absolute border border-lightGray right-[0rem] min-w-[18rem] min-h-[10rem] pb-[1rem] rounded-[20px] bg-altGray`}>
+            }} className={`absolute border border-lightGray right-[0rem] h-full w- rounded-[20px] bg-altGray`}>
               <p className="text-white mb-[5px] mt-[1rem] ml-[1rem]">Category:</p>
               <span className="text-white rounded-2xl bg-lightGray px-[15px] py-[2px] ml-[1.5rem]">{capitalize(resource.category)}</span>
               <p className="text-white mt-[0.5rem] ml-[1rem]">Tags:</p>
@@ -151,25 +179,15 @@ const ResourceCard = ({ url, title, description, image, resource, scrollPosition
             </div>
           </div>
         )}
-        {resource.created_by_list.includes(session?.id!) && !resource.isPublicAvailable && !resource.isAvailableForApproval && <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="w-[18rem] z-[1] absolute top-[0] left-[0] transition-all flex items-center justify-center duration-500 hover:bg-gray/[0.4] h-[11.5rem] rounded-t-[20px]">
+        {resource.created_by_list.includes(session?.id!) && !resource.isPublicAvailable && !resource.isAvailableForApproval && <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="w-full z-[1] absolute top-[0] left-[0] transition-all flex items-center justify-center duration-500 hover:bg-gray/[0.4] h-[10.5rem] rounded-t-[10px]">
           <button onClick={() => setOpen(true)} className={`text-white hover:scale-[1.05] ${isHovered ? 'opacity-100' : 'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Publish</button>
         </div>}
         {session?.isAdmin && resource.isAvailableForApproval && selectedTab === 'publish' && <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="w-[18rem] absolute top-[0] left-[0] z-[1] transition-all flex items-center justify-center gap-[5px] duration-500 hover:bg-gray/[0.4] h-[11.5rem] rounded-t-[20px]">
           <button onClick={() => handleApproveOrReject('approve')} className={`text-white hover:scale-[1.05] ${isHovered ? 'opacity-100' : 'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Approve</button>
           <button onClick={() => handleApproveOrReject('reject')} className={`text-white hover:scale-[1.05] ${isHovered ? 'opacity-100' : 'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-red-600 rounded-[20px]`}>Reject</button>
         </div>}
-        {/* <img src={image} className="w-[18rem] h-[10rem] rounded-t-[20px]"/> */}
-        {/* <LazyLoadImage
-          alt={title}
-          height={160}
-          className='rounded-t-[20px]'
-          effect="blur"
-          delayTime={1000}
-          placeholderSrc="assets/placeholder-website.png"
-          src={image} // use normal <img> attributes as props
-          width={288} /> */}
 
-          <Image
+          {/* <Image
             alt={title}
             height={160}
             width={288}
@@ -178,24 +196,38 @@ const ResourceCard = ({ url, title, description, image, resource, scrollPosition
             blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAA21BMVEUAssb09PSxsbH/Skqqqqry8vLv7+/z///S0tL/NTUAsMXz8/MAuc/t9fX/SEfPY2i1tbX++Pdew9G/v7/Gxsbl5eX6+vrY2Njg4OD/QD75Skpdnq//RESnp6f/OzvQ19d6lKO6eIHOZ27HcXmPiZYtrcCdhJDeWV1OpbeyeILuT1D1a2vkoaHiqKjsjIz9YWH5ra33u7v5paXcurrN39/zcnL6m5vqVFbaW1/7iYn/MDDnlZX+VVXZwMDVzMzyd3f3zMz15OT21tbh7/Cx3eR9zNeZ093K5+uBzNhz/ARFAAAD40lEQVR4nO3d63LSUBSGYQIhhACRcNgQC0FrD2prD0Krbak9WK33f0UmASqMA7hZO2Tt+D0/HOM4kHcSshJCSy4HAAAAAAAAAAAAAAAAAAAAAAAAAAAA/6cqRyrz3rzdfcXOu719RZHVA9/vuQz1gl1HSeGhX+Cq5+/QN2P1sJd2xyr+e3LgByaBbvhSWVjy3fgvH6mF+0x20eDo+NNJb9YYnJ6dfx7Hq+bvEQsPeGxCfziy7cHgYrI25fOSMGqly3K08IX2Sqx+dVMtmwqGAzsyOo1WJzgrGZHSVRTs79MKX6cdF3GPRnGgPRgG0bIxZV2HC/5OBgp7J5NNGAoL3YvStLAUrV02Cm9eCsOji3v3Ujh2M1LoXkz3Uvs22objWaERHWoyUVgIvk0CR3fRkaZ8Lyab8CyaF9kodMeDaD8d3cQHmoL/EG3F0n08LbJRWHB7x7ffhkez04/y5ePD41UcmJXCMCQI/D+z2S8HwfRcJDOFS6EQhUGZu2taoVNiTzRohQZ7HgpRyB6DQpEYLoV2Yiwuha1mIlqMCvOJqKMQhShEoV6FwupIaQvdCjumOXtc8+VPc35h/l/zptkSehUK6WfvW5oV1mWfva/bXlqs900J/Xxbt0JDzB861lv433oUUqAQhdspFEVLhn6vQ6sucygNTw+6uk38zM/D7J/TGF25ndQ0bc320vBA05ViaXdtQYJCFG6ncKP327UqtOtSWkXNCkXTXP+EC0zNpoWQDdRu4gtbMtGsa7YNDdFtSeloOPE3P5TqUkiAQhSiEIXbKJQ75ftXTT6Fmf+0idT7kFIqTAoThsItFIqKeqwKw4tL9eauzhgUyt1dTauQ8j5NEgfTud1U0V3upuQ0bhtbo+h9GtkzKlPurnj6hdLnjKa1Zr0yVSiK6rEq1OJYSixUH8irMJFpwWovTRoKUaigUGT9dZjMtGBVmMTVk8mpMDxvz/g5TdJQiEIVhdTRsPpaM/1C8pl3v7UykUEheVrYzAvJ06LCfS9NGgpRqKKwTbBmVLAopE2LfkeDQumP/S08UJd/Ie3u2ro+FoUJQyEKFRRWKNMixvy8lP6u/uqJwaBQ+ubjXw+2cmKkX2gkfLOUQWHCUIhCBYVF8rRYOTKohd/jQspPyYo8dVpMRsayA6pH+43lzpMXPYolmzj3k870aTGx7CM6NeJ3XDS8yWqufz3ME0sXNrZ0J30iFjrPStYvOSJHLcxt79NNm/B+kL+IxWlwTvR+KvimGSf37KUdsoRXayj5Kh3HaTzVOHr+5aj5rqA4kidVfQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAivwGFDhI5ov2G60AAAAASUVORK5CYII=" // Base64 encoded or SVG image data
             src={image}
             className='rounded-t-[20px]'
-          />
+            onError={e => {
+              if (!e.currentTarget.dataset.hasError) {
+                e.currentTarget.dataset.hasError = 'true';
+                e.currentTarget.src = 'https://via.placeholder.com/288x160?text=Not+Available';
+              }
+            }}
+          /> */}
+
+          <MyImageComponent title={title} image={image} />
 
       </div>
-      <div className="w-[18rem] h-[6rem] mt-[-1rem] flex flex-col ml-[1rem] justify-center">
+      <div className="w-[18rem] h-[6rem] mt-[-0.2rem] flex flex-col ml-[1rem] justify-center">
         <div className="text-white text-[16px] font-[500]">{title.slice(0, 28)}{title.length > 28 && '...'}</div>
         <div className="text-[#6c6c6c] w-[90%] text-[14px]">{description?.slice(0, 55)}{description?.length > 55 && '.....'}</div>
       </div>
-      <button onClick={handleGoto} className="text-white hover:scale-[1.05] transition-all absolute bottom-[10px] right-[10px] px-[10px] py-[2px] text-[12px] bg-[#1c64ec] rounded-[20px]">Link</button>
-      <FcInfo onClick={() => {
+      <button title={
+       `Visit ${title}`
+      } onClick={handleGoto} className="text-white hover:scale-[1.05] transition-all absolute bottom-[10px] right-[10px] px-[5px] py-[2px] text-[12px] bg-altGray rounded-lg">
+        <HiOutlineExternalLink className="text-[18px] text-white inline-block" />
+      </button>
+      <FcInfo title={
+        `Info about ${title}`
+      } onClick={() => {
         //set url query to the resource id
         router.replace({
           pathname: '/',
           query: { id: resource._id },
         }, undefined, { shallow: true });
-      }} className="text-[18px] absolute bottom-[5rem] right-[5px] hover:scale-[1.1] cursor-pointer transition-all" />
+      }} className="text-[18px] absolute bottom-[6rem] right-[5px] hover:scale-[1.1] cursor-pointer transition-all" />
       <div onClick={()=>{
         setIsInfoOpen(true)
-      }} className='h-[2rem] cursor-pointer w-[2rem] flex items-center justify-center rounded-full absolute bottom-[5rem] left-[5px] bg-[rgba(32,33,36,0.5)]'>
+      }} className='h-[2rem] cursor-pointer w-[2rem] flex items-center justify-center rounded-full absolute bottom-[6rem] left-[5px] bg-[rgba(32,33,36,0.5)]'>
         <IoQrCode className="text-[18px] text-white" />
       </div>
       {session && resource.created_by_list.includes(session?.id!) && <motion.div animate={isBookmarked ? 'booked' : 'notBooked'} variants={varients} onClick={handleBookMark} onMouseEnter={() => setISHover(true)} onMouseLeave={() => setISHover(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[10px] right-[10px]">
