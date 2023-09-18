@@ -1,23 +1,29 @@
-import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal, SwipeUI, SEO, SearchBarModal } from 'components'
+import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal, SwipeUI, SEO, SearchBarModal, BookmarkModal } from 'components'
 import { useEffect, useState } from 'react'
-import { useAllResources,useSetAllResourcesServerSide, useSearchModal, useSelectedTab, useUserData } from '@/hooks/Zustand';
+import { useAllResources,useSetAllResourcesServerSide, useSearchModal, useSelectedTab, useUserData, Resource } from '@/hooks/Zustand';
 import { useTour } from '@reactour/tour';
 import { isDesktop } from 'react-device-detect';
 import { addDataToMongo } from '../hooks/addDataToMongo';
 import { useRouter } from 'next/router';
+import { Book } from 'react-feather';
 
 
 type Props = {
   token?: string,
-  data?: any
+  data?: any,
+  bookmarkResouces?: Resource[],
+  bookmark?: string
 }
 
 
 const Home = ({
   token,
-  data
+  data,
+  bookmarkResouces,
+  bookmark
 }: Props) => {
   const { setIsOpen, setSteps } = useTour()
+  const router = useRouter()
   const { session } = useUserData()
   const { allResources } = useAllResources()
   const { selectedTab } = useSelectedTab()
@@ -77,6 +83,18 @@ const Home = ({
 
   }, [])
 
+  useEffect(() => {
+    if(router.query?.bookmark && (!bookmarkResouces?.length || bookmarkResouces?.length === 0)){
+      const { query } = router;
+      delete query.bookmark;
+  
+      router.replace({
+        pathname: router.pathname,
+        query: query,
+      }, undefined, { shallow: true });
+    }
+  }, [router?.query?.bookmark])
+
   return (
     <>
       <SEO />
@@ -92,18 +110,30 @@ const Home = ({
       <SwipeUI />
       <LoadingModal isOpen={isLoadingModalOpen} setIsOpen={setisLoadingModalOpen} />
       <SearchBarModal isOpen={isSearchModalOpen} setIsOpen={setIsSearchModalOpen} />
+      <BookmarkModal isOpen={
+        bookmarkResouces?.length && bookmarkResouces?.length>0 && router.query?.bookmark ? true : false
+      } setIsOpen={() => { }} resources={bookmarkResouces} />
     </>
   )
 }
 
-export async function getServerSideProps({ query }: { query: { token: string } }) {
+export async function getServerSideProps({ query }: { query: { token: string, bookmark:string } }) {
   const res = await fetch(process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL + '/api/websites')
   const data = await res.json()
+
+  let bookmarkResouces = []
+  if(query?.bookmark){
+    const res = await fetch(process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL + `/api/websites/bookmarks/${query?.bookmark}`)
+    const bookmarkData =  await res.json()
+    bookmarkResouces = bookmarkData?.resources
+  }
 
   return {
     props: {
       token: query?.token || '',
-      data
+      data,
+      bookmarkResouces,
+      bookmark: query?.bookmark || ''
     }
   };
 }
