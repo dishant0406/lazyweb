@@ -5,6 +5,8 @@ import { motion, AnimatePresence, Reorder, useAnimation } from "framer-motion"
 import { emojiGenerator } from 'lib/emojiGenerator';
 import {FiShare2} from 'react-icons/fi'
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 type Props = {
 
@@ -16,8 +18,10 @@ const ResourceList = (props: Props) => {
   const { allResources: resources, loading } = useAllResources()
   const { selectedTab } = useSelectedTab()
   const [isCopied, setIsCopied] = useState(false);
+  const router = useRouter()
   const {session} = useUserData()
   const [isQrCodeModalOpen, setIsQrCodeModalOpen] = useState(false)
+  const [fullUrl, setFullUrl] = useState('')
 
   const slideIn = {
     initial: { y: "-100%", opacity: 0 },
@@ -26,7 +30,12 @@ const ResourceList = (props: Props) => {
   };
 
 
-  const controls = useAnimation();
+  useEffect(() => {
+    if(window && window!==undefined){
+      setFullUrl(window.location.href)
+    }
+  }
+  , [])
 
 
 
@@ -45,12 +54,14 @@ const ResourceList = (props: Props) => {
               <p className='text-[14px] mr-[3rem] text-white'>
                 {
                   // current url
-                  window.location.href + `?bookmark=${session?.id}`
+                 fullUrl + `?bookmark=${session?.id}`
                 }
               </p>
               <div className='absolute right-[10px]'>
                 <p className='text-[12px] text-white cursor-pointer' onClick={() => {
-                  navigator.clipboard.writeText(window.location.href + `?bookmark=${session?.id}`)
+                  navigator.clipboard.writeText(
+                    fullUrl + `?bookmark=${session?.id}` 
+                  )
                   setIsCopied(true)
                   setTimeout(() => {
                     setIsCopied(false)
@@ -67,7 +78,7 @@ const ResourceList = (props: Props) => {
             <button onClick={() => {
               navigator.share({
                 title: 'Bookmarked Resources',
-                url: window.location.href + `?bookmark=${session?.id}`
+                url: fullUrl + `?bookmark=${session?.id}` 
               });
             }} className='px-[1rem] py-[0.5rem] rounded-[5px] bg-[#0d0d0e] text-white text-[14px]'>
               Share
@@ -118,7 +129,9 @@ const ResourceList = (props: Props) => {
           }
         </div>
       </div>
-      <QrCodeModal isOpen={isQrCodeModalOpen} setIsOpen={setIsQrCodeModalOpen} url={window.location.href + `?bookmark=${session?.id}`} />
+      <QrCodeModal isOpen={isQrCodeModalOpen} setIsOpen={setIsQrCodeModalOpen} url={
+        fullUrl + `?bookmark=${session?.id}` 
+      } />
     </div>
   )
 }
