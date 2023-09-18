@@ -116,7 +116,8 @@ const SwipeUI = (props: Props) => {
         // Handle your token here
         const { jwt } = event.data
         localStorage.setItem('token', jwt)
-        setSession()
+        // setSession()
+        window.location.reload()
         // Close the popup
         if (popup) popup.close();
       }
@@ -259,7 +260,7 @@ const SwipeUI = (props: Props) => {
           >
             {!data || error ? (!loading ? 'Sign In' : <PuffLoader size={20} color="#fff" />) : 'Email Sent'}
           </button>
-          {/* <button
+          <button
             className='h-[3rem] mt-[10px] w-[80%] text-white bg-altGray rounded-xl'
               onClick={() => {
                 handleGithubLogin()
@@ -267,7 +268,7 @@ const SwipeUI = (props: Props) => {
               disabled={(!data||error)?false:true}
             >
             Github
-          </button> */}
+          </button>
         </div>
       </BottomSheet>
       <div className='h-[70px] border-t border-lightGray flex justify-center bg-altGray fixed bottom-[-2px] w-[100vw]'>

@@ -93,7 +93,7 @@ const LoginModal = ({ isOpen, setIsOpen }: Props) => {
         // Handle your token here
         const { jwt } = event.data
         localStorage.setItem('token', jwt)
-        setSession()
+        window.location.reload()
         setIsOpen(false)
         // Close the popup
         if (popup) popup.close();
@@ -162,11 +162,11 @@ const LoginModal = ({ isOpen, setIsOpen }: Props) => {
                   >
                     {!data || error ? (!loading ? 'Sign In' : <PuffLoader size={20} color="#fff" />) : 'Email Sent'}
                   </button>
-                  {/* <p className='text-white'>or</p>
+                  <p className='text-white'>or</p>
                     <button onClick={handleGithubLogin} className='w-[7rem] py-1 text-lightGray rounded-lg px-[0.5rem] flex justify-center items-center gap-[0.5rem] bg-altGray'>
                       <GitHub className='text-lightGray h-[2rem]'/>
                       Github
-                    </button> */}
+                    </button>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

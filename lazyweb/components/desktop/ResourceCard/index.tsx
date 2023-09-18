@@ -74,16 +74,12 @@ const ResourceCard = ({ url, title, description, image, resource, scrollPosition
   }
 
   useEffect(() => {
-    getBookMarked()
-  }, [setComplete, resource])
-
-  useEffect(() => {
-    getLikes()
-  }
-    , [setLikesComplete, resource])
+    getBookMarked();
+    getLikes();
+  }, [setComplete, setLikesComplete, resource]);
+  
 
   const getBookMarked = async () => {
-    //check if the user has bookmarked the resource
     const bookmarked = resource.bookmarked_by.includes(session?.id!)
     setIsBookmarked(bookmarked)
   }
@@ -230,7 +226,7 @@ const ResourceCard = ({ url, title, description, image, resource, scrollPosition
       }} className='h-[2rem] cursor-pointer w-[2rem] flex items-center justify-center rounded-full absolute bottom-[6rem] left-[5px] bg-[rgba(32,33,36,0.5)]'>
         <IoQrCode className="text-[18px] text-white" />
       </div>
-      {session && resource.created_by_list.includes(session?.id!) && <motion.div animate={isBookmarked ? 'booked' : 'notBooked'} variants={varients} onClick={handleBookMark} onMouseEnter={() => setISHover(true)} onMouseLeave={() => setISHover(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[10px] right-[10px]">
+      {session  && <motion.div animate={isBookmarked ? 'booked' : 'notBooked'} variants={varients} onClick={handleBookMark} onMouseEnter={() => setISHover(true)} onMouseLeave={() => setISHover(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[10px] right-[10px]">
         <AnimatePresence>
           {(isHover || isBookmarked) ? (
             <motion.div

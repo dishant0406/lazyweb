@@ -26,6 +26,7 @@ import SEO from './utility/SEO';
 import PlaygroundComponent from './desktop/Playground';
 import SearchBarModal from './utility/Modals/SearchBarModal/index';
 import QrCodeModal from './utility/Modals/QRCodeModal';
+import BookmarkModal from './utility/Modals/BookmarksModal';
 
 
 export {
@@ -56,5 +57,6 @@ export {
   SEO,
   PlaygroundComponent,
   SearchBarModal,
-  QrCodeModal
+  QrCodeModal,
+  BookmarkModal
 }
