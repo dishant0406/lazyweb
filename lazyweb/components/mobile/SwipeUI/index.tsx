@@ -12,6 +12,7 @@ import { AuthError, Provider, Session, User } from '@supabase/supabase-js';
 import { PuffLoader } from 'react-spinners';
 import { Reorder } from 'framer-motion';
 import {FiSearch} from 'react-icons/fi'
+import { event } from 'nextjs-google-analytics';
 
 type Data = {
   user: User | null;
@@ -166,6 +167,11 @@ const SwipeUI = (props: Props) => {
   return (
     <div className='min-h-[100vh] relative w-[100vw] flex-col md:hidden flex bg-gray'>
       <div onClick={()=>{
+        event('open-search', {
+        category: 'search',
+        action: 'open-search',
+        label: 'search'
+      })
         setIsSearchModalOpen(true)
       }} className='w-[3rem] h-[3rem] bg-[rgba(0,0,0,0.5)] rounded-full absolute top-[1rem] right-[1rem] flex items-center justify-center'>
         <FiSearch className='text-white h-[1.5rem] w-[1.5rem]' />
@@ -176,11 +182,32 @@ const SwipeUI = (props: Props) => {
         </div>
       </div>
       <div className='w-[100vw] flex gap-[1rem] mt-[1rem] justify-center'>
-        <button onClick={session ? () => setAllResources('saved') : () => setLoginOpen(true)} className='text-white flex items-center justify-center gap-[5px] bg-altGray h-[3rem] rounded-xl w-[8rem]'>
+        <button onClick={session ? () => {
+          event('open-saved', {
+            category: 'saved',
+            action: 'open-saved',
+            label: 'saved'
+          })
+          setAllResources('saved')
+        } : () => {
+          event('open-login', {
+            category: 'login',
+            action: 'open-login',
+            label: 'login'
+          })
+          setLoginOpen(true)
+        }} className='text-white flex items-center justify-center gap-[5px] bg-altGray h-[3rem] rounded-xl w-[8rem]'>
           <MdOutlineSaveAlt className='text-white' />
           Saved
         </button>
-        <button onClick={() => setOpen(true)} className='text-white flex items-center justify-center gap-[5px] bg-altGray h-[3rem] rounded-xl w-[8rem]'>
+        <button onClick={() => {
+          event('open-filter', {
+            category: 'filter',
+            action: 'open-filter',
+            label: 'filter'
+          })
+          setOpen(true)
+        }} className='text-white flex items-center justify-center gap-[5px] bg-altGray h-[3rem] rounded-xl w-[8rem]'>
           <BsFilter className='text-white' />
           Filter
         </button>
@@ -233,6 +260,11 @@ const SwipeUI = (props: Props) => {
           <button
             className='h-[3rem] w-[80%] text-white bg-altGray rounded-xl'
             onClick={() => {
+              event('apply-filter', {
+                category: 'filter',
+                action: 'apply-filter',
+                label: 'apply-filter'
+              })
               setFilteredResources(selectedCategory)
               setOpen(false)
             }}
@@ -254,6 +286,11 @@ const SwipeUI = (props: Props) => {
           <button
             className='h-[3rem] w-[80%] flex items-center justify-center text-white bg-altGray rounded-xl'
             onClick={() => {
+              event('login', {
+                category: 'login',
+                action: 'login',
+                label: 'login'
+              })
               handleLogin()
             }}
             disabled={(!data || error) ? false : true}
@@ -263,6 +300,11 @@ const SwipeUI = (props: Props) => {
           <button
             className='h-[3rem] mt-[10px] w-[80%] text-white bg-altGray rounded-xl'
               onClick={() => {
+                event('login-github', {
+                  category: 'login',
+                  action: 'login-github',
+                  label: 'login-github'
+                })
                 handleGithubLogin()
               }}
               disabled={(!data||error)?false:true}
@@ -273,18 +315,55 @@ const SwipeUI = (props: Props) => {
       </BottomSheet>
       <div className='h-[70px] border-t border-lightGray flex justify-center bg-altGray fixed bottom-[-2px] w-[100vw]'>
         <div className='w-[90%] justify-around flex items-center h-[70px]'>
-          <div onClick={() => setAllResources('all')} className='flex flex-col items-center'>
+          <div onClick={() => {
+            event('open-all', {
+              category: 'all',
+              action: 'open-all',
+              label: 'all'
+            })
+            setAllResources('all')
+          }} className='flex flex-col items-center'>
             <RiGlobalLine className='text-[#6c6c6c] text-[22px] lazyweb-add transition-all cursor-pointer' />
             <span className='text-[#6c6c6c] mt-[3px] md:hidden flex text-[12px]'>All</span>
           </div>
-          <div onClick={() => !session && setLoginOpen(true)}>
+          <div onClick={() => {
+            event('open-create', {
+              category: 'create',
+              action: 'open-create',
+              label: 'create'
+            })
+            // !session && setLoginOpen(true)
+            if(!session){
+              setLoginOpen(true)
+            }
+          }}>
             <CreateResource />
           </div>
-          <div onClick={session ? () => setAllResources('my') : () => setLoginOpen(true)} className='flex flex-col items-center'>
+          <div onClick={()=>{
+            event('open-saved', {
+              category: 'saved',
+              action: 'open-saved',
+              label: 'saved'
+            })
+            //session ? () => setAllResources('my') : () => setLoginOpen(true)
+            if(session){
+              setAllResources('my')
+            }
+            else{
+              setLoginOpen(true)
+            }
+          }} className='flex flex-col items-center'>
             <FiLayers className='text-[#6c6c6c] text-[22px] lazyweb-add transition-all cursor-pointer' />
             <span className='text-[#6c6c6c] mt-[3px] md:hidden flex text-[12px]'>My</span>
           </div>
-          <img onClick={handleProfileClick} className='h-[40px] rounded-full' src={imgData} />
+          <img onClick={()=>{
+            event('login-logout', {
+              category: 'login',
+              action: 'login-logout',
+              label: 'login-logout'
+            })
+            handleProfileClick()
+          }} className='h-[40px] rounded-full' src={imgData} />
         </div>
       </div>
     </div>

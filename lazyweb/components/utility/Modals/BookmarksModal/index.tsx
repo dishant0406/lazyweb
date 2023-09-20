@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import MobileResourceCard from '@/components/mobile/MobileResourceCard';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { event } from 'nextjs-google-analytics';
 
 
 
@@ -107,6 +108,11 @@ const BookmarkModal = ({ isOpen, setIsOpen, resources }: Props) => {
                       disabled={loading}
                       className="md:inline-flex hidden justify-center px-4 py-1 text-base font-medium bg-[#0d0d0e] border-altGray border-[2px]  rounded-md shadow-sm text-white hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 "
                       onClick={() => {
+                        event('save-all', {
+                          category: 'bookmark',
+                          action: 'save-all',
+                          label: 'save-all'
+                        })
                         bookmarkAll()
                       }}
                     >
@@ -122,6 +128,11 @@ const BookmarkModal = ({ isOpen, setIsOpen, resources }: Props) => {
                       disabled={loading}
                       className="inline-flex md:hidden justify-center px-4 py-1 text-base font-medium bg-[#0d0d0e] border-altGray border-[2px]  rounded-md shadow-sm text-white hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 "
                       onClick={() => {
+                        event('save-all', {
+                          category: 'bookmark',
+                          action: 'save-all',
+                          label: 'save-all'
+                        })
                         session?.id && bookmarkAll()
                       }}
                     >
@@ -137,6 +148,11 @@ const BookmarkModal = ({ isOpen, setIsOpen, resources }: Props) => {
                       disabled={loading}
                       className="inline-flex md:hidden justify-center px-4 py-1 text-base font-medium bg-[#0d0d0e] border-altGray border-[2px]  rounded-md shadow-sm text-white hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 "
                       onClick={() => {
+                        event('close-modal', {
+                          category: 'bookmark',
+                          action: 'close-modal',
+                          label: 'close-modal'
+                        })
                         closeModal()
                       }}
                       >

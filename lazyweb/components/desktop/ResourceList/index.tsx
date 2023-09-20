@@ -7,6 +7,7 @@ import {FiShare2} from 'react-icons/fi'
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { event } from 'nextjs-google-analytics';
 
 type Props = {
 
@@ -59,6 +60,11 @@ const ResourceList = (props: Props) => {
               </p>
               <div className='absolute right-[10px]'>
                 <p className='text-[12px] text-white cursor-pointer' onClick={() => {
+                  event('copy-link', {
+                    category: 'bookmark',
+                    action: 'copy-link',
+                    label: 'copy-link'
+                  })
                   navigator.clipboard.writeText(
                     fullUrl + `?bookmark=${session?.id}` 
                   )
@@ -76,6 +82,11 @@ const ResourceList = (props: Props) => {
 
             </div>
             <button onClick={() => {
+              event('share-link', {
+                category: 'bookmark',
+                action: 'share-link',
+                label: 'share-link'
+              })
               navigator.share({
                 title: 'Bookmarked Resources',
                 url: fullUrl + `?bookmark=${session?.id}` 
@@ -85,6 +96,11 @@ const ResourceList = (props: Props) => {
               <FiShare2 className='inline ml-[0.5rem] text-[18px] text-white' />
             </button>
             <button onClick={() => {
+              event('open-qr-code', {
+                category: 'bookmark',
+                action: 'open-qr-code',
+                label: 'open-qr-code'
+              })
               setIsQrCodeModalOpen(true)
             }} className='px-[0.5rem] py-[0.5rem] rounded-[5px] bg-[#0d0d0e] text-white text-[14px]'>
               

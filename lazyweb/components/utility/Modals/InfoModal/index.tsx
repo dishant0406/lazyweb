@@ -20,6 +20,7 @@ import {
   WhatsappIcon,
 
 } from 'react-share'
+import { event } from 'nextjs-google-analytics';
 
 
 
@@ -116,7 +117,14 @@ const InfoModal = ({ isOpen, setIsOpen, resource }: Props) => {
                     className="text-lg md:whitespace-nowrap flex items-center gap-[10px] font-medium leading-6 text-white"
                   >
                     <div className='w-[16px]'>
-                      <FiExternalLink onClick={() => window.open(formatUrl(resource.url), '_blank')} className='text-[16px] hover:scale-[1.2] transition-all cursor-pointer text-white' />
+                      <FiExternalLink onClick={() => {
+                        event('open-resource', {
+                          category: 'resource',
+                          action: 'open-resource',
+                          label: 'open-resource'
+                        })
+                        window.open(formatUrl(resource.url), '_blank')
+                      }} className='text-[16px] hover:scale-[1.2] transition-all cursor-pointer text-white' />
                     </div>
                     {
                       //resouce title is too long then break it into half

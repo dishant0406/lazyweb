@@ -12,6 +12,7 @@ import io from 'socket.io-client';
 import 'react-reflex/styles.css'
 import { toast } from "react-toastify";
 import MemebersModal from "@/components/utility/Modals/Members";
+import { event } from "nextjs-google-analytics";
 
 const socket = io(process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL || 'http://localhost:4000');
 
@@ -220,6 +221,11 @@ const PlaygroundComponent = () => {
               className="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt">
             </div>
             <button onClick={() => {
+              event('create-room', {
+                category: 'playground',
+                label: 'create-room'
+              })
+              
               setIsCreateOpen(true)
             }} title="Create Room"
               className="relative inline-flex items-center bg-[#1e1e1e] justify-center px-4 py-2 text-lg font-bold text-white transition-all duration-200 bg-gray-900 font-pj rounded-xl focus:outline-none "
@@ -235,6 +241,11 @@ const PlaygroundComponent = () => {
               </div>
               <button onClick={() => {
                 //clipoard copy room id
+                event('copy-room-id', {
+                  category: 'playground',
+                  label: 'copy-room-id'
+                })
+
                 if (displayName === 'Admin') {
                   setMemebersModalOpen(true)
                 } else {
@@ -252,6 +263,11 @@ const PlaygroundComponent = () => {
               </div>
               <button onClick={() => {
                 //clipoard copy room id
+                event('disconnect-room', {
+                  category: 'playground',
+                  label: 'disconnect-room'
+                })
+
                 socket.disconnect()
                 window.location.reload()
                 setDisplayName('')

@@ -30,6 +30,13 @@ yarn-error.log*
 
 # local env files
 .env*.local
+**/.env*.local
+/.env
+.env
+
+# .env file in any subfolder
+**/.env*
+
 
 # vercel
 .vercel
