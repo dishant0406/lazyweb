@@ -1,4 +1,4 @@
-import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal, SwipeUI, SEO, SearchBarModal, BookmarkModal } from 'components'
+import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal, SwipeUI, SEO, SearchBarModal, BookmarkModal, NavBar } from 'components'
 import { useEffect, useState } from 'react'
 import { useAllResources,useSetAllResourcesServerSide, useSearchModal, useSelectedTab, useUserData, Resource } from '@/hooks/Zustand';
 import { useTour } from '@reactour/tour';
@@ -98,6 +98,7 @@ const Home = ({
   return (
     <>
       <SEO />
+      <NavBar />
       <div className={`md:flex hidden`}>
         <div>
           <Category />

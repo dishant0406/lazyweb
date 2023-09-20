@@ -71,7 +71,6 @@ export default function App({ Component, pageProps }: AppProps) {
           }
         ]
         }>
-        <NavBar />
         <GoogleAnalytics trackPageViews />
         <Component {...pageProps} />
         <ToastContainer theme='dark' hideProgressBar={true} closeButton={false} pauseOnHover={false} />
