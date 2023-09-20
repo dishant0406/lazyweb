@@ -6,6 +6,7 @@ import { formatUrl } from 'lib/formatUrl';
 import { useUserData } from '@/hooks';
 import { unFormatUrl } from '@/lib/unFormatUrl';
 import { axiosInstance } from '@/hooks/Zustand';
+import { event } from 'nextjs-google-analytics';
 let placeholder = 'assets/placeholder-website.png'
 
 type Props = {
@@ -212,7 +213,14 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
                     type="button"
                     disabled={loadingFetch}
                     className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                    onClick={handleFetchDetails}
+                    onClick={()=>{
+                      event('fetch-details', {
+                        category: 'bookmark',
+                        action: 'fetch-details',
+                        label: 'fetch-details'
+                      })
+                      handleFetchDetails()
+                    }}
                   >
                     {loadingFetch ? 'Fetching...' : 'Fetch Details'}
                   </button>
@@ -244,7 +252,14 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
                     type="button"
                     disabled={title == '' || image === placeholder || loading}
                     className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                    onClick={handleAdd}
+                    onClick={()=>{
+                      event('add-resource', {
+                        category: 'bookmark',
+                        action: 'add-resource',
+                        label: 'add-resource'
+                      })
+                      handleAdd()
+                    }}
                   >
                     {loading ? 'Adding...' : 'Add'}
                   </button>

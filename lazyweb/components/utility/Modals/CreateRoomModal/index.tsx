@@ -9,6 +9,7 @@ import { useUserData } from '@/hooks';
 import { Checkbox } from 'react-input-checkbox';
 import { uniqueNamesGenerator, Config, adjectives, colors, animals, countries, names, NumberDictionary, starWars, languages } from 'unique-names-generator';
 import { toast } from 'react-toastify';
+import { event } from 'nextjs-google-analytics';
 
 type Props = {
   isOpen: boolean,
@@ -141,6 +142,11 @@ const CreateRoomModal = ({ isOpen, setDisplayName: setName, setIsOpen, code, set
 
                 <div className='mt-4 w-full flex justify-center gap-[1rem]'>
                   <button onClick={() => {
+                    event('create-new-room', {
+                      category: 'room',
+                      action: 'create-new-room',
+                      label: 'create-new-room'
+                    })
                     setType('new')
                     setDisplayName('')
                     setPassword('')
@@ -151,6 +157,11 @@ const CreateRoomModal = ({ isOpen, setDisplayName: setName, setIsOpen, code, set
                     <span>New Room</span>
                   </button>
                   <button onClick={() => {
+                    event('join-room', {
+                      category: 'room',
+                      action: 'join-room',
+                      label: 'join-room'
+                    })
                     setType('join')
                     setDisplayName('')
                     setPassword('')
@@ -169,6 +180,11 @@ const CreateRoomModal = ({ isOpen, setDisplayName: setName, setIsOpen, code, set
                   <div className='w-full flex items-center gap-[1rem]'>
                     <input value={roomId} onChange={e => setRoomId(e.target.value)} type="text" placeholder={type === 'new' ? 'New Room ID or Generate' : 'Room ID'} className='w-full focus:outline-none bg-[#3b3b3b] text-white px-[10px] py-[5px] rounded-md' />
                     {type === 'new' && <button onClick={() => {
+                      event('generate-room-id', {
+                        category: 'room',
+                        action: 'generate-room-id',
+                        label: 'generate-room-id'
+                      })
                       setRoomId(generateName())
                     }} className='flex items-center gap-[10px] font-medium text-[#1e1e1e] bg-white px-[10px] py-[5px] rounded-md'>
                       <span>Generate</span>
@@ -192,6 +208,11 @@ const CreateRoomModal = ({ isOpen, setDisplayName: setName, setIsOpen, code, set
                   {type === 'join' && <div className='w-full mt-[1rem] flex items-center gap-[1rem]'>
                     <input value={displayName} onChange={e => setDisplayName(e.target.value)} type="text" placeholder={'Display Name'} className='w-full focus:outline-none bg-[#3b3b3b] text-white px-[10px] py-[5px] rounded-md' />
                     {type === 'join' && <button onClick={() => {
+                      event('generate-display-name', {
+                        category: 'room',
+                        action: 'generate-display-name',
+                        label: 'generate-display-name'
+                      })
                       setDisplayName(generateDisplayName())
                     }} className='flex items-center gap-[10px] font-medium text-[#1e1e1e] bg-white px-[10px] py-[5px] rounded-md'>
                       <span>Generate</span>
@@ -199,7 +220,14 @@ const CreateRoomModal = ({ isOpen, setDisplayName: setName, setIsOpen, code, set
                   </div>}
 
                   <div className='w-full mt-[1rem]'>
-                    <button onClick={handleSubmit} className='w-full focus:outline-none bg-white text-[#3b3b3b] px-[10px] py-[5px] rounded-md'>{
+                    <button onClick={()=>{
+                      event('submit-room', {
+                        category: 'room',
+                        action: 'submit-room',
+                        label: 'submit-room'
+                      })
+                      handleSubmit()
+                    }} className='w-full focus:outline-none bg-white text-[#3b3b3b] px-[10px] py-[5px] rounded-md'>{
                       type === 'new' ? 'Create Room' : 'Join Room'
                     }</button>
                   </div>

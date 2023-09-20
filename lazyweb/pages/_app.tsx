@@ -9,6 +9,7 @@ import Favicon from 'components/utility/Favicon/Favicon'
 import { TourProvider, useTour } from '@reactour/tour'
 import { ToastContainer } from 'react-toastify'
 import { useUserData } from '@/hooks';
+import { GoogleAnalytics } from "nextjs-google-analytics";
 
 export default function App({ Component, pageProps }: AppProps) {
   const { session } = useUserData()
@@ -71,6 +72,7 @@ export default function App({ Component, pageProps }: AppProps) {
         ]
         }>
         <NavBar />
+        <GoogleAnalytics trackPageViews />
         <Component {...pageProps} />
         <ToastContainer theme='dark' hideProgressBar={true} closeButton={false} pauseOnHover={false} />
       </TourProvider>
