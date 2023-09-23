@@ -8,6 +8,7 @@ import { useTour } from '@reactour/tour';
 import { useLoginModal } from '@/hooks/Zustand';
 import { Fragment } from 'react';
 import { useRouter } from 'next/router';
+import { event } from 'nextjs-google-analytics';
 
 type Props = {}
 
@@ -31,6 +32,11 @@ const NavBar = (props: Props) => {
         <div title={
           'Go to home page'
         } onClick={()=>{
+          event('go-home', {
+            category: 'home',
+            action: 'go-home',
+            label: 'home'
+          })
           router.push('/')
         }} className="bg-white cursor-pointer lazyweb-logo w-[140px] ml-[20px]">
           <img src={logo} className='h-[45px]' />
@@ -60,6 +66,11 @@ const NavBar = (props: Props) => {
                 {({ active }) => (
                   <button
                   onClick={()=>{
+                    event('go-to-playground', {
+                      category: 'playground',
+                      action: 'go-to-playground',
+                      label: 'playground'
+                    })
                     router.push('/playground')
                   }}
                     className={`${
@@ -77,8 +88,25 @@ const NavBar = (props: Props) => {
         </Transition>
         </Menu>
         {session && <CreateResource/>}
-        <ProfileIcon onClick={()=>!session && setIsOpen(true)} className='hidden cursor-pointer md:flex lazyweb-login' address={(session && session.email) ?session.email:'Login'}/>
-        {session && <button onClick={signoutHandler} className='bg-altGray text-white whitespace-nowrap px-[1rem] rounded-[20px] py-[0.5rem]'>sign out</button>}
+        <ProfileIcon onClick={()=>{
+          event('open-login-modal', {
+            category: 'login',
+            action: 'open-login-modal',
+            label: 'login'
+          })
+          //!session && setIsOpen(true)
+          if(!session){
+            setIsOpen(true)
+          }
+        }} className='hidden cursor-pointer md:flex lazyweb-login' address={(session && session.email) ?session.email:'Login'}/>
+        {session && <button onClick={()=>{
+          event('sign-out', {
+            category: 'sign-out',
+            action: 'sign-out',
+            label: 'sign-out'
+          })
+          signoutHandler()
+        }} className='bg-altGray text-white whitespace-nowrap px-[1rem] rounded-[20px] py-[0.5rem]'>sign out</button>}
       </div>
       <LoginModal isOpen={isOpen} setIsOpen={setIsOpen}/>
     </div>

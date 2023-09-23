@@ -1,4 +1,5 @@
 import {CustomCheckbox} from 'components'
+import { event } from 'nextjs-google-analytics';
 import { useState, useEffect } from 'react';
 import {ChevronDown} from 'react-feather'
 
@@ -23,7 +24,14 @@ const SidebarCategory = ({options, title}: Props) => {
 
   return (
     <div className="w-[10rem] lazyweb-category">
-      <button onClick={()=>{setExpanded(!expanded)}} className="text-[16px] gap-[5px] flex items-center cursor-pointer text-white">
+      <button onClick={()=>{
+        event('expand-category', {
+          category: title,
+          action: 'expand-category',
+          label: title
+        })
+        setExpanded(!expanded)
+      }} className="text-[16px] gap-[5px] flex items-center cursor-pointer text-white">
         {title}
         <ChevronDown className={`transition-all mt-[3px] text-[#747477] h-[16px] ${expanded?'transform rotate-180':''}`}/>
       </button>

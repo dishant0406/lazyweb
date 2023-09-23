@@ -12,6 +12,9 @@ import io from 'socket.io-client';
 import 'react-reflex/styles.css'
 import { toast } from "react-toastify";
 import MemebersModal from "@/components/utility/Modals/Members";
+import { event } from "nextjs-google-analytics";
+import ReactTooltip from 'react-tooltip';
+import { useRouter } from "next/router";
 
 const socket = io(process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL || 'http://localhost:4000');
 
@@ -20,6 +23,7 @@ const PlaygroundComponent = () => {
   const [logs, setLogs] = useState<any>([]);
   const [code, setCode] = useState<any>("console.log('hello lazyweb')");
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
+  const router = useRouter()
   const [isRoomJoined, setIsRoomJoined] = useState<boolean>(false);
   const [roomID, setRoomID] = useState<string>('');
   const [displayName, setDisplayName] = useState<string>('');
@@ -212,7 +216,7 @@ const PlaygroundComponent = () => {
 
   return (
     <>
-      <div className="md:pt-[70px] relative">
+      <div className="relative">
         {/* <button className="absolute bottom-[10px] right-[10px] bg-[#1e1e1e] text-white px-[10px] py-[5px] rounded-md">Create Room</button> */}
         {!isRoomJoined && <div className="fixed z-[2] bottom-[10px] right-[10px]">
           <div className="relative inline-flex group">
@@ -220,6 +224,11 @@ const PlaygroundComponent = () => {
               className="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt">
             </div>
             <button onClick={() => {
+              event('create-room', {
+                category: 'playground',
+                label: 'create-room'
+              })
+              
               setIsCreateOpen(true)
             }} title="Create Room"
               className="relative inline-flex items-center bg-[#1e1e1e] justify-center px-4 py-2 text-lg font-bold text-white transition-all duration-200 bg-gray-900 font-pj rounded-xl focus:outline-none "
@@ -235,6 +244,11 @@ const PlaygroundComponent = () => {
               </div>
               <button onClick={() => {
                 //clipoard copy room id
+                event('copy-room-id', {
+                  category: 'playground',
+                  label: 'copy-room-id'
+                })
+
                 if (displayName === 'Admin') {
                   setMemebersModalOpen(true)
                 } else {
@@ -252,6 +266,11 @@ const PlaygroundComponent = () => {
               </div>
               <button onClick={() => {
                 //clipoard copy room id
+                event('disconnect-room', {
+                  category: 'playground',
+                  label: 'disconnect-room'
+                })
+
                 socket.disconnect()
                 window.location.reload()
                 setDisplayName('')
@@ -264,6 +283,26 @@ const PlaygroundComponent = () => {
             </abbr>
           </div>
         }
+        <div onClick={()=>{
+          event('go-to-home', {
+            category: 'playground',
+            label: 'home'
+          })
+          router.push('/')
+        }} className="fixed hover:scale-[1.05] transition-all duration-300 cursor-pointer z-[2] shadow-[0_20px_50px_rgba(8,_112,_184,_0.7)] top-[1rem] right-[1rem]">
+          <a data-tip data-for='info'>
+            <img src='/assets/playfavicon.ico'/>
+          </a>
+        </div>
+        <div onClick={()=>{
+          event('go-to-home', {
+            category: 'playground',
+            label: 'home'
+          })
+          router.push('/')
+        }} title="Go to Home" className="fixed bg-transparent text-white flex items-center hover:scale-[1.05] transition-all duration-300 cursor-pointer z-[2] left-[1rem] bottom-[1rem]">
+          Made with ❤️ by LazyWeb
+        </div>
         <ReflexContainer orientation={
           isDesktop ? 'vertical' : 'horizontal'
         }>
@@ -273,10 +312,12 @@ const PlaygroundComponent = () => {
             <div className="pane-content">
               <Editor
                 height={
-                  isDesktop ? 'calc(100vh - 70px)' : '50vh'
+                  isDesktop ? '100vh' : '50vh'
                 }
                 theme="vs-dark"
-
+                loading={<div className="flex items-center justify-center w-full h-full text-white bg-gray">
+                  <h1>Loading Editor...</h1>
+                </div>}
                 value={code}
                 width={'100%'}
                 defaultLanguage="javascript"
@@ -296,14 +337,14 @@ const PlaygroundComponent = () => {
               />
             </div>
           </ReflexElement>
-          <ReflexSplitter className="!h-[50vh] md:!h-[calc(100vh-70px)]" />
+          <ReflexSplitter className="!h-[50vh] md:!h-[100vh]" />
           <ReflexElement className={
             isDesktop?"right-pane":""
           }
             minSize={200}
             maxSize={800}>
             <div className="pane-content">
-              <div className="console md:h-[calc(100vh-70px)] h-[50vh]">
+              <div className="console md:h-[100vh] h-[50vh]">
                 <div className="console-header mb-[10px]">
                   <h3>| Console |</h3>
                 </div>
@@ -313,6 +354,9 @@ const PlaygroundComponent = () => {
           </ReflexElement>
         </ReflexContainer>
       </div>
+      <ReactTooltip className='bg-gray' type='success' id='info' place='bottom'>
+          JavaScript Playground
+      </ReactTooltip>
       <iframe ref={iframeRef} title="output" style={{ width: '0px', height: '0px', border: 'none' }}></iframe>
       {<CreateRoomModal setDisplayName={setDisplayName} code={code} setIsRoomJoined={setIsRoomJoined} setRoomID={setRoomID} socket={socket} isOpen={isCreateOpen} setIsOpen={setIsCreateOpen} />}
       {isRoomJoined && <MemebersModal roomID={roomID} socket={socket} isOpen={memebersModalOpen} setIsOpen={setMemebersModalOpen} />}
