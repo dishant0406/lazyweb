@@ -8,6 +8,7 @@ import {AiFillInfoCircle} from 'react-icons/ai'
 import { useRouter } from 'next/router'
 import {IoQrCode} from 'react-icons/io5'
 import Image from 'next/image'
+import { event } from 'nextjs-google-analytics'
 
 type Props = {
   resource: Resource
@@ -43,16 +44,33 @@ const MobileResourceCard = ({resource}: Props) => {
             src={resource.image_url}
             className='rounded-t-[10px]'
           />
-        <div onClick={handleGoto} style={{backgroundColor:'rgba(32, 33, 36, 0.5)'}} className='h-[2rem] absolute top-[5px] flex items-center justify-center left-[5px] w-[2rem] rounded-full'>
+        <div onClick={()=>{
+          event('goto-resource', {
+            category: resource.category,
+            action: 'goto-resource',
+            label: resource.title
+          })
+          handleGoto()
+        }} style={{backgroundColor:'rgba(32, 33, 36, 0.5)'}} className='h-[2rem] absolute top-[5px] flex items-center justify-center left-[5px] w-[2rem] rounded-full'>
           <BiLinkExternal className='text-white'/>
         </div>
         <div onClick={()=>{
+        event('open-info', {
+          category: resource.category,
+          action: 'open-info',
+          label: resource.title
+        })
         setIsInfoOpen(true)
       }} className='h-[2rem] cursor-pointer w-[2rem] flex items-center justify-center rounded-full absolute bottom-[3rem] right-[5px] bg-[rgba(32,33,36,0.5)]'>
         <IoQrCode className="text-[18px] text-white" />
       </div>
         <div onClick={() => {
-        //set url query to the resource id
+        event('open-info', {
+          category: resource.category,
+          action: 'open-info',
+          label: resource.title
+        })
+        
         router.replace({
           pathname: '/',
           query: { id: resource._id },

@@ -1,5 +1,6 @@
 type Props = {}
 import { useSelectedTab,useUserData,useAllResources, useCompleteResourceLength,useLoginModal } from 'hooks/Zustand';
+import { event } from 'nextjs-google-analytics';
 import { useState, useEffect } from 'react';
 
 const ResourceListBar = (props: Props) => {
@@ -66,7 +67,14 @@ const ResourceListBar = (props: Props) => {
           if(e.slug==='publish'){
             if(session && session.isAdmin){
               return (
-                <button onClick={()=>selectionHandler(e.id)} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b-[3px] border-lightGray'}`}>
+                <button onClick={()=>{
+                  event('select-tab', {
+                    category: 'publish',
+                    action: 'select-tab',
+                    label: 'publish'
+                  })
+                  selectionHandler(e.id)
+                }} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b-[3px] border-lightGray'}`}>
                   <div className={`${e.selected?'text-white':"text-lightGray"} transition-all`}>{e.name}</div>
                 </button>
               )
@@ -75,7 +83,14 @@ const ResourceListBar = (props: Props) => {
             }
           }
           return (
-            <button onClick={()=>selectionHandler(e.id)} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b-[3px] border-lightGray'}`}>
+            <button onClick={()=>{
+              event('select-tab', {
+                category: e.slug,
+                action: 'select-tab',
+                label: e.slug
+              })
+              selectionHandler(e.id)
+            }} key={e.id} className={`h-[3rem] px-[1rem] w-[fit] transition-all ${e.selected?'border-b-[3px] border-[#1c64ec]':'border-b-[3px] border-lightGray'}`}>
               <div className={`${e.selected?'text-white':"text-lightGray"} transition-all`}>{e.name}</div>
             </button>
           )

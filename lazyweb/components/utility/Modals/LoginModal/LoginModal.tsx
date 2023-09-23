@@ -6,6 +6,7 @@ import { PuffLoader } from 'react-spinners';
 import { GitHub } from 'react-feather'
 import axios from 'axios';
 import { useUserData } from '@/hooks';
+import { event } from 'nextjs-google-analytics';
 
 type Props = {
   isOpen: boolean,
@@ -155,7 +156,14 @@ const LoginModal = ({ isOpen, setIsOpen }: Props) => {
 
                 <div className="mt-4 flex gap-[1rem] items-center">
                   <button
-                    onClick={handleLogin}
+                    onClick={()=>{
+                      event('login', {
+                        category: 'login',
+                        action: 'login',
+                        label: 'login'
+                      })
+                      handleLogin()
+                    }}
                     type="button"
                     disabled={(!data || error) ? false : true}
                     className="inline-flex min-w-[6rem] justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
@@ -163,7 +171,14 @@ const LoginModal = ({ isOpen, setIsOpen }: Props) => {
                     {!data || error ? (!loading ? 'Sign In' : <PuffLoader size={20} color="#fff" />) : 'Email Sent'}
                   </button>
                   <p className='text-white'>or</p>
-                    <button onClick={handleGithubLogin} className='w-[7rem] py-1 text-lightGray rounded-lg px-[0.5rem] flex justify-center items-center gap-[0.5rem] bg-altGray'>
+                    <button onClick={()=>{
+                      event('login-with-github', {
+                        category: 'login',
+                        action: 'login-with-github',
+                        label: 'login-with-github'
+                      })
+                      handleGithubLogin()
+                    }} className='w-[7rem] py-1 text-lightGray rounded-lg px-[0.5rem] flex justify-center items-center gap-[0.5rem] bg-altGray'>
                       <GitHub className='text-lightGray h-[2rem]'/>
                       Github
                     </button>

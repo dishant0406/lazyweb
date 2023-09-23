@@ -9,6 +9,7 @@ import CreatableSelect from 'react-select/creatable'
 let placeholder = 'assets/placeholder-website.png'
 import { MultiValue } from 'react-select';
 import { useCompleteResourceLength, useAllResources, useAllTags,useAllCategory, axiosInstance } from 'hooks/Zustand';
+import { event } from 'nextjs-google-analytics';
 
 type Props = {
   isOpen: boolean,
@@ -260,7 +261,14 @@ const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
                       type="button"
                       disabled={title=='' && image == placeholder && loadingFetch}
                       className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                      onClick={handleAdd}
+                      onClick={()=>{
+                        event('publish', {
+                          category: 'publish',
+                          action: 'publish',
+                          label: 'publish'
+                        })
+                        handleAdd()
+                      }}
                     >
                      { loadingFetch?'Loading...':'Submit for Publishing'}
                     </button>                   

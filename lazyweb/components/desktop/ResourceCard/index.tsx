@@ -12,6 +12,7 @@ import { useRouter } from "next/router"
 import { IoQrCode } from 'react-icons/io5';
 import Image from "next/image";
 import {HiOutlineExternalLink} from 'react-icons/hi'
+import { event } from "nextjs-google-analytics";
 
 
 type Props = {
@@ -176,11 +177,35 @@ const ResourceCard = ({ url, title, description, image, resource, scrollPosition
           </div>
         )}
         {resource.created_by_list.includes(session?.id!) && !resource.isPublicAvailable && !resource.isAvailableForApproval && <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="w-full z-[1] absolute top-[0] left-[0] transition-all flex items-center justify-center duration-500 hover:bg-gray/[0.4] h-[10.5rem] rounded-t-[10px]">
-          <button onClick={() => setOpen(true)} className={`text-white hover:scale-[1.05] ${isHovered ? 'opacity-100' : 'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Publish</button>
+          <button onClick={() => {
+            event('publish', {
+              category: 'publish-resource',
+              title: resource.title,
+              url: resource.url,
+              id: resource._id
+            })
+            setOpen(true)
+          }} className={`text-white hover:scale-[1.05] ${isHovered ? 'opacity-100' : 'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Publish</button>
         </div>}
         {session?.isAdmin && resource.isAvailableForApproval && selectedTab === 'publish' && <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="w-[18rem] absolute top-[0] left-[0] z-[1] transition-all flex items-center justify-center gap-[5px] duration-500 hover:bg-gray/[0.4] h-[11.5rem] rounded-t-[20px]">
-          <button onClick={() => handleApproveOrReject('approve')} className={`text-white hover:scale-[1.05] ${isHovered ? 'opacity-100' : 'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Approve</button>
-          <button onClick={() => handleApproveOrReject('reject')} className={`text-white hover:scale-[1.05] ${isHovered ? 'opacity-100' : 'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-red-600 rounded-[20px]`}>Reject</button>
+          <button onClick={() => {
+            event('approve', {
+              category: 'approve-resource',
+              title: resource.title,
+              url: resource.url,
+              id: resource._id,
+            })
+            handleApproveOrReject('approve')
+          }} className={`text-white hover:scale-[1.05] ${isHovered ? 'opacity-100' : 'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Approve</button>
+          <button onClick={() => {
+            event('reject', {
+              category: 'reject-resource',
+              title: resource.title,
+              url: resource.url,
+              id: resource._id,
+            })
+            handleApproveOrReject('reject')
+          }} className={`text-white hover:scale-[1.05] ${isHovered ? 'opacity-100' : 'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-red-600 rounded-[20px]`}>Reject</button>
         </div>}
 
           {/* <Image
@@ -209,24 +234,53 @@ const ResourceCard = ({ url, title, description, image, resource, scrollPosition
       </div>
       <button title={
        `Visit ${title}`
-      } onClick={handleGoto} className="text-white hover:scale-[1.05] transition-all absolute bottom-[10px] right-[10px] px-[5px] py-[2px] text-[12px] bg-altGray rounded-lg">
+      } onClick={e=>{
+        e.stopPropagation()
+        event('visit', {
+          category: 'visit-resource',
+          title: resource.title,
+          url: resource.url,
+          id: resource._id,
+        })
+        handleGoto()
+      }} className="text-white hover:scale-[1.05] transition-all absolute bottom-[10px] right-[10px] px-[5px] py-[2px] text-[12px] bg-altGray rounded-lg">
         <HiOutlineExternalLink className="text-[18px] text-white inline-block" />
       </button>
       <FcInfo title={
         `Info about ${title}`
       } onClick={() => {
         //set url query to the resource id
+        event('info', {
+          category: 'info-resource',
+          title: resource.title,
+          url: resource.url,
+          id: resource._id,
+        })
         router.replace({
           pathname: '/',
           query: { id: resource._id },
         }, undefined, { shallow: true });
       }} className="text-[18px] absolute bottom-[6rem] right-[5px] hover:scale-[1.1] cursor-pointer transition-all" />
       <div onClick={()=>{
+        event('qr-code', {
+          category: 'qr-code-resource',
+          title: resource.title,
+          url: resource.url,
+          id: resource._id,
+        })
         setIsInfoOpen(true)
       }} className='h-[2rem] cursor-pointer w-[2rem] flex items-center justify-center rounded-full absolute bottom-[6rem] left-[5px] bg-[rgba(32,33,36,0.5)]'>
         <IoQrCode className="text-[18px] text-white" />
       </div>
-      {session  && <motion.div animate={isBookmarked ? 'booked' : 'notBooked'} variants={varients} onClick={handleBookMark} onMouseEnter={() => setISHover(true)} onMouseLeave={() => setISHover(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[10px] right-[10px]">
+      {session  && <motion.div animate={isBookmarked ? 'booked' : 'notBooked'} variants={varients} onClick={()=>{
+        event('bookmark', {
+          category: 'bookmark-resource',
+          title: resource.title,
+          url: resource.url,
+          id: resource._id,
+        })
+        handleBookMark()
+      }} onMouseEnter={() => setISHover(true)} onMouseLeave={() => setISHover(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[10px] right-[10px]">
         <AnimatePresence>
           {(isHover || isBookmarked) ? (
             <motion.div
@@ -249,7 +303,15 @@ const ResourceCard = ({ url, title, description, image, resource, scrollPosition
           )}
         </AnimatePresence>
       </motion.div>}
-      {session && resource.isPublicAvailable && <motion.div animate={isLiked ? 'booked' : 'notBooked'} variants={varients} onClick={handleLike} onMouseEnter={() => setIsLikeHovered(true)} onMouseLeave={() => setIsLikeHovered(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[10px] left-[10px]">
+      {session && resource.isPublicAvailable && <motion.div animate={isLiked ? 'booked' : 'notBooked'} variants={varients} onClick={()=>{
+        event('like', {
+          category: 'like-resource',
+          title: resource.title,
+          url: resource.url,
+          id: resource._id,
+        })
+        handleLike()
+      }} onMouseEnter={() => setIsLikeHovered(true)} onMouseLeave={() => setIsLikeHovered(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[10px] left-[10px]">
         <AnimatePresence>
           {(isLikeHovered || isLiked) ? (
             <motion.div

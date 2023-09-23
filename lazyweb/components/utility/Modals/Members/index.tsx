@@ -3,6 +3,7 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { event } from 'nextjs-google-analytics';
 
 type Props = {
   isOpen: boolean,
@@ -77,6 +78,11 @@ const MemebersModal = ({ isOpen, roomID, setIsOpen, socket }: Props) => {
                 </Dialog.Title>
                 <Dialog.Title as="h4" className="text-md md:whitespace-nowrap flex items-center gap-[10px] font-medium leading-6 text-white">
                   Room ID: <span title={'Click to Copy'} onClick={() => {
+                    event('copy-room-id', {
+                      category: 'room',
+                      action: 'copy-room-id',
+                      label: 'copy-room-id'
+                    })
                     navigator.clipboard.writeText(roomID)
                     toast.success('Copied to clipboard')
                   }} className="font-bold text-blue-300 cursor-pointer">{roomID}</span>
