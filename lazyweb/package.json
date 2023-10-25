@@ -38,7 +38,7 @@
     "jwt-decode": "^3.1.2",
     "minidenticons": "^2.0.0",
     "moment": "^2.29.4",
-    "next": "13.0.6",
+    "next": "13.5.0",
     "next-connect": "^0.13.0",
     "nextjs-google-analytics": "^2.3.3",
     "react": "18.2.0",
