@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { event } from 'nextjs-google-analytics';
+import {Snippet} from "@nextui-org/react";
 
 type Props = {
 
@@ -51,7 +52,7 @@ const ResourceList = (props: Props) => {
             animate={slideIn.animate}
             exit={slideIn.exit}
           >
-            <div className='px-[1rem] relative py-[0.2rem] border-[3px] border-white rounded-[10px] flex items-center'>
+            {/* <div className='px-[1rem] relative py-[0.2rem] border-[3px] border-white rounded-[10px] flex items-center'>
               <p className='text-[14px] mr-[3rem] text-white'>
                 {
                   // current url
@@ -80,7 +81,10 @@ const ResourceList = (props: Props) => {
                 </p>
               </div>
 
-            </div>
+            </div> */}
+            <Snippet symbol='#' className='text-white bg-[#0d0d0e]'>
+              {fullUrl + `?bookmark=${session?.id}` }
+            </Snippet>
             <button onClick={() => {
               event('share-link', {
                 category: 'bookmark',
