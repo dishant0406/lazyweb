@@ -303,6 +303,7 @@ const PlaygroundComponent = () => {
         }} title="Go to Home" className="fixed bg-transparent text-white flex items-center hover:scale-[1.05] transition-all duration-300 cursor-pointer z-[2] left-[1rem] bottom-[1rem]">
           Made with ❤️ by LazyWeb
         </div>
+        {/* @ts-ignore */}
         <ReflexContainer orientation={
           isDesktop ? 'vertical' : 'horizontal'
         }>
