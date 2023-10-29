@@ -100,21 +100,21 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
       <div className="w-[100%] flex justify-center">
         <div className="flex flex-wrap w-[95%] gap-[1.5rem] mt-[1rem]">
           <div className={`h-[15rem] ${imgData === '' ? 'scale-[0]' : 'scale-[1]'} transition-all flex items-center justify-center rounded-[10px] w-[24rem] bg-[#0d0d0e]`}>
-            <div className="w-[23rem] flex flex-col items-center h-[14rem]">
-              <div style={{ backgroundImage: `url(${imgData})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} className="w-full h-[7.5rem] rounded-[10px]"></div>
-              <div className='w-[95%] flex items-center justify-between'>
-                <div className='flex items-center top_product ml-[0.5rem] mt-[0.5rem] gap-[5px]'>
+            <div className="w-[23rem] relative flex flex-col justify-end p-[1rem] items-center h-[14rem]">
+              <div style={{ backgroundImage: `url(${imgData})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} className="w-full absolute top-0 h-full z-[-1] rounded-[10px]"></div>
+              <div className='w-full flex rounded-lg bg-gray p-[0.5rem] items-center justify-between'>
+                <div className='flex w-full items-center top_product gap-[5px]'>
                   <FcOpenedFolder />
                   {/* <p className='text-white'>{unformatUrl.length > 20 ? unformatUrl.substring(0, 17) + '...' : unformatUrl}</p> */}
-                  <p className='text-white'>{
-                    topProduct?.url ? topProduct?.url.length > 20 ? topProduct?.url.substring(0, 17) + '...' : topProduct?.url : 'Not Available'
+                  <p className='max-w-[85%] text-white truncate'>{
+                    topProduct?.url ? topProduct?.url :  'Not Available'
                   }</p>
                   <FcApproval />
                 </div>
-                <div className='flex items-center top_product mt-[0.5rem] gap-[5px]'>
+                {/* <div className='flex items-center top_product gap-[5px]'>
                   <div className='h-[10px] w-[10px] rounded-full bg-[#0eaf62]'></div>
                   <p className='text-[14px] text-[#0eaf62]'>Online</p>
-                </div>
+                </div> */}
               </div>
               <button title={
                 `Visit ${topProduct?.url ? topProduct?.url.length > 20 ? topProduct?.url.substring(0, 17) + '...' : topProduct?.url : 'Not Available'}`
@@ -125,7 +125,7 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                   label: topProduct?.url
                 })
                 handleVisit()
-              }} className='w-full h-[2.5rem] rounded-[10px] mt-[1.5rem] bg-altGray text-white'>View Website</button>
+              }} className='w-full h-[2.5rem] rounded-[10px] mt-[0.6rem] bg-altGray text-white'>View Website</button>
             </div>
           </div>
           <div className={`${imgData === '' ? 'scale-[0]' : 'scale-[1]'}`}>

@@ -1,9 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 const colors = require('tailwindcss/colors')
+import { nextui } from '@nextui-org/react'
 module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
+    "../node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
     fontFamily: {
@@ -38,5 +40,6 @@ module.exports = {
       lightGray: '#5e5f60'
     }
   },
-  plugins: [],
+  darkMode: "class",
+  plugins: [nextui()],
 }
