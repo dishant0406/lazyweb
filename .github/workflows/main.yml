@@ -1,62 +1,57 @@
-name: Lazyweb Build and Deploy
+name: Build and Deploy
 
 on:
   push:
-    branches: [ main ]
-
+    branches:
+      - main
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        node-version: [18.x]
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        persist-credentials: false
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: "npm"
-    - uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.PRIVATE_KEY }}
-        port: 22
-        script: |
-          echo "Deploying... using"
-          node -v
-          export NVM_DIR=~/.nvm
-          source ~/.nvm/nvm.sh
-          node -v
-          nvm -v
-          echo "Going in the Lazyweb Directory"
-          cd lazyweb
-          echo "Stopping the running server"
-          pm2 stop lazyweb
-          pm2 stop landing
-          pm2 stop server
-          echo "Force pulling the latest code from GitHub"
-          git fetch origin main
-          git reset --hard FETCH_HEAD
-          git clean -df
-          echo "NPM install"
-          yarn
-          echo "Building the build..."
-          while true; do
-            yarn build
-            if [ $? -eq 137 ]; then
-              echo "npm run build command was killed, retrying..."
-              continue
-            else
-              break
-            fi
-          done
-          echo "Starting PM2 Again"
-          pm2 start lazyweb
-          pm2 start server
+      - name: Checkout Main Branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+
+      - name: Install Dependencies
+        run: npm install -f
+
+      - name: Create .env
+        run: |
+          echo NEXT_PUBLIC_SUPABASE_URL=${{secrets.NEXT_PUBLIC_SUPABASE_URL}} >> .env
+          echno NEXT_PUBLIC_SUPABASE_ANON_KEY=${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}} >> .env          
+          echno NEXT_PUBLIC_WEBSITE_SCREENSHOT_API_ENDPOINT=${{secrets.NEXT_PUBLIC_WEBSITE_SCREENSHOT_API_ENDPOINT}} >> .env
+          echno NEXT_PUBLIC_LAZYWEB_BACKEND_URL=${{secrets.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}} >> .env
+          echno NEXT_PUBLIC_META_DATA_ENDPOINT=${{secrets.NEXT_PUBLIC_META_DATA_ENDPOINT}} >> .env
+          echno NEXT_PUBLIC_GA_MEASUREMENT_ID=${{secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID}} >> .env
+
+      - name: Build Website
+        run: npm run build
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.PRIVATE_KEY }}
+          known_hosts: "unnecessary"
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy with rsync
+        run: rsync -avz --delete . ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${{ secrets.TARGET_DIRECTORY }}
+
+      - name: PM2 Restart
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
+          script: |
+            pm2 restart all
