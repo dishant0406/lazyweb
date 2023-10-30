@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -19,20 +20,23 @@ jobs:
         with:
           node-version: "18.x"
 
+      - name: Install Yarn
+        run: npm install -g yarn
+
       - name: Install Dependencies
-        run: npm install -f
+        run: yarn install --frozen-lockfile
 
       - name: Create .env
         run: |
           echo NEXT_PUBLIC_SUPABASE_URL=${{secrets.NEXT_PUBLIC_SUPABASE_URL}} >> .env
-          echno NEXT_PUBLIC_SUPABASE_ANON_KEY=${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}} >> .env          
-          echno NEXT_PUBLIC_WEBSITE_SCREENSHOT_API_ENDPOINT=${{secrets.NEXT_PUBLIC_WEBSITE_SCREENSHOT_API_ENDPOINT}} >> .env
-          echno NEXT_PUBLIC_LAZYWEB_BACKEND_URL=${{secrets.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}} >> .env
-          echno NEXT_PUBLIC_META_DATA_ENDPOINT=${{secrets.NEXT_PUBLIC_META_DATA_ENDPOINT}} >> .env
-          echno NEXT_PUBLIC_GA_MEASUREMENT_ID=${{secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID}} >> .env
+          echo NEXT_PUBLIC_SUPABASE_ANON_KEY=${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}} >> .env          
+          echo NEXT_PUBLIC_WEBSITE_SCREENSHOT_API_ENDPOINT=${{secrets.NEXT_PUBLIC_WEBSITE_SCREENSHOT_API_ENDPOINT}} >> .env
+          echo NEXT_PUBLIC_LAZYWEB_BACKEND_URL=${{secrets.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}} >> .env
+          echo NEXT_PUBLIC_META_DATA_ENDPOINT=${{secrets.NEXT_PUBLIC_META_DATA_ENDPOINT}} >> .env
+          echo NEXT_PUBLIC_GA_MEASUREMENT_ID=${{secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID}} >> .env
 
       - name: Build Website
-        run: npm run build
+        run: yarn build
 
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
