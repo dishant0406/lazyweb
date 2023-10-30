@@ -28,14 +28,16 @@ jobs:
 
       - name: Create .env
         run: |
-          echo NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} >> .env
-          echo NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} >> .env          
-          echo NEXT_PUBLIC_WEBSITE_SCREENSHOT_API_ENDPOINT=${{ secrets.NEXT_PUBLIC_WEBSITE_SCREENSHOT_API_ENDPOINT }} >> .env
-          echo NEXT_PUBLIC_LAZYWEB_BACKEND_URL=${{ secrets.NEXT_PUBLIC_LAZYWEB_BACKEND_URL }} >> .env
-          echo NEXT_PUBLIC_META_DATA_ENDPOINT=${{ secrets.NEXT_PUBLIC_META_DATA_ENDPOINT }} >> .env
-          echo NEXT_PUBLIC_GA_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }} >> .env
-          cat .env
-          pwd .env
+          echo NEXT_PUBLIC_SUPABASE_URL=${{ secrets.NEXT_PUBLIC_SUPABASE_URL }} >> lazyweb/.env
+          echo NEXT_PUBLIC_SUPABASE_ANON_KEY=${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }} >> lazyweb/.env          
+          echo NEXT_PUBLIC_WEBSITE_SCREENSHOT_API_ENDPOINT=${{ secrets.NEXT_PUBLIC_WEBSITE_SCREENSHOT_API_ENDPOINT }} >> lazyweb/.env
+          echo NEXT_PUBLIC_LAZYWEB_BACKEND_URL=${{ secrets.NEXT_PUBLIC_LAZYWEB_BACKEND_URL }} >> lazyweb/.env
+          echo NEXT_PUBLIC_META_DATA_ENDPOINT=${{ secrets.NEXT_PUBLIC_META_DATA_ENDPOINT }} >> lazyweb/.env
+          echo NEXT_PUBLIC_GA_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID }} >> lazyweb/.env
+
+      - name: Check .env file
+        run: |
+          wc -m lazyweb/.env
 
       - name: Build Website
         run: yarn build
