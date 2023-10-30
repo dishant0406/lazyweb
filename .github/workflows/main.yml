@@ -34,7 +34,9 @@ jobs:
           echo NEXT_PUBLIC_LAZYWEB_BACKEND_URL=${{secrets.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}} >> .env
           echo NEXT_PUBLIC_META_DATA_ENDPOINT=${{secrets.NEXT_PUBLIC_META_DATA_ENDPOINT}} >> .env
           echo NEXT_PUBLIC_GA_MEASUREMENT_ID=${{secrets.NEXT_PUBLIC_GA_MEASUREMENT_ID}} >> .env
-
+          cat .env
+          pwd .env
+          
       - name: Build Website
         run: yarn build
 
