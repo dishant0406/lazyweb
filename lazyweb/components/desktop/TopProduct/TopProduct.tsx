@@ -136,7 +136,7 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                     <Link2 className='text-lightGray scale-[0.6]' />
                     <div className='flex gap-[5px] items-center'>
                       <p className='text-white'>Link:</p>
-                      <a href={topProduct?.url ? formatUrl(topProduct?.url) : 'Not Available'} target='_blank' className='text-[#7d9ddb] transition-all text-[14px]'>{
+                      <a href={topProduct?.url ? formatUrl(topProduct?.url) : 'Not Available'} target='_blank' className='text-[#7d9ddb] transition-all truncate text-[14px]'>{
                         topProduct?.url ? topProduct?.url.length > 20 ? topProduct?.url.substring(0, 17) + '...' : topProduct?.url : 'Not Available'
                       }</a>
                       <button className="text-white scale-[0.7] transition-all  duration-150 ml-[-5px] " onClick={() => {
@@ -166,11 +166,13 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                       <p className='text-[#7d9ddb] mt-[3px] text-[14px]'>{websiteData.likes}</p>
                     </div>
                   </div>
-                  <div className='flex gap-[10px]'>
-                    <UserCheck className='text-lightGray scale-[0.6]' />
-                    <div className='flex gap-[5px] items-center'>
+                  <div className='flex w-full gap-[10px]'>
+                    <div className=''>
+                      <UserCheck className='text-lightGray scale-[0.6]' />
+                    </div>
+                    <div className='flex gap-[5px] w-full items-center'>
                       <p className='text-white'>Added:</p>
-                      <p className='text-[#7d9ddb] text-[14px]'>{websiteData.createdAt}</p>
+                      <p className='text-[#7d9ddb] w-[50%] truncate text-[14px]'>{websiteData.createdAt}</p>
                     </div>
                   </div>
                 </div>
@@ -190,14 +192,14 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                 <ThumbsUp className='text-[#fff] scale-[1.2] h-[2rem]' />
               </div>
             </div>
-            <div className={`${websiteData.title == '' ? 'scale-[0]' : 'scale-[1]'} transition-all px-[2rem] flex items-center  justify-center h-[5rem] rounded-[10px] mt-[1.5rem] border-[5px] border-altGray bg-[#0d0d0e]`}>
-              <div className='flex w-full truncate items-center'>
-                <div className='flex gap-[1rem]'>
-                  <div className='flex items-center  gap-[5px]'>
-                    <FcInfo className='text-[24px]' />
-                    <p className='text-white w-full truncate'>{websiteData.description}</p>
-                  </div>
+            <div className={`${websiteData.title == '' ? 'scale-[0]' : 'scale-[1]'} transition-all px-[2rem] flex items-center max-w-[40vw] justify-center h-[5rem] rounded-[10px] mt-[1.5rem] border-[5px] border-altGray bg-[#0d0d0e]`}>
+              <div className='flex w-full items-center'>
+
+                <div className='flex items-center w-full gap-[5px]'>
+                  <FcInfo className='text-[24px]' />
+                  <p className='text-white w-full truncate'>{websiteData.description}</p>
                 </div>
+
               </div>
             </div>
           </div>
