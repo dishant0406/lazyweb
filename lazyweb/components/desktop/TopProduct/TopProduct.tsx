@@ -35,26 +35,26 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
 
     if (minutesDifference === 1) {
       return '1 minute ago';
-  } else if (minutesDifference < 60) {
+    } else if (minutesDifference < 60) {
       return minutesDifference + ' minutes ago';
-  } else if (hoursDifference === 1) {
+    } else if (hoursDifference === 1) {
       return '1 hour ago';
-  } else if (hoursDifference < 24) {
+    } else if (hoursDifference < 24) {
       return hoursDifference + ' hours ago';
-  } else if (daysDifference === 1) {
+    } else if (daysDifference === 1) {
       return '1 day ago';
-  } else if (daysDifference < 30) {
+    } else if (daysDifference < 30) {
       return daysDifference + ' days ago';
-  } else if (monthsDifference === 1) {
+    } else if (monthsDifference === 1) {
       return '1 month ago';
-  } else if (monthsDifference < 12) {
+    } else if (monthsDifference < 12) {
       return monthsDifference + ' months ago';
-  } else if (yearsDifference === 1) {
+    } else if (yearsDifference === 1) {
       return '1 year ago';
-  } else {
+    } else {
       return yearsDifference + ' years ago';
+    }
   }
-}
 
   useEffect(() => {
 
@@ -99,15 +99,15 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
       <p className="text-white mt-[1rem] ml-[1rem]">Today's Top Product</p>
       <div className="w-[100%] flex justify-center">
         <div className="flex flex-wrap w-[95%] gap-[1.5rem] mt-[1rem]">
-          <div className={`h-[15rem] ${imgData === '' ? 'scale-[0]' : 'scale-[1]'} transition-all flex items-center justify-center rounded-[10px] w-[24rem] bg-[#0d0d0e]`}>
-            <div className="w-[23rem] relative flex flex-col justify-end p-[1rem] items-center h-[14rem]">
+          <div className={`h-[15rem] ${imgData === '' ? 'scale-[0]' : 'scale-[1]'} flex-grow transition-all flex items-center justify-center rounded-[10px] min-w-[18rem] max-w-[24rem] bg-[#0d0d0e]`}>
+            <div className="w-[95%] relative flex flex-col justify-end p-[1rem] items-center h-[14rem]">
               <div style={{ backgroundImage: `url(${imgData})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} className="w-full absolute top-0 h-full z-[-1] rounded-[10px]"></div>
               <div className='w-full flex rounded-lg bg-gray p-[0.5rem] items-center justify-between'>
                 <div className='flex w-full items-center top_product gap-[5px]'>
                   <FcOpenedFolder />
                   {/* <p className='text-white'>{unformatUrl.length > 20 ? unformatUrl.substring(0, 17) + '...' : unformatUrl}</p> */}
                   <p className='max-w-[85%] text-white truncate'>{
-                    topProduct?.url ? topProduct?.url :  'Not Available'
+                    topProduct?.url ? topProduct?.url : 'Not Available'
                   }</p>
                   <FcApproval />
                 </div>
@@ -118,7 +118,7 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
               </div>
               <button title={
                 `Visit ${topProduct?.url ? topProduct?.url.length > 20 ? topProduct?.url.substring(0, 17) + '...' : topProduct?.url : 'Not Available'}`
-              } onClick={()=>{
+              } onClick={() => {
                 event('visit-website', {
                   category: 'top-product',
                   action: 'visit-website',
@@ -129,8 +129,8 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
             </div>
           </div>
           <div className={`${imgData === '' ? 'scale-[0]' : 'scale-[1]'}`}>
-            <div className='flex flex-wrap gap-[1.5rem]'>
-              <div className='h-[8.5rem] w-[28rem] flex items-center justify-center bg-[#0d0d0e] border-[5px] border-altGray rounded-[10px]'>
+            <div className='flex flex-wrap flex-grow gap-[1.5rem]'>
+              <div className='h-[8.5rem] max-w-[28rem] flex-grow flex items-center justify-center bg-[#0d0d0e] border-[5px] border-altGray rounded-[10px]'>
                 <div className='w-[90%] flex flex-col gap-[15px] h-[75%]'>
                   <div className='flex gap-[10px]'>
                     <Link2 className='text-lightGray scale-[0.6]' />
@@ -139,7 +139,7 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                       <a href={topProduct?.url ? formatUrl(topProduct?.url) : 'Not Available'} target='_blank' className='text-[#7d9ddb] transition-all text-[14px]'>{
                         topProduct?.url ? topProduct?.url.length > 20 ? topProduct?.url.substring(0, 17) + '...' : topProduct?.url : 'Not Available'
                       }</a>
-                      <button className="text-white scale-[0.7] transition-all  duration-150 ml-[-5px] " onClick={()=>{
+                      <button className="text-white scale-[0.7] transition-all  duration-150 ml-[-5px] " onClick={() => {
                         event('copy-link', {
                           category: 'top-product',
                           action: 'copy-link',
@@ -180,22 +180,22 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
               } className='h-[8.5rem] gap-[4px] product-of-day flex flex-col items-center justify-center w-[8.5rem] bg-[#0d0d0e] rounded-[10px]'>
                 {/* <p className='w-[6rem] font-[600] text-center text-white'>Product of the day</p>
                 <BsTrophy className='text-[#fff] scale-[1.3] mt-[0.5rem] text-[1.5rem]' /> */}
-                <QrCode 
-                fgColor='#fff'
-                bgColor='#0d0d0e'
-                value={topProduct?.url ? formatUrl(topProduct?.url) : 'Not Available'} size={120} />
+                <QrCode
+                  fgColor='#fff'
+                  bgColor='#0d0d0e'
+                  value={topProduct?.url ? formatUrl(topProduct?.url) : 'Not Available'} size={120} />
               </div>
               <div className='h-[8.5rem] border-[5px] border-altGray gap-[4px] product-of-day flex flex-col items-center justify-center w-[8.5rem] bg-[#0d0d0e] rounded-[10px]'>
                 <p className='w-[6rem] font-[600] text-center text-white'>Product of the Day</p>
                 <ThumbsUp className='text-[#fff] scale-[1.2] h-[2rem]' />
               </div>
             </div>
-            <div className={`w-fit ${websiteData.title == '' ? 'scale-[0]' : 'scale-[1]'} transition-all px-[2rem] flex items-center justify-center h-[5rem] rounded-[10px] mt-[1.5rem] border-[5px] border-altGray bg-[#0d0d0e]`}>
-              <div className='flex items-center w-fit'>
+            <div className={`${websiteData.title == '' ? 'scale-[0]' : 'scale-[1]'} transition-all px-[2rem] flex items-center  justify-center h-[5rem] rounded-[10px] mt-[1.5rem] border-[5px] border-altGray bg-[#0d0d0e]`}>
+              <div className='flex w-full truncate items-center'>
                 <div className='flex gap-[1rem]'>
                   <div className='flex items-center  gap-[5px]'>
                     <FcInfo className='text-[24px]' />
-                    <p className='text-white w-[45vw] truncate'>{websiteData.description}</p>
+                    <p className='text-white w-full truncate'>{websiteData.description}</p>
                   </div>
                 </div>
               </div>
