@@ -7,6 +7,7 @@ import { useUserData } from '@/hooks';
 import { unFormatUrl } from '@/lib/unFormatUrl';
 import { axiosInstance } from '@/hooks/Zustand';
 import { event } from 'nextjs-google-analytics';
+import axios from 'axios';
 let placeholder = 'assets/placeholder-website.png'
 
 type Props = {
@@ -90,6 +91,17 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
   //   setLoading(false)
   // }
 
+  async function isHttpsSupported(url: string) {
+    // Make sure the URL starts with http:// or https://
+    try {
+      const { data } = await axios.post('/api/check-https', { url: url })
+      return data.supportsHttps
+    }
+    catch (e) {
+      return false
+    }
+  }
+
   const handleAdd = async () => {
     setLoading(true);
 
@@ -140,6 +152,20 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
   const handleFetchDetails = async () => {
     setLoadingFetch(true)
     setError(null)
+
+    if (!url) {
+      setError('Please Enter a URL')
+      setLoadingFetch(false)
+      return
+    }
+
+    let isHttps = await isHttpsSupported(url)
+    if (!isHttps) {
+      setError('Please Enter a Valid URL, HTTP is not supported')
+      setLoadingFetch(false)
+      return
+    }
+
     const websiteMetaDeta = await useWebsiteMetaData(formatUrl(url))
     if (websiteMetaDeta) {
       setTitle(websiteMetaDeta.title)
@@ -213,7 +239,7 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
                     type="button"
                     disabled={loadingFetch}
                     className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                    onClick={()=>{
+                    onClick={() => {
                       event('fetch-details', {
                         category: 'bookmark',
                         action: 'fetch-details',
@@ -252,7 +278,7 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
                     type="button"
                     disabled={title == '' || image === placeholder || loading}
                     className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                    onClick={()=>{
+                    onClick={() => {
                       event('add-resource', {
                         category: 'bookmark',
                         action: 'add-resource',

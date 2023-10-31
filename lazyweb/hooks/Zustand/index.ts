@@ -150,6 +150,16 @@ const useAllCategory = create<{
   },
 }))
 
+const useGetPendingResources = create<{
+  isPendingSelected:boolean,
+  setIsPendingSelected: (value:boolean) => void
+}>((set) => ({
+  isPendingSelected: false,
+  setIsPendingSelected: (value:boolean) => {
+    set({isPendingSelected:value})
+    useAllResources.getState().setAllResources('my')
+  },
+}))
 
 
 const useAllResources = create<{
@@ -175,20 +185,27 @@ const useAllResources = create<{
         set({allResources:resources})
       }
     }else if(selectedTab==='my'){
-      const {data} = await axiosIntanceWithAuth.get('/websites/user', {
-        headers:{
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+      let isPendingSelected = useGetPendingResources.getState().isPendingSelected
+      if(!isPendingSelected){
+        const {data} = await axiosIntanceWithAuth.get('/websites/user', {
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        })
+        if(data){
+          set({allResources:data.userWebsites})
         }
-      })
-      if(data){
-        set({allResources:data.userWebsites})
-        
-
-
+      }else{
+        const {data} = await axiosIntanceWithAuth.get('/websites/user/pending', {
+          headers:{
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        })
+        if(data){
+          set({allResources:data.userWebsites})
+        }
       }
     }else if(selectedTab==='saved'){
-
-
       const {data} = await axiosIntanceWithAuth.get('/websites/bookmarked', {
         headers:{
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -592,5 +609,6 @@ export {
   useLoginModal,
   useTopProduct,
   useSearchModal,
-  useSetAllResourcesServerSide
+  useSetAllResourcesServerSide,
+  useGetPendingResources
 }
