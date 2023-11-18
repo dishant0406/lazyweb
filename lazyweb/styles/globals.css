@@ -327,3 +327,16 @@ html{
 .react-share__ShareButton:focus{
   outline:none !important;
 }
+
+.no-scrollbar {
+  /* For Internet Explorer, Edge */
+  -ms-overflow-style: none;
+
+  /* For Firefox */
+  scrollbar-width: none;
+
+  /* For Chrome, Safari, Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
