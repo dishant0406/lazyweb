@@ -40,7 +40,7 @@ const Hero = (props: Props) => {
           </p>
         </div>
       </div>
-      <div className="w-[100vw] md:mt-0 mt-[1rem] flex justify-center">
+      <div className="w-[100vw] md:mt-0 mt-[1rem] flex gap-[2rem] flex-col items-center">
         <div data-aos="zoom-out" className="w-[70vw] md:w-[50vw] flex md:flex-row flex-col justify-center md:gap-[2rem] gap-[1rem] md:mt-[3rem] mt-[1rem]">
           <button onClick={handleGotoVideo} className="bg-[#0d0d0e] shadow-xl hover:scale-[1.03] transition-all duration-300 flex items-center justify-center font-medium text-white rounded-lg px-[20px] h-[50px] whitespace-nowrap">
             Watch Video
@@ -51,6 +51,16 @@ const Hero = (props: Props) => {
             <PiRocketLaunchLight className="inline text-[#0d0d0e] h-[25px] w-[25px] ml-[10px]" />
           </button>
         </div>
+        <a href="https://www.producthunt.com/posts/lazyweb-1?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-lazyweb-1" target="_blank">
+          <img
+            src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=379190&theme=light"
+            alt="LazyWeb - The ultimate resource for developers | Product Hunt"
+            style={{ width: '250px', height: '54px' }}
+            width="250"
+            height="54"
+          />
+        </a>
+
       </div>
       <div className="w-[100vw] flex justify-center md:mt-[3rem] mt-[2rem]">
         <div data-aos="flip-up" data-aos-delay='300' className="relative">
