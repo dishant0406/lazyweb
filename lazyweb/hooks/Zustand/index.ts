@@ -84,6 +84,14 @@ const useUserData = create<{
     if(!token){
       return
     }
+
+    //check jwt format is correct or not
+    const tokenArray = token.split('.')
+    if(tokenArray.length!==3){
+      localStorage.removeItem('token')
+      return
+    }
+
     //decode the token
     const decodedToken = jwt_decode(token) as UserWithAdmin
     //check if the token is expired or not

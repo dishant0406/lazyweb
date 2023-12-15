@@ -1,6 +1,6 @@
 import { Category, Sidebar, Dashboard, Favicon, CommingSoon, LoadingModal, SwipeUI, SEO, SearchBarModal, BookmarkModal, NavBar } from 'components'
 import { useEffect, useState } from 'react'
-import { useAllResources,useSetAllResourcesServerSide, useSearchModal, useSelectedTab, useUserData, Resource } from '@/hooks/Zustand';
+import { useAllResources, useSetAllResourcesServerSide, useSearchModal, useSelectedTab, useUserData, Resource } from '@/hooks/Zustand';
 import { useTour } from '@reactour/tour';
 import { isDesktop } from 'react-device-detect';
 import { addDataToMongo } from '../hooks/addDataToMongo';
@@ -17,19 +17,21 @@ type Props = {
 
 
 const Home = ({
-  token,
+
   data,
-  bookmarkResouces,
-  bookmark
+
+
 }: Props) => {
   const { setIsOpen, setSteps } = useTour()
   const router = useRouter()
   const { session } = useUserData()
   const { allResources } = useAllResources()
   const { selectedTab } = useSelectedTab()
-  const {isSearchModalOpen, setIsSearchModalOpen} = useSearchModal()
+  const { isSearchModalOpen, setIsSearchModalOpen } = useSearchModal()
   const [isLoadingModalOpen, setisLoadingModalOpen] = useState(true)
-  const {setAllResourcesServerSide} = useSetAllResourcesServerSide()
+  const { setAllResourcesServerSide } = useSetAllResourcesServerSide()
+  const [bookmarkResouces, setBookmarkResouces] = useState<Resource[]>([])
+
   useEffect(() => {
     if (session) {
       setSteps!([
@@ -55,16 +57,17 @@ const Home = ({
       if (e.ctrlKey && e.code === 'Space') {
         setIsSearchModalOpen(true)
       }
-      if(isSearchModalOpen && e.code === 'Escape'){
+      if (isSearchModalOpen && e.code === 'Escape') {
         setIsSearchModalOpen(false)
       }
     }
     window.addEventListener('keydown', handleKeyDown)
 
     //token is available in url
-    if (token !== '') {
+
+    if (router?.query.token) {
       //add token to localstorage
-      localStorage.setItem('token', token as string)
+      localStorage.setItem('token', router?.query.token as string)
       //remove token from url
       window.history.replaceState({}, document.title, "/");
 
@@ -84,14 +87,21 @@ const Home = ({
   }, [])
 
   useEffect(() => {
-    if(router.query?.bookmark && (!bookmarkResouces?.length || bookmarkResouces?.length === 0)){
+    if (router.query?.bookmark) {
       const { query } = router;
-      delete query.bookmark;
-  
-      router.replace({
-        pathname: router.pathname,
-        query: query,
-      }, undefined, { shallow: true });
+      const { bookmark } = query;
+      const checkBookmarks = async () => {
+        const res = await fetch(process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL + `/api/websites/bookmarks/${bookmark}`)
+        const data = await res.json()
+        setBookmarkResouces(data?.resources)
+        if ((!data?.resources.length || data?.resources?.length === 0)) {
+          router.replace({
+            pathname: router.pathname,
+            query: query,
+          }, undefined, { shallow: true });
+        }
+      }
+      checkBookmarks()
     }
   }, [router?.query?.bookmark])
 
@@ -112,20 +122,20 @@ const Home = ({
       <LoadingModal isOpen={isLoadingModalOpen} setIsOpen={setisLoadingModalOpen} />
       <SearchBarModal isOpen={isSearchModalOpen} setIsOpen={setIsSearchModalOpen} />
       <BookmarkModal isOpen={
-        bookmarkResouces?.length && bookmarkResouces?.length>0 && router.query?.bookmark ? true : false
+        bookmarkResouces?.length && bookmarkResouces?.length > 0 && router.query?.bookmark ? true : false
       } setIsOpen={() => { }} resources={bookmarkResouces} />
     </>
   )
 }
 
-export async function getServerSideProps({ query }: { query: { token: string, bookmark:string } }) {
+export async function getServerSideProps({ query }: { query: { token: string, bookmark: string } }) {
   const res = await fetch(process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL + '/api/websites')
   const data = await res.json()
 
   let bookmarkResouces = []
-  if(query?.bookmark){
+  if (query?.bookmark) {
     const res = await fetch(process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL + `/api/websites/bookmarks/${query?.bookmark}`)
-    const bookmarkData =  await res.json()
+    const bookmarkData = await res.json()
     bookmarkResouces = bookmarkData?.resources
   }
 

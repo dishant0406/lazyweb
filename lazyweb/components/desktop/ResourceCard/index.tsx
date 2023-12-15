@@ -3,7 +3,7 @@ import { Resource, axiosIntanceWithAuth, useAllCategory, useAllTags, useSetLikes
 import { useEffect, useState } from "react"
 import { useSetBookmark, useUserData, useSelectedTab, useAllResources, useCompleteResourceLength } from 'hooks/Zustand'
 import { AnimatePresence, motion } from 'framer-motion';
-import { PublishModal, InfoModal, QrCodeModal } from "components"
+import { PublishModal, InfoModal, QrCodeModal, UpdateModal } from "components"
 import { LazyLoadImage, ScrollPosition } from 'react-lazy-load-image-component';
 import { FcInfo, FcLike, FcLikePlaceholder } from "react-icons/fc"
 import { BsBookmarksFill } from 'react-icons/bs'
@@ -82,6 +82,7 @@ const ResourceCard = ({ url, title, description, image: res_image, resource, scr
   const [isEditOpen, setIsEditOpen] = useState(false)
   const [image, setImage] = useState<string>(res_image)
   const [loadingImage, setLoadingImage] = useState(false)
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
 
   useEffect(() => {
     getBookMarked();
@@ -206,7 +207,7 @@ const ResourceCard = ({ url, title, description, image: res_image, resource, scr
             </div>
           </div>
         )}
-        {resource.created_by_list.includes(session?.id!) && !resource.isPublicAvailable && !resource.isAvailableForApproval && <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="w-full z-[1] absolute top-[0] left-[0] transition-all flex items-center justify-center duration-500 hover:bg-gray/[0.4] h-[10.5rem] rounded-t-[10px]">
+        {resource.created_by_list.includes(session?.id!) && !resource.isPublicAvailable && !resource.isAvailableForApproval && <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="w-full z-[1] absolute top-[0] left-[0] transition-all flex items-center justify-center duration-500 hover:bg-gray/[0.4] h-[10rem] rounded-t-[10px]">
           <button onClick={() => {
             event('publish', {
               category: 'publish-resource',
@@ -217,7 +218,7 @@ const ResourceCard = ({ url, title, description, image: res_image, resource, scr
             setOpen(true)
           }} className={`text-white hover:scale-[1.05] ${isHovered ? 'opacity-100' : 'opacity-0'} transition-all  px-[15px] py-[5px] text-[16px] bg-[#1c64ec] rounded-[20px]`}>Publish</button>
         </div>}
-        {session?.isAdmin && resource.isAvailableForApproval && selectedTab === 'publish' && <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="w-[18rem] absolute top-[0] left-[0] z-[1] transition-all flex items-center justify-center gap-[5px] duration-500 hover:bg-gray/[0.4] h-[11.5rem] rounded-t-[20px]">
+        {session?.isAdmin && resource.isAvailableForApproval && selectedTab === 'publish' && <div onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)} className="w-[18rem] absolute top-[0] left-[0] z-[1] transition-all flex items-center justify-center gap-[5px] duration-500 hover:bg-gray/[0.4] h-[10rem] rounded-t-[20px]">
           <button onClick={() => {
             event('approve', {
               category: 'approve-resource',
@@ -243,10 +244,10 @@ const ResourceCard = ({ url, title, description, image: res_image, resource, scr
       <div className="w-[18rem] h-[6rem] mt-[-0.2rem] flex flex-col ml-[1rem] justify-center">
         <div className="flex gap-[0.5rem] items-center">
           {
-            resource.created_by === session?.id && (
+            ((resource.created_by === session?.id) || session?.isAdmin) && (
               <Popover isKeyboardDismissDisabled={loadingImage} shouldCloseOnBlur={loadingImage} shouldCloseOnInteractOutside={e => {
                 return !loadingImage
-              }} shouldBlockScroll={loadingImage} classNames={{
+              }} shouldBlockScroll={true} classNames={{
                 trigger: 'z-0'
               }} isOpen={isEditOpen} onOpenChange={setIsEditOpen} placement="top" showArrow offset={10}>
                 <PopoverTrigger>
@@ -274,6 +275,25 @@ const ResourceCard = ({ url, title, description, image: res_image, resource, scr
                         {
                           loadingImage ? 'Fetching Image...' : 'Refetch Image'
                         }
+                      </p>
+                    </button>
+                  </div>
+                  <div className="my-2 flex flex-col gap-2 w-full">
+                    <button onClick={() => {
+                      event('edit-content', {
+                        category: 'edit-content-resource',
+                        title: resource.title,
+                        url: resource.url,
+                        id: resource._id,
+                      })
+                      setIsUpdateModalOpen(true)
+                      setIsEditOpen(false)
+                    }} className="flex items-center gap-[1rem]">
+                      <TbEditCircle className={`${loadingImage ? 'animate-spin' : ''
+                        } text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
+
+                      <p className="text-[14px]">
+                        Edit Content
                       </p>
                     </button>
                   </div>
@@ -388,6 +408,7 @@ const ResourceCard = ({ url, title, description, image: res_image, resource, scr
           )}
         </AnimatePresence>
       </motion.div>}
+      <UpdateModal resource={resource} isOpen={isUpdateModalOpen} setIsOpen={setIsUpdateModalOpen} />
       <PublishModal id={resource._id} url={url} title={title} isOpen={open} setIsOpen={setOpen} />
       <InfoModal resource={resource} isOpen={
         router.query.id as string === resource._id + ''

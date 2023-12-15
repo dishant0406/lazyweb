@@ -27,6 +27,7 @@ import PlaygroundComponent from './desktop/Playground';
 import SearchBarModal from './utility/Modals/SearchBarModal/index';
 import QrCodeModal from './utility/Modals/QRCodeModal';
 import BookmarkModal from './utility/Modals/BookmarksModal';
+import UpdateModal from './utility/Modals/UpdateModal';
 
 
 export {
@@ -58,5 +59,6 @@ export {
   PlaygroundComponent,
   SearchBarModal,
   QrCodeModal,
-  BookmarkModal
+  BookmarkModal,
+  UpdateModal
 }
