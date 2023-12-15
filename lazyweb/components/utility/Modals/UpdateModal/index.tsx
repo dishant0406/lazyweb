@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { useState } from 'react';
 import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
@@ -7,6 +7,7 @@ import { useUserData } from '@/hooks';
 import { unFormatUrl } from '@/lib/unFormatUrl';
 import { axiosInstance } from '@/hooks/Zustand';
 import { event } from 'nextjs-google-analytics';
+import { Resource } from '@/hooks/Zustand';
 import axios from 'axios';
 import { Input } from '@nextui-org/react';
 let placeholder = 'assets/placeholder-website.png'
@@ -14,10 +15,11 @@ let placeholder = 'assets/placeholder-website.png'
 
 type Props = {
   isOpen: boolean,
-  setIsOpen: (argo: boolean) => void
+  setIsOpen: (argo: boolean) => void,
+  resource: Resource
 }
 
-const CreateModal = ({ isOpen, setIsOpen }: Props) => {
+const UpdateModal = ({ isOpen, setIsOpen, resource }: Props) => {
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
   const [description, setDescription] = useState('')
@@ -46,6 +48,16 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
   function openModal() {
     setIsOpen(true)
   }
+
+  useEffect(() => {
+    if (resource) {
+      setTitle(resource.title)
+      setUrl(unFormatUrl(resource.url))
+      setDescription(resource.desc)
+      setImage(resource.image_url)
+    }
+  }
+    , [resource, isOpen])
 
   async function isHttpsSupported(url: string) {
     // Make sure the URL starts with http:// or https://
@@ -103,6 +115,8 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
 
     setLoading(false);
   }
+
+
 
 
   const handleFetchDetails = async () => {
@@ -176,18 +190,19 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
                   as="h3"
                   className="text-lg font-medium leading-6 text-white"
                 >
-                  Add a Resource
+                  Update Resource
                 </Dialog.Title>
-                {err && <div className="mt-2">
+
+                { <div className="mt-2">
                   <p className="text-sm text-red-600 font-[600]">
-                    {err}
+                    {err || resource.isPublicAvailable ? 'Updating a public resource will make it private and subject to review by our team.':null}
                   </p>
                 </div>}
                 
                 <Input
                   color='default'
                   type="url"
-                  readOnly={loadingFetch}
+                  readOnly={true}
                   label="Enter the URL"
                   placeholder="lazyweb.rocks"
                   labelPlacement="outside"
@@ -204,23 +219,7 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
                     </div>
                   }
                 />
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    disabled={loadingFetch}
-                    className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                    onClick={() => {
-                      event('fetch-details', {
-                        category: 'bookmark',
-                        action: 'fetch-details',
-                        label: 'fetch-details'
-                      })
-                      handleFetchDetails()
-                    }}
-                  >
-                    {loadingFetch ? 'Fetching...' : 'Fetch Details'}
-                  </button>
-                </div>
+
 
                 
                   <div className="mt-4">
@@ -257,7 +256,7 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
                       handleAdd()
                     }}
                   >
-                    {loading ? 'Adding...' : 'Add'}
+                    {loading ? 'Updating...' : 'Update'}
                   </button>
                 </div>
               </Dialog.Panel>
@@ -269,4 +268,4 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
   )
 }
 
-export default CreateModal
+export default UpdateModal

@@ -7,7 +7,10 @@ const unFormatUrl = (url:string) => {
   // Remove any www. that appears at the beginning of the string
   url = url.replace('www.','');
 
-  // url = url.split('/')[0]
+  //if the url ends with a / then remove it
+  if(url.endsWith('/')){
+    url = url.substring(0, url.length - 1);
+  }
   
   return url;
 }
