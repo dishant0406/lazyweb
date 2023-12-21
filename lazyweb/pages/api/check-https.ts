@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
+import https from "https";
 
 const handler = nc<NextApiRequest, NextApiResponse>();
 
@@ -21,10 +22,15 @@ handler.post(async (req, res) => {
   httpsUrl = url.startsWith('https://') ? url : `https://${url}`;
 
   try {
-    const response = await fetch(httpsUrl, { method: 'HEAD' });
-    if (response.ok) {
-      return res.json({ supportsHttps: true });
-    }
+    const response = await new Promise((resolve, reject) => {
+      https.get(httpsUrl, (res) => {
+        resolve(res);
+      }).on('error', (error) => {
+        reject(error);
+      });
+    });
+
+    return res.json({ supportsHttps: true });
   } catch (error) {
     console.error('Error checking HTTPS support:', error);
   }

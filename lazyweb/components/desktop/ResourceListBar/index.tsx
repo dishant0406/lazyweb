@@ -4,6 +4,7 @@ import { event } from 'nextjs-google-analytics';
 import { useState, useEffect } from 'react';
 import {Tabs, Tab,} from "@nextui-org/react";
 import {Kbd} from "@nextui-org/react";
+import { useRouter } from 'next/router';
 
 const ResourceListBar = (props: Props) => {
   const {session} = useUserData()
@@ -11,6 +12,7 @@ const ResourceListBar = (props: Props) => {
   const {setAllResources,allResources} = useAllResources()
   const {completeResourceLength,setCompleteResourceLength} = useCompleteResourceLength()
   const {setIsLoginModalOpen} = useLoginModal()
+  const router = useRouter()
   const [tabs, setTabs] = useState([
     {
       id:1,
@@ -48,11 +50,40 @@ const ResourceListBar = (props: Props) => {
       setSelectedTab(newTabs[id-1].slug)
       setAllResources(newTabs[id-1].slug)
       setCompleteResourceLength(newTabs[id-1].slug)
+      if(newTabs[id-1].slug === 'all'){
+        router.replace({
+          pathname: '/',
+        }, undefined, { shallow: true })
+      }else{
+        router.replace({
+          pathname: '/',
+          query: { tab: newTabs[id-1].slug },
+        }, undefined, { shallow: true })
+      }
       setTabs(newTabs)
     }else{
       setIsLoginModalOpen(true)
     }
   }
+
+  useEffect(()=>{
+    if(!localStorage.getItem('token') && router.query.tab){
+      router.replace({
+        pathname: '/',
+      }, undefined, { shallow: true })
+    }
+  
+  
+    if(session?.email){
+      if(router.query.tab){
+        const tab = tabs.find(e=>e.slug === router.query.tab)
+        if(tab){
+          selectionHandler(tab.id)
+        }
+      }
+    }
+  }
+  ,[session?.email])
 
 
   useEffect(()=>{
