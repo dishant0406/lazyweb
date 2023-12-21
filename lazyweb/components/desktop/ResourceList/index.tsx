@@ -54,36 +54,6 @@ const ResourceList = (props: Props) => {
             animate={slideIn.animate}
             exit={slideIn.exit}
           >
-            {/* <div className='px-[1rem] relative py-[0.2rem] border-[3px] border-white rounded-[10px] flex items-center'>
-              <p className='text-[14px] mr-[3rem] text-white'>
-                {
-                  // current url
-                 fullUrl + `?bookmark=${session?.id}`
-                }
-              </p>
-              <div className='absolute right-[10px]'>
-                <p className='text-[12px] text-white cursor-pointer' onClick={() => {
-                  event('copy-link', {
-                    category: 'bookmark',
-                    action: 'copy-link',
-                    label: 'copy-link'
-                  })
-                  navigator.clipboard.writeText(
-                    fullUrl + `?bookmark=${session?.id}` 
-                  )
-                  setIsCopied(true)
-                  setTimeout(() => {
-                    setIsCopied(false)
-                  }, 2000)
-                }
-                }>
-                  {
-                    isCopied ? 'Copied!' : 'Copy'
-                  }
-                </p>
-              </div>
-
-            </div> */}
             <Snippet symbol='#' className='text-white bg-[#0d0d0e]'>
               {fullUrl + `?bookmark=${session?.id}`}
             </Snippet>

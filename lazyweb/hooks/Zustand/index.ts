@@ -115,6 +115,21 @@ const useUserData = create<{
 }))
 
 //array of all distinct tags available in the database and ignore if it is null
+function shuffleArray(array: any[]) {
+  // Creating a copy of the array to avoid modifying the original array
+  const shuffledArray = array.slice();
+
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    // Generating a random index from 0 to i
+    const randomIndex = Math.floor(Math.random() * (i + 1));
+
+    // Swapping elements at indices i and randomIndex
+    [shuffledArray[i], shuffledArray[randomIndex]] = [shuffledArray[randomIndex], shuffledArray[i]];
+  }
+
+  return shuffledArray;
+}
+
 const useAllTags = create<{
   allTags: string[]
   setAllTags: (tags?:string[]) => void
@@ -122,7 +137,7 @@ const useAllTags = create<{
   allTags: [],
   setAllTags: async (tags) => {
     if(tags){
-      set({allTags:tags})
+      set({allTags:shuffleArray(tags)})
       return
     }else{
 
