@@ -106,9 +106,7 @@ const ResourceList = (props: Props) => {
         {resources.length >= 1 && <Reorder.Group values={resources} axis={'x'} onReorder={() => { }} className='z-[1] ml-[3rem] flex gap-[1rem] flex-wrap mt-[2rem]'>
           {resources.map((e) => {
             return (
-              <Reorder.Item key={e._id} value={e} initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}>
+              <Reorder.Item key={e._id} value={e}>
                 <ResourceCard key={e._id} resource={e} description={e.desc} title={e.title} image={e.image_url} url={e.url} />
               </Reorder.Item>
             )
