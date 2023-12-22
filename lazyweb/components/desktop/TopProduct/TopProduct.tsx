@@ -11,6 +11,8 @@ import { Resource, useTopProduct } from '@/hooks/Zustand';
 import { formatUrl } from '@/lib/formatUrl';
 import QrCode from 'react-qr-code'
 import { event } from 'nextjs-google-analytics';
+import NextImage from 'next/image';
+import { Image } from '@nextui-org/react';
 
 const TopProduct = ({ url, unformatUrl }: Props) => {
   const { topProduct } = useTopProduct()
@@ -99,10 +101,13 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
       <p className="text-white mt-[1rem] ml-[1rem]">Today's Top Product</p>
       <div className="w-[100%] flex justify-center">
         <div className="flex flex-wrap w-[95%] gap-[1.5rem] mt-[1rem]">
-          <div className={`h-[15rem] ${imgData === '' ? 'scale-[0]' : 'scale-[1]'} flex-grow transition-all flex items-center justify-center rounded-[10px] min-w-[18rem] max-w-[24rem] bg-[#0d0d0e]`}>
+          <div className={`h-[15rem] flex-grow transition-all flex items-center justify-center rounded-[10px] min-w-[18rem] max-w-[24rem] bg-[#0d0d0e]`}>
             <div className="w-[95%] relative flex flex-col justify-end p-[1rem] items-center h-[14rem]">
-              <div style={{ backgroundImage: `url(${imgData})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} className="w-full absolute top-0 h-full z-[-1] rounded-[10px]"></div>
-              <div className='w-full flex rounded-lg bg-gray p-[0.5rem] items-center justify-between'>
+              {/* <div style={{ backgroundImage: `url(${imgData})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }} className="w-full absolute top-0 h-full z-[-1] rounded-[10px]"></div> */}
+              <Image as={NextImage} isZoomed src={imgData} height={500} width={500} alt="product image"  classNames={{
+                wrapper:'absolute top-0 h-full z-[0] rounded-[5px]'
+              }} />
+              <div className='w-full flex z-[1] rounded-lg bg-gray p-[0.5rem] items-center justify-between'>
                 <div className='flex w-full items-center top_product gap-[5px]'>
                   <FcOpenedFolder />
                   {/* <p className='text-white'>{unformatUrl.length > 20 ? unformatUrl.substring(0, 17) + '...' : unformatUrl}</p> */}
@@ -111,10 +116,6 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                   }</p>
                   <FcApproval />
                 </div>
-                {/* <div className='flex items-center top_product gap-[5px]'>
-                  <div className='h-[10px] w-[10px] rounded-full bg-[#0eaf62]'></div>
-                  <p className='text-[14px] text-[#0eaf62]'>Online</p>
-                </div> */}
               </div>
               <button title={
                 `Visit ${topProduct?.url ? topProduct?.url.length > 20 ? topProduct?.url.substring(0, 17) + '...' : topProduct?.url : 'Not Available'}`
@@ -125,10 +126,10 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                   label: topProduct?.url
                 })
                 handleVisit()
-              }} className='w-full h-[2.5rem] rounded-[10px] mt-[0.6rem] bg-altGray text-white'>View Website</button>
+              }} className='w-full h-[2.5rem] z-[1] rounded-[10px] mt-[0.6rem] bg-altGray text-white'>View Website</button>
             </div>
           </div>
-          <div className={`${imgData === '' ? 'scale-[0]' : 'scale-[1]'}`}>
+          <div>
             <div className='flex flex-wrap flex-grow gap-[1.5rem]'>
               <div className='h-[8.5rem] max-w-[28rem] flex-grow flex items-center justify-center bg-[#0d0d0e] border-[5px] border-altGray rounded-[10px]'>
                 <div className='w-[90%] flex flex-col gap-[15px] h-[75%]'>
@@ -192,7 +193,7 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                 <ThumbsUp className='text-[#fff] scale-[1.2] h-[2rem]' />
               </div>
             </div>
-            <div className={`${websiteData.title == '' ? 'scale-[0]' : 'scale-[1]'} transition-all px-[2rem] flex items-center max-w-[40vw] justify-center h-[5rem] rounded-[10px] mt-[1.5rem] border-[5px] border-altGray bg-[#0d0d0e]`}>
+            <div className={` transition-all px-[2rem] flex items-center max-w-[40vw] justify-center h-[5rem] rounded-[10px] mt-[1.5rem] border-[5px] border-altGray bg-[#0d0d0e]`}>
               <div className='flex w-full items-center'>
 
                 <div className='flex items-center w-full gap-[5px]'>

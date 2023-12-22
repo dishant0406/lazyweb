@@ -9,18 +9,13 @@ type Props = {
 }
 
 const SidebarCategory = ({options, title}: Props) => {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(true)
   const [size, setSize] = useState(`h-[${options.length*30}px]`)
 
   if(!size){
     return <div></div>
   }
 
-  useEffect(()=>{
-    setTimeout(()=>{
-      setExpanded(true)
-    },300)
-  },[])
 
   return (
     <div className="w-[10rem] lazyweb-category">

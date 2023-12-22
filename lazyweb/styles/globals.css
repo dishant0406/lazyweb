@@ -215,7 +215,7 @@ html{
   color: white;
 }
 
-//button
+
 .button-85 {
   padding: 0.6em 2em;
   border: none;
@@ -283,9 +283,6 @@ html{
   border-radius: 10px;
 }
 
-/* Simplistic and modern styling for react-toastify */
-.Toastify__toast-container {
-}
 
 .Toastify__toast {
   border-radius: 8px;
