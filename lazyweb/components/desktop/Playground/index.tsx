@@ -323,7 +323,7 @@ const PlaygroundComponent = () => {
                 width={'100%'}
                 defaultLanguage="javascript"
                 options={{
-                  fontFamily: 'poppins',
+                  fontFamily: 'jetbrainsmono',
                   fontSize: 16,
                   padding: {
                     top: 20,

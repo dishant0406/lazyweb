@@ -606,12 +606,159 @@ const useSearchModal = create<
 }))
 
 
+export const themes = [
+  "github",
+  "solarized_dark",
+  "dracula",
+  "monokai",
+  "terminal",
+  "twilight",
+  "xcode",
+  "ambiance",
+  "chaos",
+  "clouds_midnight",
+  "cobalt",
+  "crimson_editor",
+  "dawn",
+  "dreamweaver",
+  "eclipse",
+  "gob",
+  "gruvbox",
+  "idle_fingers"
+];
+
+const useSelectTheme = create<
+  {
+    selectedTheme: string
+    setSelectedTheme: (value:string) => void
+  }
+>((set) => ({
+  selectedTheme: themes[1],
+  setSelectedTheme: (value:string) => {
+
+    set({selectedTheme:value})
+  }
+}))
+
+export const languages = [
+  "c_cpp",
+  "csharp",
+  "css",
+  "dart",
+  "django",
+  "dockerfile",
+  "elixir",
+  "elm",
+  "erlang",
+  "golang",
+  "graphqlschema",
+  "haskell",
+  "html",
+  "java",
+  "javascript",
+  "json",
+  "kotlin",
+  "latex",
+  "markdown",
+  "mysql",
+  "objectivec",
+  "pascal",
+  "perl",
+  "php",
+  "python",
+  "r",
+  "ruby",
+  "rust",
+  "sass",
+  "scala",
+  "scss",
+  "sh",
+  "sql",
+  "swift",
+  "typescript",
+  "yaml",
+  "xml"
+];
+
+const useSelectLanguage = create<
+  {
+    selectedLanguage: string
+    setSelectedLanguage: (value:string) => void
+  }
+>((set) => ({
+  selectedLanguage: languages[14],
+  setSelectedLanguage: (value:string) => {
+    set({selectedLanguage:value})
+  }
+}))
 
 
 
+function generateRandomColor() {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
 
-    
-      
+function generateGradient() {
+  const directions = ['to right', 'to left', 'to bottom', 'to top', 'to right top', 'to left top', 'to right bottom', 'to left bottom'];
+  let gradient = 'linear-gradient(' + directions[Math.floor(Math.random() * directions.length)] + ', ';
+
+  // Generating a random number of colors (between 2 to 5)
+  const numberOfColors = Math.floor(Math.random() * 4) + 2;
+  for (let i = 0; i < numberOfColors; i++) {
+      gradient += generateRandomColor();
+      if (i < numberOfColors - 1) {
+          gradient += ', ';
+      }
+  }
+  gradient += ')';
+  return gradient;
+}
+
+// Define the state interface
+interface UIState {
+  height: string;
+  width: string;
+  borderRadius: number;
+  selectedGradient: number;
+  paddingX: number;
+  paddingY: number;
+  gradient: string;
+  containerBorderRadius: number;
+  setHeight: (newHeight: string) => void;
+  setWidth: (newWidth: string) => void;
+  setBorderRadius: (newBorderRadius: number) => void;
+  setSelectedGradient: (newSelectedGradient: number) => void;
+  setContainerBorderRadius: (newContainerBorderRadius: number) => void;
+  setPaddingX: (newPaddingX: number) => void;
+  setPaddingY: (newPaddingY: number) => void;
+  setGradient: () => void;
+}
+
+// Create the store
+ const useUIStore = create<UIState>((set) => ({
+  height: '50',
+  width: '50',
+  borderRadius: 10,
+  selectedGradient: 0,
+  paddingX: 40,
+  paddingY: 40,
+  containerBorderRadius: 0,
+  gradient: generateGradient(), // Replace with actual function call
+  setHeight: (newHeight) => set(() => ({ height: newHeight })),
+  setWidth: (newWidth) => set(() => ({ width: newWidth })),
+  setBorderRadius: (newBorderRadius) => set(() => ({ borderRadius: newBorderRadius })),
+  setSelectedGradient: (newSelectedGradient) => set(() => ({ selectedGradient: newSelectedGradient })),
+  setPaddingX: (newPaddingX) => set(() => ({ paddingX: newPaddingX })),
+  setPaddingY: (newPaddingY) => set(() => ({ paddingY: newPaddingY })),
+  setGradient: () => set(() => ({ gradient: generateGradient() })),
+  setContainerBorderRadius: (newContainerBorderRadius) => set(() => ({ containerBorderRadius: newContainerBorderRadius })),
+}));
+
 
 
 
@@ -633,5 +780,8 @@ export {
   useTopProduct,
   useSearchModal,
   useSetAllResourcesServerSide,
-  useGetPendingResources
+  useGetPendingResources,
+  useSelectTheme,
+  useUIStore,
+  useSelectLanguage
 }
