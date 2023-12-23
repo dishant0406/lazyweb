@@ -1,0 +1,93 @@
+import React, { useEffect, useRef, useState } from 'react'
+import AceEditor from "react-ace";
+
+import { useSelectLanguage, useSelectTheme, useUIStore } from '@/hooks/Zustand';
+import { useRouter } from 'next/router';
+
+type Props = {}
+
+const Code = (props: Props) => {
+  
+  
+  const {borderRadius} = useUIStore()
+  const [heading, setHeading] = useState('')
+  const router = useRouter()
+  const selectedTheme = router.query.theme as string || 'monokai'
+  const selectedLanguage = router.query.language as string || 'javascript'
+  const value = router.query.code ? atob(router.query.code as string) : ''
+
+
+  const onChange = (newValue: string) => {
+    router.replace({
+      pathname: router.pathname,
+      query: {
+        ...router.query,
+        //base64 encoded newValue
+        code: btoa(newValue)
+      }
+    }, undefined, { shallow: true })
+  }
+
+
+
+
+  return (
+   <div style={{
+    borderRadius: `${borderRadius}px`,
+   }} className='relative shadow-2xl'>
+    <div className='w-full absolute justify-between flex px-[2%] top-[15px] z-[1]'>
+      <div className='flex gap-[5px]'>
+        <div className='w-[15px] h-[15px] rounded-[50%] bg-[#FF5F56]'></div>
+        <div className='w-[15px] h-[15px] rounded-[50%] bg-[#FFBD2E]'></div>
+        <div className='w-[15px] h-[15px] rounded-[50%] bg-[#27C93F]'></div>
+      </div>
+      <input style={{
+        fontFamily:'jetbrainsmono',
+      }} className='w-fit bg-transparent mt-[-5px] text-white/50 outline-none' placeholder='Untitled' value={heading} onChange={e=>{
+        setHeading(e.target.value)
+      }
+      }/>
+      <div/>
+    </div>
+     <AceEditor
+    placeholder=""
+    mode={selectedLanguage}
+    theme={selectedTheme}
+    className='border border-white/30'
+    style={{
+      borderRadius: `${borderRadius}px`,
+      width: '100%',
+      minHeight: '50vh',
+    }}
+    onLoad={editor=>{
+      editor.renderer.setPadding(20)
+      editor.renderer.setScrollMargin(50, 20, 0, 0)
+      //if router.query.code is empty, set the value to the default code
+
+    }}
+    name="blah2"
+    
+    onChange={onChange}
+    fontSize={16}
+    showPrintMargin={false}
+    minLines={10}
+    maxLines={Infinity}
+    showGutter={false}
+    wrapEnabled={true}
+    highlightActiveLine={false}
+    value={value}
+    setOptions={{
+    enableBasicAutocompletion: false,
+    enableLiveAutocompletion: false,
+    enableSnippets: false,
+    showLineNumbers: false,
+    tabSize: 2,
+    displayIndentGuides: false,
+    cursorStyle: 'slim',
+    wrap: true,
+    }}/>
+   </div>
+  )
+}
+
+export default Code
