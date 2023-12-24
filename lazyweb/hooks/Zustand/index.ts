@@ -703,7 +703,7 @@ function generateRandomColor() {
   return color;
 }
 
-function generateGradient() {
+export function generateGradient() {
   const directions = ['to right', 'to left', 'to bottom', 'to top', 'to right top', 'to left top', 'to right bottom', 'to left bottom'];
   let gradient = 'linear-gradient(' + directions[Math.floor(Math.random() * directions.length)] + ', ';
 

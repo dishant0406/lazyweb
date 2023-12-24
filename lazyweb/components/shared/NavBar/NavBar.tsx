@@ -64,6 +64,7 @@ const NavBar = (props: Props) => {
             <div className="px-1 py-1 ">
               <Menu.Item>
                 {({ active }) => (
+                  <>
                   <button
                   onClick={()=>{
                     event('go-to-playground', {
@@ -80,6 +81,23 @@ const NavBar = (props: Props) => {
                     <img src='/assets/playfavicon.ico' className='h-[1.5rem] mr-[0.5rem]'/>
                     JS Playground
                   </button>
+                  <button
+                  onClick={()=>{
+                    event('go-to-snippet', {
+                      category: 'snippet',
+                      action: 'go-to-snippet',
+                      label: 'snippet'
+                    })
+                    router.push('/snippet')
+                  }}
+                    className={`${
+                      active ? 'bg-altGray text-white' : 'text-white bg-gray'
+                    } group flex w-full transition-all duration-300 items-center rounded-md px-2 py-2 text-sm`}
+                  >
+                    <img src='/assets/snipfavicon.ico' className='h-[1.5rem] mr-[0.5rem]'/>
+                    SnipShots
+                  </button>
+                  </>
                 )}
               </Menu.Item>
             </div>

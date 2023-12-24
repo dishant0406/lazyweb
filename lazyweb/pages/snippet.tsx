@@ -60,12 +60,48 @@ import "ace-builds/src-noconflict/mode-swift";
 import "ace-builds/src-noconflict/mode-typescript";
 import "ace-builds/src-noconflict/mode-yaml";
 import "ace-builds/src-noconflict/mode-xml";
+import { generateGradient } from '@/hooks/Zustand';
+import Head from 'next/head';
+import PlaygroundMobile from '@/components/mobile/PlaygroundMobile';
 
 type Props = {}
 
 const Snippet = (props: Props) => {
   return (
+    <>
+          <Head>
+        <meta charSet="UTF-8" />
+        <title>LazyWeb: SnipShots</title>
+        <meta name="description" content={
+          "SnipShots: Elegant Code Snippet Beautifier – A user-friendly web app for developers to transform code into visually appealing formats, ideal for presentations and sharing. Perfect for enhancing readability and aesthetics of code."
+        } />
+        <meta name="keywords" content="code beautification, web application, developers, user-friendly, code snippets, customization, presentations, blogs, education, formatting, readability, aesthetics, coding projects, showcase, Lazysnippet." />
+        <meta name="author" content="Dishant Sharma" />
+
+        <meta property="og:title" content="LazyWeb: SnipShots" />
+        <meta property="og:description" content={
+           "Lazysnippet: Elegant Code Snippet Beautifier – A user-friendly web app for developers to transform code into visually appealing formats, ideal for presentations and sharing. Perfect for enhancing readability and aesthetics of code."
+        } />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://app.lazyweb.rocks/snippet" />
+        <meta property="og:image" content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/lazysnippetlow.png" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="LazyWeb: SnipShots" />
+        <meta name="twitter:description" content={
+           "Lazysnippet: Elegant Code Snippet Beautifier – A user-friendly web app for developers to transform code into visually appealing formats, ideal for presentations and sharing. Perfect for enhancing readability and aesthetics of code."
+        } />
+        <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/lazysnippetlow.png" />
+        <meta name="twitter:site" content="@dishant0406" />
+        <meta name="twitter:creator" content="@dishant0406" />
+
+        <link rel="icon" href="/assets/snipfavicon.ico" type="image/x-icon" />
+      </Head>
     <SnippetsContainer />
+    <div className='h-[100vh] w-[100vw] md:hidden block'>
+      <PlaygroundMobile title='SnipShots'/>
+      </div>
+    </>
   )
 }
 
@@ -78,6 +114,9 @@ export async function getServerSideProps(context:any) {
     language: 'javascript',
     theme: 'monokai',
     code: btoa(`console.log('Hello World')`),
+    borderWidth: '1',
+    borderColor: 'rgba(255,255,255,0.5)',
+    color: btoa(generateGradient()),
   };
 
   // Update query with default values if missing and set redirection flag

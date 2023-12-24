@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react'
 import Selector from './Selector';
-import { useUIStore } from '@/hooks/Zustand';
+import { generateGradient, useUIStore } from '@/hooks/Zustand';
 import * as htmlToImage from 'html-to-image';
 import generatePDF from 'react-to-pdf'
 import {uniqueNamesGenerator,adjectives, colors, names} from 'unique-names-generator'
+import { useRouter } from 'next/router';
 
 type Props = {
   children?: React.JSX.Element | React.JSX.Element[]
@@ -11,10 +12,10 @@ type Props = {
 
 
 const Container = ({children}: Props) => {
-  const {height, width, gradient, borderRadius,containerBorderRadius, paddingX, paddingY} = useUIStore()
+  const {height, width, borderRadius,containerBorderRadius, paddingX, paddingY} = useUIStore()
   const divRef = useRef<HTMLDivElement>(null);
-
- 
+  const router = useRouter()
+  let color = router.query.color as string 
   const handleSave = () => {
     if (divRef.current) {
       htmlToImage.toPng(divRef.current)
@@ -129,7 +130,7 @@ const Container = ({children}: Props) => {
       <div ref={divRef} style={{
         minHeight: `${height}vh`,
         width: `${width}vw`,
-        background: gradient,
+        background: atob(color),
         borderRadius: (paddingX===0 && paddingY===0) ? `${borderRadius}px` : `${containerBorderRadius}px`,
         padding: `${paddingY}px ${paddingX}px`
       }} className=' transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.12)]'>

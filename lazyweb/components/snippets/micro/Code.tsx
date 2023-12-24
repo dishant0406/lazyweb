@@ -4,15 +4,19 @@ import AceEditor from "react-ace";
 import { useSelectLanguage, useSelectTheme, useUIStore } from '@/hooks/Zustand';
 import { useRouter } from 'next/router';
 
-type Props = {}
+type Props = {
+  noHeading?: boolean
+}
 
-const Code = (props: Props) => {
+const Code = ({noHeading}: Props) => {
   
   
   const {borderRadius} = useUIStore()
   const [heading, setHeading] = useState('')
   const router = useRouter()
   const selectedTheme = router.query.theme as string || 'monokai'
+  const borderWidth = router.query.borderWidth as string || '1'
+  const borderColor = router.query.borderColor as string || 'rgba(255,255,255,0.5)'
   const selectedLanguage = router.query.language as string || 'javascript'
   const value = router.query.code ? atob(router.query.code as string) : ''
 
@@ -33,9 +37,10 @@ const Code = (props: Props) => {
 
   return (
    <div style={{
-    borderRadius: `${borderRadius}px`,
-   }} className='relative shadow-2xl'>
-    <div className='w-full absolute justify-between flex px-[2%] top-[15px] z-[1]'>
+    borderRadius: `${borderRadius+1}px`,
+    boxShadow: `0 0 0 ${borderWidth}px ${borderColor}`,
+   }} className='relative z-[1] shadow-2xl'>
+   {!noHeading && <div className='w-full absolute justify-between flex px-[2%] top-[15px] z-[1]'>
       <div className='flex gap-[5px]'>
         <div className='w-[15px] h-[15px] rounded-[50%] bg-[#FF5F56]'></div>
         <div className='w-[15px] h-[15px] rounded-[50%] bg-[#FFBD2E]'></div>
@@ -48,16 +53,18 @@ const Code = (props: Props) => {
       }
       }/>
       <div/>
-    </div>
+    </div>}
      <AceEditor
     placeholder=""
     mode={selectedLanguage}
     theme={selectedTheme}
-    className='border border-white/30'
+    className=''
     style={{
       borderRadius: `${borderRadius}px`,
       width: '100%',
       minHeight: '50vh',
+      
+
     }}
     onLoad={editor=>{
       editor.renderer.setPadding(20)
