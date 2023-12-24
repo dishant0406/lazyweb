@@ -128,7 +128,6 @@ const Container = ({children}: Props) => {
   return (
     <>
       <div ref={divRef} style={{
-        minHeight: `${height}vh`,
         width: `${width}vw`,
         background: atob(color),
         borderRadius: (paddingX===0 && paddingY===0) ? `${borderRadius}px` : `${containerBorderRadius}px`,

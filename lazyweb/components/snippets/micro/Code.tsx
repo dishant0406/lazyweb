@@ -62,7 +62,6 @@ const Code = ({noHeading}: Props) => {
     style={{
       borderRadius: `${borderRadius}px`,
       width: '100%',
-      minHeight: '50vh',
       
 
     }}
@@ -77,7 +76,7 @@ const Code = ({noHeading}: Props) => {
     onChange={onChange}
     fontSize={16}
     showPrintMargin={false}
-    minLines={10}
+    minLines={5}
     maxLines={Infinity}
     showGutter={false}
     wrapEnabled={true}
