@@ -80,7 +80,7 @@ const Snippet = (props: Props) => {
 
         <meta property="og:title" content="LazyWeb: SnipShots" />
         <meta property="og:description" content={
-           "Lazysnippet: Elegant Code Snippet Beautifier – A user-friendly web app for developers to transform code into visually appealing formats, ideal for presentations and sharing. Perfect for enhancing readability and aesthetics of code."
+           "SnipShots: Elegant Code Snippet Beautifier – A user-friendly web app for developers to transform code into visually appealing formats, ideal for presentations and sharing. Perfect for enhancing readability and aesthetics of code."
         } />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://app.lazyweb.rocks/snippet" />
@@ -89,7 +89,7 @@ const Snippet = (props: Props) => {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="LazyWeb: SnipShots" />
         <meta name="twitter:description" content={
-           "Lazysnippet: Elegant Code Snippet Beautifier – A user-friendly web app for developers to transform code into visually appealing formats, ideal for presentations and sharing. Perfect for enhancing readability and aesthetics of code."
+           "SnipShots: Elegant Code Snippet Beautifier – A user-friendly web app for developers to transform code into visually appealing formats, ideal for presentations and sharing. Perfect for enhancing readability and aesthetics of code."
         } />
         <meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/lazysnippetlow.png" />
         <meta name="twitter:site" content="@dishant0406" />
