@@ -27,7 +27,7 @@ type Props = {
 
 const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const {paddingX, setPaddingX,containerBorderRadius, setContainerBorderRadius, paddingY,setPaddingY,setGradient,borderRadius, setBorderRadius} = useUIStore()
+  const {paddingX, setPaddingX,width, setWidth, containerBorderRadius, setContainerBorderRadius, paddingY,setPaddingY,setGradient,borderRadius, setBorderRadius} = useUIStore()
   const router = useRouter()
   const colorRef = useRef<HTMLInputElement>(null)
   let selectedTheme = router.query.theme as string || 'monokai'
@@ -109,6 +109,21 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
             ))}
           
         </Select>
+        <Slider 
+        label="Width" 
+        step={1} 
+        maxValue={80} 
+        minValue={30} 
+        defaultValue={50}
+        value={Number(width)}
+        onChange={e=>{
+          setWidth(e+'')
+        }}
+        classNames={{
+          base: 'w-[5vw] text-white',
+          label:'text-[0.7vw]'
+        }}
+      />
         <Slider 
         label="Pad X" 
         step={1} 

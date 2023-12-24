@@ -113,7 +113,7 @@ export async function getServerSideProps(context:any) {
   const defaults = {
     language: 'javascript',
     theme: 'monokai',
-    code: btoa(`console.log('Hello World')`),
+    code: btoa(`//print fibonacci\nfunction printFibonacci(n) {\n\tlet fib = [0, 1];\n\tfor (let i = 2; i < n; i++) {\n\t\tfib[i] = fib[i - 1] + fib[i - 2];\n\t}\n\tconsole.log(fib.slice(0, n).join(', '));\n}`),
     borderWidth: '1',
     borderColor: 'rgba(255,255,255,0.5)',
     color: btoa(generateGradient()),
