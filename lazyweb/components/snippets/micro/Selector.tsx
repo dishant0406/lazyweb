@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import {Select,  SelectItem} from "@nextui-org/react";
-import { themes, useSelectLanguage, useSelectTheme, useUIStore } from '@/hooks/Zustand';
+import { generateGradient, themes, useSelectLanguage, useSelectTheme, useUIStore } from '@/hooks/Zustand';
 import {Slider} from "@nextui-org/react";
 import { languages } from '@/hooks/Zustand'; 
 import { LuRefreshCcw } from "react-icons/lu";
@@ -11,6 +11,8 @@ import { FaRegFilePdf } from "react-icons/fa";
 import { TbFileTypePng } from "react-icons/tb";
 import { TbFileTypeSvg } from "react-icons/tb";
 import { useRouter } from 'next/router';
+import ReactTooltip from 'react-tooltip';
+import { BiSolidColor } from "react-icons/bi";
 /*
   
 */
@@ -27,8 +29,11 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const {paddingX, setPaddingX,containerBorderRadius, setContainerBorderRadius, paddingY,setPaddingY,setGradient,borderRadius, setBorderRadius} = useUIStore()
   const router = useRouter()
+  const colorRef = useRef<HTMLInputElement>(null)
   let selectedTheme = router.query.theme as string || 'monokai'
   let selectedLanguage = router.query.language as string || 'javascript'
+  let borderWidth = router.query.borderWidth as string || '1'
+  let borderColor = router.query.borderColor as string || 'rgba(255,255,255,0.5)'
 
   const setSelectedTheme = (theme: string) => {
     router.replace({
@@ -52,6 +57,16 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
     
   }
 
+  const setBorderWidth = (borderWidth: number) => {
+    router.replace({
+      pathname: router.pathname,
+      query: {
+        ...router.query,
+        borderWidth,
+      }
+    }, undefined, { shallow: true })
+  }
+
 
  useEffect(() => {
   console.log(router.query, 'router.query')
@@ -62,7 +77,7 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
 
 
   return (
-    <div className='w-full fixed bottom-[5vh] flex justify-center'>
+    <div className='w-full fixed bottom-[5vh] z-[10] flex justify-center'>
       <div className='w-[90vw] dark flex items-center justify-between px-[2%] border shadow-[0_2.8px_2.2px_rgba(0,_0,_0,_0.034),_0_6.7px_5.3px_rgba(0,_0,_0,_0.048),_0_12.5px_10px_rgba(0,_0,_0,_0.06),_0_22.3px_17.9px_rgba(0,_0,_0,_0.072),_0_41.8px_33.4px_rgba(0,_0,_0,_0.086),_0_100px_80px_rgba(0,_0,_0,_0.12)] border-white/50 rounded-[10px] py-[2rem] bg-[#202123]'>
         <Select classNames={{
           selectorIcon: 'text-white',
@@ -95,7 +110,7 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
           
         </Select>
         <Slider 
-        label="Padding X" 
+        label="Pad X" 
         step={1} 
         maxValue={100} 
         minValue={0} 
@@ -105,11 +120,12 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
           setPaddingX(e as number)
         }}
         classNames={{
-          base: 'w-[10vw] text-white',
+          base: 'w-[5vw] text-white',
+          label:'text-[0.7vw]'
         }}
       />
         <Slider 
-        label="Padding Y" 
+        label="Pad Y" 
         step={1} 
         maxValue={100} 
         minValue={0} 
@@ -119,7 +135,23 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
           setPaddingY(e as number)
         }}
         classNames={{
-          base: 'w-[10vw] text-white',
+          base: 'w-[5vw] text-white',
+          label:'text-[0.7vw]'
+        }}
+      />
+        <Slider 
+        label="Bor Width" 
+        step={1} 
+        maxValue={50} 
+        minValue={0} 
+        defaultValue={1}
+        value={Number(borderWidth)}
+        onChange={e=>{
+          setBorderWidth(e as number)
+        }}
+        classNames={{
+          base: 'w-[5vw] text-white',
+          label:'text-[0.7vw]'
         }}
       />
         <Slider 
@@ -134,6 +166,7 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
         }}
         classNames={{
           base: 'w-[10vw] text-white',
+          label:'text-[0.7vw]'
         }}
       />
         <Slider 
@@ -148,14 +181,42 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
         }}
         classNames={{
           base: 'w-[10vw] text-white',
+          label:'text-[0.7vw]'
         }}
       />
-      <div onClick={()=>{
-          setGradient()
+     <div className='flex gap-[10px]'>
+     <a data-tip data-for='refresh_background' onClick={()=>{
+      const bg = generateGradient()
+          router.replace({
+            pathname: router.pathname,
+            query: {
+              ...router.query,
+              color: btoa(bg),
+            }
+          }, undefined, { shallow: true })
         }
         } className='h-[40px] w-[40px] cursor-pointer rounded-md flex items-center justify-center border border-white/50 bg-[#202123]'>
       <LuRefreshCcw  className='text-white/50  text-xl'/>
-      </div>
+      </a>
+     <a data-tip data-for='border_color' onClick={()=>{
+          colorRef.current?.click()
+        }
+        } className='h-[40px] w-[40px] relative cursor-pointer rounded-md flex items-center justify-center border border-white/50 bg-[#202123]'>
+        <BiSolidColor  className='text-white/50  text-xl'/>
+        <input ref={colorRef} value={
+          borderColor
+        } onChange={e=>{
+          router.replace({
+            pathname: router.pathname,
+            query: {
+              ...router.query,
+              borderColor: e.target.value,
+            }
+          }, undefined, { shallow: true })
+        }
+        } type='color' height={0} width={0} className='absolute opacity-0 h-0 w-0 top-0 left-0' />
+      </a>
+      
       
       <Popover isKeyboardDismissDisabled={true} shouldCloseOnBlur={true} shouldBlockScroll={true} classNames={{
                 trigger: 'z-0'
@@ -239,9 +300,15 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
                   </div> */}
                 </PopoverContent>
               </Popover>
+           
+     </div>
 
-     
-      
+     <ReactTooltip className='bg-gray' type='warning' id='refresh_background' place='bottom'>
+          Refresh Background
+        </ReactTooltip>
+        <ReactTooltip className='bg-gray' type='warning' id='border_color' place='bottom'>
+          Border Color
+        </ReactTooltip>
       </div>
     </div>
   )
