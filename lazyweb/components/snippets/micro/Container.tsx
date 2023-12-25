@@ -5,6 +5,7 @@ import * as htmlToImage from 'html-to-image';
 import generatePDF from 'react-to-pdf'
 import {uniqueNamesGenerator,adjectives, colors, names} from 'unique-names-generator'
 import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 
 type Props = {
   children?: React.JSX.Element | React.JSX.Element[]
@@ -37,7 +38,7 @@ const Container = ({children}: Props) => {
     }
   };
 
-  const handleSaveToImgur = () => {
+  const handleSaveToIMBB = () => {
     if (divRef.current) {
       htmlToImage.toPng(divRef.current)
         .then((dataUrl) => {
@@ -45,35 +46,45 @@ const Container = ({children}: Props) => {
           fetch(dataUrl)
             .then(res => res.blob())
             .then(blob => {
+              const name = uniqueNamesGenerator({
+                dictionaries: [adjectives, colors, names],
+                length: 3,
+                separator: '-',
+                style: 'capital'
+              });
+              const imbbAPIKey = process.env.NEXT_PUBLIC_IMBB_API_KEY;
               const formData = new FormData();
               formData.append('image', blob);
-  
-              // Imgur API endpoint
-              const imgurAPI = 'https://api.imgur.com/3/upload';
-  
-              // Your Imgur client ID
-              const clientId = '16450111350eabb';
-  
-              // Post the image to Imgur
-              fetch(imgurAPI, {
+              formData.append('key', imbbAPIKey!);
+              formData.append('name', name);
+              formData.append('expiration', '15552000');
+              formData.append('title', name);
+             
+
+              // Upload to IMGBB
+              fetch('https://api.imgbb.com/1/upload', {
                 method: 'POST',
-                headers: {
-                  Authorization: `Client-ID ${clientId}`,
-                },
-                body: formData,
+                body: formData
               })
-              .then(response => response.json())
-              .then(result => {
-                if (result.success) {
-                  //open image in new tab
-                  window.open(result.data.link, '_blank');
-                } else {
-                  console.error('Imgur upload failed:', result);
-                }
-              })
-              .catch(error => {
-                console.error('Error uploading image to Imgur:', error);
-              });
+                .then(response => response.json())
+                .then(data => {
+                  const link = document.createElement('a');
+                  const fileName = uniqueNamesGenerator({
+                    dictionaries: [adjectives, colors, names],
+                    length: 3,
+                    separator: '-',
+                    style: 'capital'
+                  });
+                  //target="_blank"
+                  link.target = '_blank';
+                  link.download = `${fileName}.png`;
+                  link.href = data.data.url;
+                  link.click();
+                })
+                .catch(error => {
+                  console.error('Error uploading image to IMGBB:', error);
+                });
+
             })
             .catch(error => {
               console.error('Error converting image to Blob:', error);
@@ -84,6 +95,27 @@ const Container = ({children}: Props) => {
         });
     }
   };
+
+  const handleSaveClipboard = () => {
+    if (divRef.current) {
+      htmlToImage.toBlob(divRef.current)
+        .then((blob) => {
+          navigator.clipboard.write([
+            new ClipboardItem({ 'image/png': blob! })
+          ])
+          .then(() => {
+           toast.success('Image copied to clipboard')
+          })
+          .catch((error) => {
+            toast.error('Something went wrong when copying to clipboard')
+          });
+        })
+        .catch((error) => {
+          toast.error('Something went wrong when converting to image')
+        });
+    }
+  };
+  
   
 
   const handleSaveSVG = () => {
@@ -117,7 +149,15 @@ const Container = ({children}: Props) => {
       });
       const pdf = generatePDF(divRef, {
         filename: `${filename}.pdf`,
-        
+        page:{
+          orientation: 'landscape',
+          format: 'a4',
+          
+        },
+        canvas:{
+          qualityRatio: 1,
+        },
+        resolution: 10
       })
       
     }
@@ -135,7 +175,7 @@ const Container = ({children}: Props) => {
       }} className=' transition-all duration-300 shadow-[0_8px_30px_rgb(0,0,0,0.12)]'>
         {children}
       </div>
-      <Selector uploadImage={handleSaveToImgur} savePDF={handleSavePDF} saveSVG={handleSaveSVG} save={handleSave} />
+      <Selector saveClip={handleSaveClipboard} uploadImage={handleSaveToIMBB} savePDF={handleSavePDF} saveSVG={handleSaveSVG} save={handleSave} />
     </>
   )
 }

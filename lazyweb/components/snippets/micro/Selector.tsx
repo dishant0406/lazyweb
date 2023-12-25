@@ -13,6 +13,8 @@ import { TbFileTypeSvg } from "react-icons/tb";
 import { useRouter } from 'next/router';
 import ReactTooltip from 'react-tooltip';
 import { BiSolidColor } from "react-icons/bi";
+import { MdOutlineFileUpload } from "react-icons/md";
+import { FaRegClipboard } from "react-icons/fa6";
 /*
   
 */
@@ -23,9 +25,10 @@ type Props = {
   saveSVG: () => void,
   savePDF: () => void,
   uploadImage: () => void,
+  saveClip: () => void,
 }
 
-const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
+const Selector = ({save, saveSVG, savePDF, uploadImage,saveClip}: Props) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const {paddingX, setPaddingX,width, setWidth, containerBorderRadius, setContainerBorderRadius, paddingY,setPaddingY,setGradient,borderRadius, setBorderRadius} = useUIStore()
   const router = useRouter()
@@ -295,7 +298,7 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
                       </p>
                     </button>
                   </div>
-                  {/* <div className="my-2 flex flex-col gap-2 w-full">
+                  <div className="my-2 flex flex-col gap-2 w-full">
                     <button onClick={() => {
                       event('upload image', {
                         category: 'upload-image-snippet',
@@ -306,13 +309,31 @@ const Selector = ({save, saveSVG, savePDF, uploadImage}: Props) => {
                       uploadImage()
                       setIsEditOpen(false)
                     }} className="flex items-center gap-[1rem]">
-                      <FaRegFilePdf className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
+                      <MdOutlineFileUpload className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
 
                       <p className="text-[14px]">
-                        Save to Imgur
+                        Upload to ImgBB
                       </p>
                     </button>
-                  </div> */}
+                  </div>
+                  <div className="my-2 flex flex-col gap-2 w-full">
+                    <button onClick={() => {
+                      event('upload image', {
+                        category: 'upload-image-snippet',
+                        title: 'upload-image-snippet',
+                        url: 'upload-image-snippet',
+                      })
+                      
+                      saveClip()
+                      setIsEditOpen(false)
+                    }} className="flex items-center gap-[1rem]">
+                      <FaRegClipboard className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
+
+                      <p className="text-[14px]">
+                        Copy to Clipboard
+                      </p>
+                    </button>
+                  </div>
                 </PopoverContent>
               </Popover>
            
