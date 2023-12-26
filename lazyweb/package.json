@@ -30,6 +30,8 @@
     "@types/react-resizable": "^3.0.4",
     "@types/react-stack-grid": "^0.7.3",
     "@types/svg64": "^1.1.0",
+    "@vercel/analytics": "^1.1.1",
+    "@vercel/speed-insights": "^1.0.2",
     "ace-builds": "^1.32.2",
     "allotment": "^1.19.3",
     "axios": "^1.2.1",

@@ -3,7 +3,7 @@ import 'react-spring-bottom-sheet/dist/style.css'
 import 'react-toastify/dist/ReactToastify.css';
 import "allotment/dist/style.css";
 import type { AppProps } from 'next/app'
-import { NavBar } from 'components'
+import { Analytics } from '@vercel/analytics/react';
 import Head from 'next/head'
 import Favicon from 'components/utility/Favicon/Favicon'
 import { TourProvider, useTour } from '@reactour/tour'
@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify'
 import { useUserData } from '@/hooks';
 import { GoogleAnalytics } from "nextjs-google-analytics";
 import {NextUIProvider} from "@nextui-org/react";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export default function App({ Component, pageProps }: AppProps) {
   const { session } = useUserData()
@@ -79,6 +80,8 @@ export default function App({ Component, pageProps }: AppProps) {
           </NextUIProvider>
           <ToastContainer theme='dark' hideProgressBar={true} closeButton={false} pauseOnHover={false} />
         </TourProvider>
+        <SpeedInsights/>
+        <Analytics/>
     </>
   )
 }
