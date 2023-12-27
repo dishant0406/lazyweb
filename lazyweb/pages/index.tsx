@@ -9,10 +9,7 @@ import { Book } from 'react-feather';
 
 
 type Props = {
-  token?: string,
   data?: any,
-  bookmarkResouces?: Resource[],
-  bookmark?: string
 }
 
 
@@ -128,26 +125,16 @@ const Home = ({
   )
 }
 
-export async function getServerSideProps({ query }: { query: { token: string, bookmark: string } }) {
+export async function getStaticProps() {
   const res = await fetch(process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL + '/api/websites')
   const data = await res.json()
 
-  let bookmarkResouces = []
-  if (query?.bookmark) {
-    const res = await fetch(process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL + `/api/websites/bookmarks/${query?.bookmark}`)
-    const bookmarkData = await res.json()
-    bookmarkResouces = bookmarkData?.resources
-  }
-
   return {
     props: {
-      token: query?.token || '',
       data,
-      bookmarkResouces,
-      bookmark: query?.bookmark || ''
-    }
+    },
+    revalidate: 60, // Revalidate at most once per minute
   };
 }
-
 
 export default Home
