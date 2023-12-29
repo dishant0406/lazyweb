@@ -72,6 +72,20 @@ const ResourceListBar = (props: Props) => {
         pathname: '/',
       }, undefined, { shallow: true })
     }
+
+    if(localStorage.getItem('token') && !router.query.tab){
+      router.replace({
+        pathname: '/',
+        query: { tab: 'all' },
+      }, undefined, { shallow: true })
+    }
+
+    if(localStorage.getItem('token') && router.query.tab){
+      const tab = tabs.find(e=>e.slug === router.query.tab)
+      if(tab){
+        selectionHandler(tab.id)
+      }
+    }
   
   
     if(session?.email){
