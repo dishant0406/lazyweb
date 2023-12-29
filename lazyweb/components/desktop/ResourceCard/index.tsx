@@ -62,8 +62,9 @@ function MyImageComponent({ title, image }: {
   );
 }
 
-const ResourceCard = ({ url, title, description, image: res_image, resource, scrollPosition }: Props) => {
+const ResourceCard = ({ url, title, description, image: res_image, resource:currResource, scrollPosition }: Props) => {
   const formattedUrl = formatUrl(url)
+  const [resource, setResource] = useState<Resource>(currResource)
   const [isHover, setISHover] = useState(false)
   const { setBookmark, setComplete } = useSetBookmark()
   const { setComplete: setLikesComplete, setLikes } = useSetLikes()
@@ -91,7 +92,7 @@ const ResourceCard = ({ url, title, description, image: res_image, resource, scr
 
 
   const getBookMarked = async () => {
-    const bookmarked = resource.bookmarked_by.includes(session?.id!)
+    const bookmarked = resource?.bookmarked_by.includes(session?.id!)
     setIsBookmarked(bookmarked)
   }
 
@@ -104,7 +105,7 @@ const ResourceCard = ({ url, title, description, image: res_image, resource, scr
   const refetchImage = async () => {
     try {
       setLoadingImage(true)
-      const data = await axiosIntanceWithAuth.put(`/websites/refetch-image/${resource._id}`, {}, {
+      const data = await axiosIntanceWithAuth.put(`/websites/refetch-image/${resource?._id}`, {}, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -122,17 +123,23 @@ const ResourceCard = ({ url, title, description, image: res_image, resource, scr
   }
 
   const handleBookMark = async () => {
-    setBookmark(resource._id)
+    const res = await setBookmark(resource?._id)
+    if(res) {
+      setResource(res)
+    }
   }
 
   const handleLike = async () => {
-    setLikes(resource._id)
+   const res = await setLikes(resource?._id)
+    if(res) {
+      setResource(res)
+    }
   }
 
   const handleApproveOrReject = async (btnType: string) => {
     try {
       if (btnType === 'approve') {
-        const data = await axiosIntanceWithAuth.put(`/websites/approve/${resource._id}`, {}, {
+        const data = await axiosIntanceWithAuth.put(`/websites/approve/${resource?._id}`, {}, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -142,7 +149,7 @@ const ResourceCard = ({ url, title, description, image: res_image, resource, scr
         setAllCategories()
         setAllTags()
       } else {
-        const data = await axiosIntanceWithAuth.put(`/websites/reject/${resource._id}`, {}, {
+        const data = await axiosIntanceWithAuth.put(`/websites/reject/${resource?._id}`, {}, {
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${localStorage.getItem('token')}`
@@ -389,7 +396,7 @@ const ResourceCard = ({ url, title, description, image: res_image, resource, scr
         handleLike()
       }} onMouseEnter={() => setIsLikeHovered(true)} onMouseLeave={() => setIsLikeHovered(false)} className="h-[2rem] flex cursor-pointer justify-center items-center w-[2rem] absolute top-[10px] left-[10px]">
         <AnimatePresence>
-          {(isLikeHovered || isLiked) ? (
+          {(resource.liked_by?.includes(session?.id)) ? (
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}

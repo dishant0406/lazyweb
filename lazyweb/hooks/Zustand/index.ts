@@ -381,7 +381,7 @@ const useTopProduct = create<
 const useSetBookmark = create<
   {
     setComplete:Boolean,
-    setBookmark: (resourceId:number) => void
+    setBookmark: (resourceId:number) => Promise<Resource>
   }
 >((set) => ({
   setComplete:false,
@@ -396,8 +396,8 @@ const useSetBookmark = create<
       if(data){
         set(state=>({setComplete:!state.setComplete}))
         //if selected tab is saved then refetch all recouseces
-          useAllResources.getState().setAllResources(useSelectedTab.getState().selectedTab)
         
+        return data.data        
       }
     }
     catch(err:any){
@@ -411,7 +411,7 @@ const useSetBookmark = create<
 const useSetLikes = create<
   {
     setComplete:Boolean,
-    setLikes: (resourceId:number) => void
+    setLikes: (resourceId:number) => Promise<Resource>
   }
 >((set) => ({
   setComplete:false,
@@ -425,8 +425,8 @@ const useSetLikes = create<
         }
       })
       if(data){
-        //if selected tab is saved then refetch all recouseces
-        useAllResources.getState().setAllResources(useSelectedTab.getState().selectedTab)
+        set(state=>({setComplete:!state.setComplete}))
+        return data
       }
    }
     catch(err:any){
