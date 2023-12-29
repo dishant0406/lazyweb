@@ -57,7 +57,10 @@ const ResourceListBar = (props: Props) => {
       }else{
         router.replace({
           pathname: '/',
-          query: { tab: newTabs[id-1].slug },
+          query: { 
+            ...router.query,
+            tab: newTabs[id-1].slug
+           },
         }, undefined, { shallow: true })
       }
       setTabs(newTabs)
@@ -76,7 +79,10 @@ const ResourceListBar = (props: Props) => {
     if(localStorage.getItem('token') && !router.query.tab){
       router.replace({
         pathname: '/',
-        query: { tab: 'all' },
+        query: { 
+          ...router.query,
+          tab: 'all'
+         },
       }, undefined, { shallow: true })
     }
 
