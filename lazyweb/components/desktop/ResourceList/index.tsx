@@ -36,7 +36,7 @@ const ResourceList = (props: Props) => {
 
   useEffect(() => {
     if (window && window !== undefined) {
-      setFullUrl(window.location.href)
+      setFullUrl(window.location.origin)
     }
   }
     , [])
