@@ -38,6 +38,7 @@
     "axios-cache-adapter": "^2.7.3",
     "blob-util": "^2.0.2",
     "exiftool-vendored": "^16.5.1",
+    "file-loader": "^6.2.0",
     "framer-motion": "^10.16.16",
     "html-to-image": "^1.11.11",
     "html2canvas": "^1.4.1",

@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-import {Select,  SelectItem} from "@nextui-org/react";
+import { Select, SelectItem } from "@nextui-org/react";
 import { generateGradient, themes, useSelectLanguage, useSelectTheme, useUIStore } from '@/hooks/Zustand';
-import {Slider} from "@nextui-org/react";
-import { languages } from '@/hooks/Zustand'; 
+import { Slider } from "@nextui-org/react";
+import { languages } from '@/hooks/Zustand';
 import { LuRefreshCcw } from "react-icons/lu";
 import { HiOutlineDownload } from "react-icons/hi";
 import { Popover, PopoverTrigger, PopoverContent, Button, Input, ButtonGroup } from "@nextui-org/react";
@@ -28,9 +28,9 @@ type Props = {
   saveClip: () => void,
 }
 
-const Selector = ({save, saveSVG, savePDF, uploadImage,saveClip}: Props) => {
+const Selector = ({ save, saveSVG, savePDF, uploadImage, saveClip }: Props) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const {paddingX, setPaddingX,width, setWidth, containerBorderRadius, setContainerBorderRadius, paddingY,setPaddingY,setGradient,borderRadius, setBorderRadius} = useUIStore()
+  const { paddingX, setPaddingX, width, setWidth, containerBorderRadius, setContainerBorderRadius, paddingY, setPaddingY, setGradient, borderRadius, setBorderRadius } = useUIStore()
   const router = useRouter()
   const colorRef = useRef<HTMLInputElement>(null)
   let selectedTheme = router.query.theme as string || 'monokai'
@@ -46,7 +46,7 @@ const Selector = ({save, saveSVG, savePDF, uploadImage,saveClip}: Props) => {
         theme,
       }
     }, undefined, { shallow: true })
-    
+
   }
 
   const setSelectedLanguage = (language: string) => {
@@ -57,7 +57,7 @@ const Selector = ({save, saveSVG, savePDF, uploadImage,saveClip}: Props) => {
         language,
       }
     }, undefined, { shallow: true })
-    
+
   }
 
   const setBorderWidth = (borderWidth: number) => {
@@ -71,9 +71,9 @@ const Selector = ({save, saveSVG, savePDF, uploadImage,saveClip}: Props) => {
   }
 
 
- useEffect(() => {
-  console.log(router.query, 'router.query')
- }, [router.query])
+  useEffect(() => {
+    console.log(router.query, 'router.query')
+  }, [router.query])
 
 
 
@@ -87,259 +87,259 @@ const Selector = ({save, saveSVG, savePDF, uploadImage,saveClip}: Props) => {
           base: 'text-white w-[10vw]',
         }} labelPlacement='inside' label="Theme" selectedKeys={
           new Set([selectedTheme])
-        } onChange={e=>{
+        } onChange={e => {
           setSelectedTheme(e.target.value)
-        
+
         }} >
-          
-            {themes.map((theme, index)=>(
-              <SelectItem key={theme} value={theme}>{theme.toUpperCase()}</SelectItem>
-            ))}
-          
+
+          {themes.map((theme, index) => (
+            <SelectItem key={theme.name} value={theme.name}>{theme.name.toUpperCase()}</SelectItem>
+          ))}
+
         </Select>
         <Select classNames={{
           selectorIcon: 'text-white',
           base: 'text-white w-[10vw]',
         }} labelPlacement='inside' label="Language" selectedKeys={
           new Set([selectedLanguage])
-        } onChange={e=>{
+        } onChange={e => {
           setSelectedLanguage(e.target.value)
-        
+
         }} >
-          
-            {languages.map((theme, index)=>(
-              <SelectItem key={theme} value={theme}>{theme.toUpperCase()}</SelectItem>
-            ))}
-          
+
+          {languages.map((theme, index) => (
+            <SelectItem key={theme.value} value={theme.value}>{theme.name}</SelectItem>
+          ))}
+
         </Select>
-        <Slider 
-        label="Width" 
-        step={1} 
-        maxValue={80} 
-        minValue={30} 
-        defaultValue={50}
-        value={Number(width)}
-        onChange={e=>{
-          setWidth(e+'')
-        }}
-        classNames={{
-          base: 'w-[5vw] text-white',
-          label:'text-[0.7vw]'
-        }}
-      />
-        <Slider 
-        label="Pad X" 
-        step={1} 
-        maxValue={100} 
-        minValue={0} 
-        defaultValue={20}
-        value={paddingX}
-        onChange={e=>{
-          setPaddingX(e as number)
-        }}
-        classNames={{
-          base: 'w-[5vw] text-white',
-          label:'text-[0.7vw]'
-        }}
-      />
-        <Slider 
-        label="Pad Y" 
-        step={1} 
-        maxValue={100} 
-        minValue={0} 
-        defaultValue={20}
-        value={paddingY}
-        onChange={e=>{
-          setPaddingY(e as number)
-        }}
-        classNames={{
-          base: 'w-[5vw] text-white',
-          label:'text-[0.7vw]'
-        }}
-      />
-        <Slider 
-        label="Bor Width" 
-        step={1} 
-        maxValue={50} 
-        minValue={0} 
-        defaultValue={1}
-        value={Number(borderWidth)}
-        onChange={e=>{
-          setBorderWidth(e as number)
-        }}
-        classNames={{
-          base: 'w-[5vw] text-white',
-          label:'text-[0.7vw]'
-        }}
-      />
-        <Slider 
-        label="Border Radius" 
-        step={1} 
-        maxValue={50} 
-        minValue={0} 
-        defaultValue={20}
-        value={borderRadius}
-        onChange={e=>{
-          setBorderRadius(e as number)
-        }}
-        classNames={{
-          base: 'w-[10vw] text-white',
-          label:'text-[0.7vw]'
-        }}
-      />
-        <Slider 
-        label="Container Radius" 
-        step={1} 
-        maxValue={50} 
-        minValue={0} 
-        defaultValue={20}
-        value={containerBorderRadius}
-        onChange={e=>{
-          setContainerBorderRadius(e as number)
-        }}
-        classNames={{
-          base: 'w-[10vw] text-white',
-          label:'text-[0.7vw]'
-        }}
-      />
-     <div className='flex gap-[10px]'>
-     <a data-tip data-for='refresh_background' onClick={()=>{
-      const bg = generateGradient()
-          router.replace({
-            pathname: router.pathname,
-            query: {
-              ...router.query,
-              color: btoa(bg),
+        <Slider
+          label="Width"
+          step={1}
+          maxValue={80}
+          minValue={30}
+          defaultValue={50}
+          value={Number(width)}
+          onChange={e => {
+            setWidth(e + '')
+          }}
+          classNames={{
+            base: 'w-[5vw] text-white',
+            label: 'text-[0.7vw]'
+          }}
+        />
+        <Slider
+          label="Pad X"
+          step={1}
+          maxValue={100}
+          minValue={0}
+          defaultValue={20}
+          value={paddingX}
+          onChange={e => {
+            setPaddingX(e as number)
+          }}
+          classNames={{
+            base: 'w-[5vw] text-white',
+            label: 'text-[0.7vw]'
+          }}
+        />
+        <Slider
+          label="Pad Y"
+          step={1}
+          maxValue={100}
+          minValue={0}
+          defaultValue={20}
+          value={paddingY}
+          onChange={e => {
+            setPaddingY(e as number)
+          }}
+          classNames={{
+            base: 'w-[5vw] text-white',
+            label: 'text-[0.7vw]'
+          }}
+        />
+        <Slider
+          label="Bor Width"
+          step={1}
+          maxValue={50}
+          minValue={0}
+          defaultValue={1}
+          value={Number(borderWidth)}
+          onChange={e => {
+            setBorderWidth(e as number)
+          }}
+          classNames={{
+            base: 'w-[5vw] text-white',
+            label: 'text-[0.7vw]'
+          }}
+        />
+        <Slider
+          label="Border Radius"
+          step={1}
+          maxValue={50}
+          minValue={0}
+          defaultValue={20}
+          value={borderRadius}
+          onChange={e => {
+            setBorderRadius(e as number)
+          }}
+          classNames={{
+            base: 'w-[10vw] text-white',
+            label: 'text-[0.7vw]'
+          }}
+        />
+        <Slider
+          label="Container Radius"
+          step={1}
+          maxValue={50}
+          minValue={0}
+          defaultValue={20}
+          value={containerBorderRadius}
+          onChange={e => {
+            setContainerBorderRadius(e as number)
+          }}
+          classNames={{
+            base: 'w-[10vw] text-white',
+            label: 'text-[0.7vw]'
+          }}
+        />
+        <div className='flex gap-[10px]'>
+          <a data-tip data-for='refresh_background' onClick={() => {
+            const bg = generateGradient()
+            router.replace({
+              pathname: router.pathname,
+              query: {
+                ...router.query,
+                color: btoa(bg),
+              }
+            }, undefined, { shallow: true })
+          }
+          } className='h-[40px] w-[40px] cursor-pointer rounded-md flex items-center justify-center border border-white/50 bg-[#202123]'>
+            <LuRefreshCcw className='text-white/50  text-xl' />
+          </a>
+          <a data-tip data-for='border_color' onClick={() => {
+            colorRef.current?.click()
+          }
+          } className='h-[40px] w-[40px] relative cursor-pointer rounded-md flex items-center justify-center border border-white/50 bg-[#202123]'>
+            <BiSolidColor className='text-white/50  text-xl' />
+            <input ref={colorRef} value={
+              borderColor
+            } onChange={e => {
+              router.replace({
+                pathname: router.pathname,
+                query: {
+                  ...router.query,
+                  borderColor: e.target.value,
+                }
+              }, undefined, { shallow: true })
             }
-          }, undefined, { shallow: true })
-        }
-        } className='h-[40px] w-[40px] cursor-pointer rounded-md flex items-center justify-center border border-white/50 bg-[#202123]'>
-      <LuRefreshCcw  className='text-white/50  text-xl'/>
-      </a>
-     <a data-tip data-for='border_color' onClick={()=>{
-          colorRef.current?.click()
-        }
-        } className='h-[40px] w-[40px] relative cursor-pointer rounded-md flex items-center justify-center border border-white/50 bg-[#202123]'>
-        <BiSolidColor  className='text-white/50  text-xl'/>
-        <input ref={colorRef} value={
-          borderColor
-        } onChange={e=>{
-          router.replace({
-            pathname: router.pathname,
-            query: {
-              ...router.query,
-              borderColor: e.target.value,
-            }
-          }, undefined, { shallow: true })
-        }
-        } type='color' height={0} width={0} className='absolute opacity-0 h-0 w-0 top-0 left-0' />
-      </a>
-      
-      
-      <Popover isKeyboardDismissDisabled={true} shouldCloseOnBlur={true} shouldBlockScroll={true} classNames={{
-                trigger: 'z-0'
-              }} isOpen={isEditOpen} onOpenChange={setIsEditOpen} placement="top" showArrow offset={10}>
-                <PopoverTrigger>
-                <div className='h-[40px] w-[40px] cursor-pointer rounded-md flex items-center justify-center border border-white/50 bg-[#202123]'>
-                <HiOutlineDownload  className='text-white/50  text-xl'/>
-                </div>
-                </PopoverTrigger>
-                <PopoverContent>
-                  <div className="my-2 flex flex-col gap-2 w-full">
-                    <button onClick={() => {
-                      event('download png', {
-                        category: 'download-png-snippet',
-                        title: 'download-png-snippet',
-                        url: 'download-png-snippet',
-                      })
-                      save()
-                      setIsEditOpen(false)
-                    }} className="flex items-center gap-[1rem]">
-                      <TbFileTypePng className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
+            } type='color' height={0} width={0} className='absolute opacity-0 h-0 w-0 top-0 left-0' />
+          </a>
 
-                      <p className="text-[14px]">
-                        Save PNG
-                      </p>
-                    </button>
-                  </div>
-                  <div className="my-2 flex flex-col gap-2 w-full">
-                    <button onClick={() => {
-                      event('download svg', {
-                        category: 'download-svg-snippet',
-                        title: 'download-svg-snippet',
-                        url: 'download-svg-snippet',
-                      })
-                      
-                      saveSVG()
-                      setIsEditOpen(false)
-                    }} className="flex items-center gap-[1rem]">
-                      <TbFileTypeSvg className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
 
-                      <p className="text-[14px]">
-                        Save SVG
-                      </p>
-                    </button>
-                  </div>
-                  <div className="my-2 flex flex-col gap-2 w-full">
-                    <button onClick={() => {
-                      event('download pdf', {
-                        category: 'download-pdf-snippet',
-                        title: 'download-pdf-snippet',
-                        url: 'download-pdf-snippet',
-                      })
-                      
-                      savePDF()
-                      setIsEditOpen(false)
-                    }} className="flex items-center gap-[1rem]">
-                      <FaRegFilePdf className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
+          <Popover isKeyboardDismissDisabled={true} shouldCloseOnBlur={true} shouldBlockScroll={true} classNames={{
+            trigger: 'z-0'
+          }} isOpen={isEditOpen} onOpenChange={setIsEditOpen} placement="top" showArrow offset={10}>
+            <PopoverTrigger>
+              <div className='h-[40px] w-[40px] cursor-pointer rounded-md flex items-center justify-center border border-white/50 bg-[#202123]'>
+                <HiOutlineDownload className='text-white/50  text-xl' />
+              </div>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className="my-2 flex flex-col gap-2 w-full">
+                <button onClick={() => {
+                  event('download png', {
+                    category: 'download-png-snippet',
+                    title: 'download-png-snippet',
+                    url: 'download-png-snippet',
+                  })
+                  save()
+                  setIsEditOpen(false)
+                }} className="flex items-center gap-[1rem]">
+                  <TbFileTypePng className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
 
-                      <p className="text-[14px]">
-                        Save PDF
-                      </p>
-                    </button>
-                  </div>
-                  <div className="my-2 flex flex-col gap-2 w-full">
-                    <button onClick={() => {
-                      event('upload image', {
-                        category: 'upload-image-snippet',
-                        title: 'upload-image-snippet',
-                        url: 'upload-image-snippet',
-                      })
-                      
-                      uploadImage()
-                      setIsEditOpen(false)
-                    }} className="flex items-center gap-[1rem]">
-                      <MdOutlineFileUpload className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
+                  <p className="text-[14px]">
+                    Save PNG
+                  </p>
+                </button>
+              </div>
+              <div className="my-2 flex flex-col gap-2 w-full">
+                <button onClick={() => {
+                  event('download svg', {
+                    category: 'download-svg-snippet',
+                    title: 'download-svg-snippet',
+                    url: 'download-svg-snippet',
+                  })
 
-                      <p className="text-[14px]">
-                        Upload to ImgBB
-                      </p>
-                    </button>
-                  </div>
-                  <div className="my-2 flex flex-col gap-2 w-full">
-                    <button onClick={() => {
-                      event('upload image', {
-                        category: 'upload-image-snippet',
-                        title: 'upload-image-snippet',
-                        url: 'upload-image-snippet',
-                      })
-                      
-                      saveClip()
-                      setIsEditOpen(false)
-                    }} className="flex items-center gap-[1rem]">
-                      <FaRegClipboard className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
+                  saveSVG()
+                  setIsEditOpen(false)
+                }} className="flex items-center gap-[1rem]">
+                  <TbFileTypeSvg className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
 
-                      <p className="text-[14px]">
-                        Copy to Clipboard
-                      </p>
-                    </button>
-                  </div>
-                </PopoverContent>
-              </Popover>
-           
-     </div>
+                  <p className="text-[14px]">
+                    Save SVG
+                  </p>
+                </button>
+              </div>
+              <div className="my-2 flex flex-col gap-2 w-full">
+                <button onClick={() => {
+                  event('download pdf', {
+                    category: 'download-pdf-snippet',
+                    title: 'download-pdf-snippet',
+                    url: 'download-pdf-snippet',
+                  })
 
-     <ReactTooltip className='bg-gray' type='warning' id='refresh_background' place='bottom'>
+                  savePDF()
+                  setIsEditOpen(false)
+                }} className="flex items-center gap-[1rem]">
+                  <FaRegFilePdf className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
+
+                  <p className="text-[14px]">
+                    Save PDF
+                  </p>
+                </button>
+              </div>
+              <div className="my-2 flex flex-col gap-2 w-full">
+                <button onClick={() => {
+                  event('upload image', {
+                    category: 'upload-image-snippet',
+                    title: 'upload-image-snippet',
+                    url: 'upload-image-snippet',
+                  })
+
+                  uploadImage()
+                  setIsEditOpen(false)
+                }} className="flex items-center gap-[1rem]">
+                  <MdOutlineFileUpload className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
+
+                  <p className="text-[14px]">
+                    Upload to ImgBB
+                  </p>
+                </button>
+              </div>
+              <div className="my-2 flex flex-col gap-2 w-full">
+                <button onClick={() => {
+                  event('upload image', {
+                    category: 'upload-image-snippet',
+                    title: 'upload-image-snippet',
+                    url: 'upload-image-snippet',
+                  })
+
+                  saveClip()
+                  setIsEditOpen(false)
+                }} className="flex items-center gap-[1rem]">
+                  <FaRegClipboard className={` text-[18px] hover:scale-[1.1] cursor-pointer transition-all`} />
+
+                  <p className="text-[14px]">
+                    Copy to Clipboard
+                  </p>
+                </button>
+              </div>
+            </PopoverContent>
+          </Popover>
+
+        </div>
+
+        <ReactTooltip className='bg-gray' type='warning' id='refresh_background' place='bottom'>
           Refresh Background
         </ReactTooltip>
         <ReactTooltip className='bg-gray' type='warning' id='border_color' place='bottom'>
