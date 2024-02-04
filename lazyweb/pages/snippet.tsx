@@ -1,6 +1,6 @@
 import SnippetsContainer from '@/components/snippets/main'
 import React from 'react'
-import "ace-builds/src-noconflict/ext-language_tools";
+
 
 
 import { generateGradient } from '@/hooks/Zustand';
