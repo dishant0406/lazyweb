@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import NavBar from '../shared/NavBar/NavBar'
 import Container from './micro/Container'
-import Code from './micro/Code'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+
+const Code = dynamic(() => import('./micro/Code'), { ssr: false })
 
 type Props = {}
 
@@ -14,15 +16,17 @@ const SnippetsContainer = (props: Props) => {
       <NavBar />
       <div className='min-h-[100vh] relative flex px-[10vw] py-[calc(10vh+80px)] items-center flex-col justify-center w-full bg-[#202123]'>
         <Container>
-          <div className='relative'>
-              
-              <Code /> 
-            
-            {router?.query?.style === 'stack' &&<div className='w-full h-full absolute top-[10px] left-[10px] z-[0]'>
-              <Code noHeading />
-            </div>}
+          <Suspense fallback={<div>Loading Editor...</div>}>
+            <div className='relative'>
 
-          </div>
+              <Code />
+
+              {router?.query?.style === 'stack' && <div className='w-full h-full absolute top-[10px] left-[10px] z-[0]'>
+                <Code noHeading />
+              </div>}
+
+            </div>
+          </Suspense>
         </Container>
       </div>
     </div>

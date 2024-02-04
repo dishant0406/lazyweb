@@ -3,6 +3,7 @@ import { languages, themes, useSelectLanguage, useSelectTheme, useUIStore } from
 import { useRouter } from 'next/router';
 import AceEditor from "react-ace";
 import dynamic from 'next/dynamic';
+import "ace-builds/src-noconflict/ext-language_tools";
 
 //import theme dynamically  
 
