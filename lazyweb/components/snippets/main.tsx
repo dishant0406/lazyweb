@@ -8,6 +8,14 @@ const Code = dynamic(() => import('./micro/Code'), { ssr: false })
 
 type Props = {}
 
+const FallBackUI = () => {
+  return (
+    <div className='w-full h-full flex items-center justify-center'>
+      <div className=' text-2xl font-bold'>Loading Editor...</div>
+    </div>
+  )
+}
+
 const SnippetsContainer = (props: Props) => {
   const router = useRouter()
 
@@ -16,7 +24,7 @@ const SnippetsContainer = (props: Props) => {
       <NavBar />
       <div className='min-h-[100vh] relative flex px-[10vw] py-[calc(10vh+80px)] items-center flex-col justify-center w-full bg-[#202123]'>
         <Container>
-          <Suspense fallback={<div>Loading Editor...</div>}>
+          <Suspense fallback={<FallBackUI />}>
             <div className='relative'>
 
               <Code />
