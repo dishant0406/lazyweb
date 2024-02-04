@@ -606,25 +606,80 @@ const useSearchModal = create<
 }))
 
 
+
 export const themes = [
-  "github",
-  "solarized_dark",
-  "dracula",
-  "monokai",
-  "terminal",
-  "twilight",
-  "xcode",
-  "ambiance",
-  "chaos",
-  "clouds_midnight",
-  "cobalt",
-  "crimson_editor",
-  "dawn",
-  "dreamweaver",
-  "eclipse",
-  "gob",
-  "gruvbox",
-  "idle_fingers"
+  {
+    name:"github",
+    importName:"theme-github"
+  },
+  {
+    name:"solarized_dark",
+    importName:"theme-solarized_dark"
+  },
+  {
+    name:"dracula",
+    importName:"theme-dracula"
+  },
+  {
+    name:"monokai",
+    importName:"theme-monokai"
+  },
+  {
+    name:"terminal",
+    importName:"theme-terminal"
+  },
+  {
+    name:"twilight",
+    importName:"theme-twilight"
+  },
+  {
+    name:"xcode",
+    importName:"theme-xcode"
+  },
+  {
+    name:"ambiance",
+    importName:"theme-ambiance"
+  },
+  {
+    name:"chaos",
+    importName:"theme-chaos"
+  },
+  {
+    name:"clouds_midnight",
+    importName:"theme-clouds_midnight"
+  },
+  {
+    name:"cobalt",
+    importName:"theme-cobalt"
+  },
+  {
+    name:"crimson_editor",
+    importName:"theme-crimson_editor"
+  },
+  {
+    name:"dawn",
+    importName:"theme-dawn"
+  },
+  {
+    name:"dreamweaver",
+    importName:"theme-dreamweaver"
+  },
+  {
+    name:"eclipse",
+    importName:"theme-eclipse"
+  },
+  {
+    name:"gob",
+    importName:"theme-gob"
+  },
+  {
+    name:"gruvbox",
+    importName:"theme-gruvbox"
+  },
+  {
+    name:"idle_fingers",
+    importName:"theme-idle_fingers"
+  },
 ];
 
 const useSelectTheme = create<
@@ -633,62 +688,214 @@ const useSelectTheme = create<
     setSelectedTheme: (value:string) => void
   }
 >((set) => ({
-  selectedTheme: themes[1],
+  selectedTheme: themes[1].name,
   setSelectedTheme: (value:string) => {
-
     set({selectedTheme:value})
   }
 }))
 
 export const languages = [
-  "c_cpp",
-  "csharp",
-  "css",
-  "dart",
-  "django",
-  "dockerfile",
-  "elixir",
-  "elm",
-  "erlang",
-  "golang",
-  "graphqlschema",
-  "haskell",
-  "html",
-  "java",
-  "javascript",
-  "json",
-  "kotlin",
-  "latex",
-  "markdown",
-  "mysql",
-  "objectivec",
-  "pascal",
-  "perl",
-  "php",
-  "python",
-  "r",
-  "ruby",
-  "rust",
-  "sass",
-  "scala",
-  "scss",
-  "sh",
-  "sql",
-  "swift",
-  "typescript",
-  "yaml",
-  "xml"
+  {
+    name:'C/C++',
+    value:'c_cpp',
+    importName:"mode-c_cpp"
+  },
+  {
+    name:'C#',
+    value:'csharp',
+    importName:"mode-csharp"
+  },
+  {
+    name:'CSS',
+    value:'css',
+    importName:"mode-css"
+  },
+  {
+    name:'Dart',
+    value:'dart',
+    importName:"mode-dart"
+  },
+  {
+    name:'Django',
+    value:'django',
+    importName:"mode-django"
+  },
+  {
+    name:'Dockerfile',
+    value:'dockerfile',
+    importName:"mode-dockerfile"
+  },
+  {
+    name:'Elixir',
+    value:'elixir',
+    importName:"mode-elixir"
+  },
+  {
+    name:'Elm',
+    value:'elm',
+    importName:"mode-elm"
+  },
+  {
+    name:'Erlang',
+    value:'erlang',
+    importName:"mode-erlang"
+  },
+  {
+    name:'Golang',
+    value:'golang',
+    importName:"mode-golang"
+  },
+  {
+    name:'GraphQL Schema',
+    value:'graphqlschema',
+    importName:"mode-graphqlschema"
+  },
+  {
+    name:'Haskell',
+    value:'haskell',
+    importName:"mode-haskell"
+  },
+  {
+    name:'HTML',
+    value:'html',
+    importName:"mode-html"
+  },
+  {
+    name:'Java',
+    value:'java',
+    importName:"mode-java"
+  },
+  {
+    name:'JavaScript',
+    value:'javascript',
+    importName:"mode-javascript"
+  },
+  {
+    name:'JSON',
+    value:'json',
+    importName:"mode-json"
+  },
+  {
+    name:'Kotlin',
+    value:'kotlin',
+    importName:"mode-kotlin"
+  },
+  {
+    name:'LaTeX',
+    value:'latex',
+    importName:"mode-latex"
+  },
+  {
+    name:'Markdown',
+    value:'markdown',
+    importName:"mode-markdown"
+  },
+  {
+    name:'MySQL',
+    value:'mysql',
+    importName:"mode-mysql"
+  },
+  {
+    name:'Objective-C',
+    value:'objectivec',
+    importName:"mode-objectivec"
+  },
+  {
+    name:'Pascal',
+    value:'pascal',
+    importName:"mode-pascal"
+  },
+  {
+    name:'Perl',
+    value:'perl',
+    importName:"mode-perl"
+  },
+  {
+    name:'PHP',
+    value:'php',
+    importName:"mode-php"
+  },
+  {
+    name:'Python',
+    value:'python',
+    importName:"mode-python"
+  },
+  {
+    name:'R',
+    value:'r',
+    importName:"mode-r"
+  },
+  {
+    name:'Ruby',
+    value:'ruby',
+    importName:"mode-ruby"
+  },
+  {
+    name:'Rust',
+    value:'rust',
+    importName:"mode-rust"
+  },
+  {
+    name:'Sass',
+    value:'sass',
+    importName:"mode-sass"
+  },
+  {
+    name:'Scala',
+    value:'scala',
+    importName:"mode-scala"
+  },
+  {
+    name:'SCSS',
+    value:'scss',
+    importName:"mode-scss"
+  },
+  {
+    name:'Shell',
+    value:'sh',
+    importName:"mode-sh"
+  },
+  {
+    name:'SQL',
+    value:'sql',
+    importName:"mode-sql"
+  },
+  {
+    name:'Swift',
+    value:'swift',
+    importName:"mode-swift"
+  },
+  {
+    name:'TypeScript',
+    value:'typescript',
+    importName:"mode-typescript"
+  },
+  {
+    name:'YAML',
+    value:'yaml',
+    importName:"mode-yaml"
+  },
+  {
+    name:'XML',
+    value:'xml',
+    importName:"mode-xml"
+  },
 ];
 
 const useSelectLanguage = create<
   {
-    selectedLanguage: string
+    selectedLanguage: string,
+    displayLanguage: string,
     setSelectedLanguage: (value:string) => void
   }
 >((set) => ({
-  selectedLanguage: languages[14],
+  selectedLanguage: languages[14].value,
+  displayLanguage: languages[14].name,
   setSelectedLanguage: (value:string) => {
-    set({selectedLanguage:value})
+    set({
+      selectedLanguage:value,
+      displayLanguage:languages.find((item)=>item.value===value)?.name || ''
+    })
   }
 }))
 
