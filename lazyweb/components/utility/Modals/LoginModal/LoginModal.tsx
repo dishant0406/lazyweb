@@ -8,6 +8,11 @@ import axios from 'axios';
 import { useUserData } from '@/hooks';
 import { event } from 'nextjs-google-analytics';
 
+const divWrapper = ({children}:any) => {
+  return <div>{children}</div>
+}
+
+
 type Props = {
   isOpen: boolean,
   setIsOpen: (argo: boolean) => void
@@ -32,7 +37,9 @@ type DataGithub = {
 const LoginModal = ({ isOpen, setIsOpen }: Props) => {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<AuthError | null>(null)
+  const [error, setError] = useState<AuthError | null | {
+    message: string
+  }>(null)
   const [data, setData] = useState<Data | DataGithub | null>(null)
   const { setSession } = useUserData()
 
@@ -51,12 +58,21 @@ const LoginModal = ({ isOpen, setIsOpen }: Props) => {
   }
 
   const handleLogin = async () => {
+    if(!email) return
+
+    //match regex email
+    if(!email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/)) return setError({
+      message: 'Invalid Email' 
+    })
+
     setLoading(true)
     setData(null)
     setError(null)
     // const {data, error} = await supabaseClient.auth.signInWithOtp({
     //   email,
     // })
+
+
     const {data} = await axios.post(`${process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}/api/auth/login`, {
       email
     })

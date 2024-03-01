@@ -133,7 +133,7 @@ export async function getStaticProps() {
     props: {
       data,
     },
-    revalidate: 60, // Revalidate at most once per minute
+    revalidate: 60, 
   };
 }
 

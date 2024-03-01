@@ -1,10 +1,9 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useState } from 'react'
 import NavBar from '../shared/NavBar/NavBar'
 import Container from './micro/Container'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 
-const Code = dynamic(() => import('./micro/Code'), { ssr: false })
 
 type Props = {}
 
@@ -15,9 +14,14 @@ const FallBackUI = () => {
     </div>
   )
 }
+const Code = dynamic(() => import('./micro/Code'), {
+  ssr: false,
+  loading: () => <FallBackUI />
+})
 
 const SnippetsContainer = (props: Props) => {
   const router = useRouter()
+  const [show, setShow] = useState(false)
 
   return (
     <div className='w-full md:block hidden'>
@@ -29,9 +33,7 @@ const SnippetsContainer = (props: Props) => {
 
               <Code />
 
-              {router?.query?.style === 'stack' && <div className='w-full h-full absolute top-[10px] left-[10px] z-[0]'>
-                <Code noHeading />
-              </div>}
+
 
             </div>
           </Suspense>

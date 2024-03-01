@@ -15,9 +15,7 @@ import ReactTooltip from 'react-tooltip';
 import { BiSolidColor } from "react-icons/bi";
 import { MdOutlineFileUpload } from "react-icons/md";
 import { FaRegClipboard } from "react-icons/fa6";
-/*
-  
-*/
+
 
 
 type Props = {
@@ -38,7 +36,24 @@ const Selector = ({ save, saveSVG, savePDF, uploadImage, saveClip }: Props) => {
   let borderWidth = router.query.borderWidth as string || '1'
   let borderColor = router.query.borderColor as string || 'rgba(255,255,255,0.5)'
 
-  const setSelectedTheme = (theme: string) => {
+  const loadTheme = async (themeName: any) => {
+    await import(`ace-builds/src-noconflict/${themeName}.js`).catch((e) =>
+      console.error(`Could not load theme: ${themeName}`, e)
+    );
+  };
+
+  const loadMode = async (modeName: any) => {
+    await import(`ace-builds/src-noconflict/${modeName}.js`).catch((e) =>
+      console.error(`Could not load mode: ${modeName}`, e)
+    );
+  };
+
+
+  const setSelectedTheme = async (theme: string) => {
+    // const selectedtheme = themes.find(t => t.name === theme)
+    // if (selectedtheme) {
+    //   await loadTheme(selectedtheme.importName)
+    // }
     router.replace({
       pathname: router.pathname,
       query: {
@@ -49,7 +64,11 @@ const Selector = ({ save, saveSVG, savePDF, uploadImage, saveClip }: Props) => {
 
   }
 
-  const setSelectedLanguage = (language: string) => {
+  const setSelectedLanguage = async (language: string) => {
+    // const selectedlanguage = languages.find(t => t.value === language)
+    // if (selectedlanguage) {
+    //   loadMode(selectedlanguage.importName)
+    // }
     router.replace({
       pathname: router.pathname,
       query: {
@@ -71,9 +90,19 @@ const Selector = ({ save, saveSVG, savePDF, uploadImage, saveClip }: Props) => {
   }
 
 
-  useEffect(() => {
-    console.log(router.query, 'router.query')
-  }, [router.query])
+  // useEffect(() => {
+  //   const load = async () => {
+  //     const selectedtheme = themes.find(t => t.name === selectedTheme)
+  //     if (selectedtheme) {
+  //       await loadTheme(selectedtheme.importName)
+  //     }
+  //     const selectedlanguage = languages.find(t => t.value === selectedLanguage)
+  //     if (selectedlanguage) {
+  //       loadMode(selectedlanguage.importName)
+  //     }
+  //   }
+  //   load()
+  // }, [selectedTheme, selectedLanguage])
 
 
 
