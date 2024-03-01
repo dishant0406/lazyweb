@@ -285,7 +285,7 @@ const ResourceCard = ({ url, title, description, image: res_image, resource:curr
                       </p>
                     </button>
                   </div>
-                  <div className="my-2 flex flex-col gap-2 w-full">
+                  {/* <div className="my-2 flex flex-col gap-2 w-full">
                     <button onClick={() => {
                       event('edit-content', {
                         category: 'edit-content-resource',
@@ -303,7 +303,7 @@ const ResourceCard = ({ url, title, description, image: res_image, resource:curr
                         Edit Content
                       </p>
                     </button>
-                  </div>
+                  </div> */}
                 </PopoverContent>
               </Popover>
             )

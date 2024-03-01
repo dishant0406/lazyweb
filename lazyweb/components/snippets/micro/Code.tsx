@@ -1,8 +1,8 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 import { languages, themes, useSelectLanguage, useSelectTheme, useUIStore } from '@/hooks/Zustand';
 import { useRouter } from 'next/router';
-import AceEditor from "react-ace";
 import dynamic from 'next/dynamic';
+import AceEditor from 'react-ace';
 import "ace-builds/src-noconflict/ext-language_tools";
 
 //import theme dynamically  
@@ -27,7 +27,7 @@ import "ace-builds/src-noconflict/theme-gob";
 import "ace-builds/src-noconflict/theme-gruvbox";
 import "ace-builds/src-noconflict/theme-idle_fingers";
 
-//languages
+// //languages
 import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/mode-csharp";
 import "ace-builds/src-noconflict/mode-css";
@@ -116,39 +116,39 @@ const Code = ({ noHeading }: Props) => {
         } />
         <div />
       </div>}
-      <Suspense fallback={<div>Loading Editor...</div>}>
-        <AceEditor
-          placeholder=""
-          mode={selectedLanguage}
-          theme={selectedTheme}
-          className=''
-          style={{ borderRadius: `${borderRadius}px`, width: '100%' }}
-          onLoad={editor => {
-            editor.renderer.setPadding(20);
-            editor.renderer.setScrollMargin(50, 20, 0, 0);
-          }}
-          name="blah2"
-          onChange={onChange}
-          fontSize={16}
-          showPrintMargin={false}
-          minLines={5}
-          maxLines={Infinity}
-          showGutter={false}
-          wrapEnabled={true}
-          highlightActiveLine={false}
-          value={value}
-          setOptions={{
-            enableBasicAutocompletion: false,
-            enableLiveAutocompletion: false,
-            enableSnippets: false,
-            showLineNumbers: false,
-            tabSize: 2,
-            displayIndentGuides: false,
-            cursorStyle: 'slim',
-            wrap: true,
-          }}
-        />
-      </Suspense>
+
+      <AceEditor
+        placeholder=""
+        mode={selectedLanguage}
+        theme={selectedTheme}
+        className=''
+        style={{ borderRadius: `${borderRadius}px`, width: '100%' }}
+        onLoad={editor => {
+          editor.renderer.setPadding(20);
+          editor.renderer.setScrollMargin(50, 20, 0, 0);
+        }}
+        name="blah2"
+        onChange={onChange}
+        fontSize={16}
+        showPrintMargin={false}
+        minLines={5}
+        maxLines={Infinity}
+        showGutter={false}
+        wrapEnabled={true}
+        highlightActiveLine={false}
+        value={value}
+        setOptions={{
+          enableBasicAutocompletion: false,
+          enableLiveAutocompletion: false,
+          enableSnippets: false,
+          showLineNumbers: false,
+          tabSize: 2,
+          displayIndentGuides: false,
+          cursorStyle: 'slim',
+          wrap: true,
+        }}
+      />
+
     </div>
   );
 };
