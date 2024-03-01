@@ -9,8 +9,29 @@ import { useLoginModal } from '@/hooks/Zustand';
 import { Fragment } from 'react';
 import { useRouter } from 'next/router';
 import { event } from 'nextjs-google-analytics';
+import ReactTooltip from 'react-tooltip';
 
 type Props = {}
+
+const IconWithToolTip = ({img, title, path}:{
+  img:string
+  title:string
+  path:string
+})=>{
+  const router = useRouter()
+  return (
+    <>
+      <a data-tip data-for={title.toLocaleLowerCase().replaceAll(' ', '-')}>
+        <img onClick={()=>{
+          router.push(path)
+        }} src={img} className='h-[1.5rem] cursor-pointer'/>
+      </a>
+      <ReactTooltip className='bg-gray' type='warning' id={title.toLocaleLowerCase().replaceAll(' ', '-')} place='bottom'>
+        {title}
+      </ReactTooltip>
+    </>
+  )
+}
 
 const NavBar = (props: Props) => {
   // const [isOpen, setIsOpen] = useState(false)
@@ -45,7 +66,11 @@ const NavBar = (props: Props) => {
       </div>
       <div className='flex gap-[1rem] mr-[2rem] items-center'>
         <div className='h-[2.5rem] md:flex hidden w-[2px] bg-[#5e5f60]'/>
-        <Menu as="div" className="relative inline-block text-left">
+        <IconWithToolTip img='/assets/playfavicon.ico' path='/playground' title='JS Playground'/>
+        <IconWithToolTip img='/assets/snipfavicon.ico' path='/snipshots' title='SnipShots'/>
+        <IconWithToolTip img='/assets/notesfav.ico' path='/notes' title='LazyNotes'/>
+
+        {/* <Menu as="div" className="relative inline-block text-left">
           <Menu.Button title={
             'Amazing Tools'
           }>
@@ -97,6 +122,22 @@ const NavBar = (props: Props) => {
                     <img src='/assets/snipfavicon.ico' className='h-[1.5rem] mr-[0.5rem]'/>
                     SnipShots
                   </button>
+                  <button
+                  onClick={()=>{
+                    event('go-to-notes', {
+                      category: 'notes',
+                      action: 'go-to-notes',
+                      label: 'notes'
+                    })
+                    router.push('/notes')
+                  }}
+                    className={`${
+                      active ? 'bg-altGray text-white' : 'text-white bg-gray'
+                    } group flex w-full transition-all duration-300 items-center rounded-md px-2 py-2 text-sm`}
+                  >
+                    <img src='/assets/notesfav.ico' className='h-[1.5rem] mr-[0.5rem]'/>
+                    LazyNotes
+                  </button>
                   </>
                 )}
               </Menu.Item>
@@ -104,7 +145,7 @@ const NavBar = (props: Props) => {
             
           </Menu.Items>
         </Transition>
-        </Menu>
+        </Menu> */}
         {session && <CreateResource/>}
         <ProfileIcon onClick={()=>{
           event('open-login-modal', {
