@@ -67,7 +67,7 @@ const NavBar = (props: Props) => {
       <div className='flex gap-[1rem] mr-[2rem] items-center'>
         <div className='h-[2.5rem] md:flex hidden w-[2px] bg-[#5e5f60]'/>
         <IconWithToolTip img='/assets/playfavicon.ico' path='/playground' title='JS Playground'/>
-        <IconWithToolTip img='/assets/snipfavicon.ico' path='/snipshots' title='SnipShots'/>
+        <IconWithToolTip img='/assets/snipfavicon.ico' path='/snippet' title='SnipShots'/>
         <IconWithToolTip img='/assets/notesfav.ico' path='/notes' title='LazyNotes'/>
 
         {/* <Menu as="div" className="relative inline-block text-left">
