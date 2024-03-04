@@ -25,14 +25,30 @@ const capitalize = (s:string) => {
   return s.charAt(0).toUpperCase() + s.slice(1).toLocaleLowerCase()
 }
 
+async function query(data: { question: string }) {
+  const response = await fetch(
+      "/api/search",
+      {
+          method: "POST",
+          body: JSON.stringify(data)
+      }
+  );
+  const responsetext = await response.json()
+  console.log(responsetext)
+  return responsetext.text
+}
+
+
 
 const SearchBarModal = ({isOpen, setIsOpen}:Props) => {
   const [search, setSearch] = useState('')
   const [resources, setResources] = useState<Resource[]>([])
   const [loading, setLoading] = useState(false)
+  const [answer, setAnswer] = useState('')
   function closeModal() {
     setIsOpen(false)
     setSearch('')
+    setAnswer('')
     setResources([])
   }
 
@@ -40,21 +56,27 @@ const SearchBarModal = ({isOpen, setIsOpen}:Props) => {
     setIsOpen(true)
   }
 
+  useEffect(()=>{
+    if(!search){
+      setAnswer('')
+      setResources([])
+    }
+  },[search])
+
   const handleSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
     e.preventDefault()
+    if(!search) return
+
     try{
       setLoading(true)
-      const {data} = await axiosInstance.post('/websites/search', {
-        desc: search
-      })
-      const {resources} : {
-        resources:Resource[]
-      } = data
-      setResources(resources)
+      const res = await query({"question": `question: ${search}, make sure to always give resources in a list format with all the detail like NAME DESC and URL, if no resource is available just say 'No resource found', also go through all the resources in the context properly if the resource might be usefull include that also, don't hesitate just give as many resources as possible for the provided question`})
+      setAnswer(res)
     }catch(err:any){
       toast.error(err.message || 'Something went wrong')
     }
-    setLoading(false)
+    finally{
+      setLoading(false)
+    }
   }
 
 
@@ -124,11 +146,11 @@ const SearchBarModal = ({isOpen, setIsOpen}:Props) => {
                     </div>
                   }
                   {
-                    loading && resources.length<1 && isDesktop && <div className="w-full flex flex-col items-center">
+                    loading  && isDesktop && <div className="w-full flex flex-col items-center">
                       <div className='w-[40vw] flex items-center justify-between h-[4rem] border-white rounded-b-[10px] border p-[1rem] bg-[#0d0d0e]'>
-                       <div className='flex w-[50%] h-full items-center'>
+                      <div className='flex w-[50%] h-full items-center'>
                           <p className='text-white truncate text-sm'>Searching...</p>
-                       </div>
+                      </div>
                         <div className='flex gap-[0.5rem] items-center'>
                           <ImSpinner8 className='text-white animate-spin h-[1.5rem] w-[1.5rem]'/>
                         </div>
@@ -136,11 +158,11 @@ const SearchBarModal = ({isOpen, setIsOpen}:Props) => {
                       </div>
                   }
                   {
-                    !loading && resources.length<1 && isDesktop && <div className="w-full flex flex-col items-center">
+                    !loading && !answer && isDesktop && <div className="w-full flex flex-col items-center">
                       <div className='w-[40vw] flex items-center justify-between h-[4rem] border-white rounded-b-[10px] border p-[1rem] bg-[#0d0d0e]'>
-                       <div className='flex w-[50%] h-full items-center'>
+                      <div className='flex w-[50%] h-full items-center'>
                           <p className='text-white truncate text-sm'>Type something and Press Enter to Search...</p>
-                       </div>
+                      </div>
                         <div className='flex gap-[0.5rem] items-center'>
                           <MdKeyboardReturn className='text-white h-[1.5rem] w-[1.5rem]'/>
                           </div>
@@ -152,31 +174,20 @@ const SearchBarModal = ({isOpen, setIsOpen}:Props) => {
                   {isDesktop && <div className='w-full flex flex-col items-center'>
                     <div className='border no-scrollbar border-white max-h-[60vh] overflow-y-auto overflow-x-hidden rounded-b-[10px]'>
                       {
-                        resources.length>=1 && !loading && search && resources.map((res)=>{
-                          return (
-                            <div className='w-[40vw] flex items-center justify-between  h-[4rem] border-b-white/50 border p-[0.5rem] bg-[#0d0d0e]'>
-                              <div className='flex w-[50%] items-center'>
-                                <Image src={res.image_url} alt={res.title} width={64} height={64} className=' h-[3rem] w-[3rem] object-cover'/>
-                                <div className='ml-[1rem] w-full'>
-                                  <p title={
-                                    `${res.title}\n${res.desc}`
-                                  } className='text-white truncate text-sm'>{res.title}</p>
-                                </div>
-                              </div>
-                              <div className='flex gap-[0.5rem] items-center'>
-                                <a href={res.url} target='_blank' rel='noreferrer'>
-                                  <HiExternalLink className='text-white h-[1.5rem] w-[1.5rem]'/>
-                                </a>
-                              </div>
-                            </div>
-                          )
-                        })
+                        answer && !loading && search && <div className='w-full flex flex-col items-center'>
+                          <div className='w-[40vw] overflow-x-auto no-scrollbar flex items-center justify-between border-white rounded-b-[10px] border p-[1rem] bg-[#0d0d0e]'>
+                          
+                              <pre className='text-white text-sm'>{answer}</pre>
+                          
+                          
+                          </div>
+                          </div>
                       }
 
                     </div>
                   </div>}
 
-                 {!isDesktop && <div className='mt-[3rem] w-full'>
+                {!isDesktop && <div className='mt-[3rem] w-full'>
                   {resources.length>=1 && !loading && <Reorder.Group values={resources} axis={'x'} onReorder={()=>{}} className='z-[1] md:ml-[3rem] flex gap-[1rem] flex-wrap mt-[2rem]'>
                     {resources.map((e)=>{
                       return (
