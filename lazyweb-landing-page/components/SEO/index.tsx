@@ -14,47 +14,50 @@ export default function SEO({
   title = 'Lazyweb Rocks: The ultimate resource for developers',
 }: Props) {
   const metaData = [
-    {
-      name: `description`,
-      content: 'Find all the tools, libraries, and code snippets you need for your next big project at Lazyweb Rocks. Our collection of useful resources is constantly updated to help you save time and focus on building great things.',
-    },
-    {
-      property: `og:title`,
-      content: 'Lazyweb Rocks: The ultimate resource for developers',
-    },
-    {
-      property: `og:description`,
-      content: 'Find all the tools, libraries, and code snippets you need for your next big project at Lazyweb Rocks. Our collection of useful resources is constantly updated to help you save time and focus on building great things.',
-    },
-    {
-      property: `og:type`,
-      content: `website`,
-    },
-    {
-      name: `twitter:card`,
-      content: `summary`,
-    },
-    {
-      name: `twitter:creator`,
-      content: 'Dishant Sharma',
-    },
-    {
-      name: `twitter:title`,
-      content: 'Lazyweb Rocks: The ultimate resource for developers',
-    },
-    {
-      name: `twitter:description`,
-      content: 'Find all the tools, libraries, and code snippets you need for your next big project at Lazyweb Rocks. Our collection of useful resources is constantly updated to help you save time and focus on building great things.',
-    },
+
   ].concat(meta);
   return (
     <Head>
-      <title>{title}</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta charSet="utf-8" />
-      <link rel="icon" href="assets/favicon.ico" />
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="use-credentials" />
+
+      <>
+        <title>Lazyweb Rocks: The ultimate resource for developers</title>
+        <meta
+          name="description"
+          content="Find all the tools, libraries, and code snippets you need for your next big project at Lazyweb Rocks. Our collection of useful resources is constantly updated to help you save time and focus on building great things."
+        />
+        <meta property="og:url" content="https://lazyweb.rocks" />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:title"
+          content="Lazyweb Rocks: The ultimate resource for developers"
+        />
+        <meta
+          property="og:description"
+          content="Find all the tools, libraries, and code snippets you need for your next big project at Lazyweb Rocks. Our collection of useful resources is constantly updated to help you save time and focus on building great things."
+        />
+        <meta
+          property="og:image"
+          content="https://opengraph.b-cdn.net/production/documents/d77cfe8a-7bf5-493e-ae45-e24b06d49180.png?token=XqhxH33yqZ2mus4WtYg-dXQLZZqPTOKJ_5wkQ9HZRNo&height=628&width=1200&expires=33246160075"
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:domain" content="lazyweb.rocks" />
+        <meta property="twitter:url" content="https://lazyweb.rocks" />
+        <meta
+          name="twitter:title"
+          content="Lazyweb Rocks: The ultimate resource for developers"
+        />
+        <meta
+          name="twitter:description"
+          content="Find all the tools, libraries, and code snippets you need for your next big project at Lazyweb Rocks. Our collection of useful resources is constantly updated to help you save time and focus on building great things."
+        />
+        <meta
+          name="twitter:image"
+          content="https://opengraph.b-cdn.net/production/documents/d77cfe8a-7bf5-493e-ae45-e24b06d49180.png?token=XqhxH33yqZ2mus4WtYg-dXQLZZqPTOKJ_5wkQ9HZRNo&height=628&width=1200&expires=33246160075"
+        />
+      </>
+
+
+
       {metaData.map(({ name, content }, i) => (
         <meta key={i} name={name} content={content} />
       ))}
