@@ -18,11 +18,11 @@ const nextConfig = {
     return [
       {
         source: "/blog",
-        destination: "https://lazyweb-blogs-gygcdy0fk-lazywebs-projects.vercel.app/blog",
+        destination: "https://blog.lazyweb.rocks/blog",
       },
       {
         source: "/blog/:path*",
-        destination: "https://lazyweb-blogs-gygcdy0fk-lazywebs-projects.vercel.app/blog/:path*",
+        destination: "https://blog.lazyweb.rocks/blog/:path*",
       },
     ];
   },
