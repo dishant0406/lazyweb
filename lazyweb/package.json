@@ -48,7 +48,7 @@
     "next": "13",
     "next-connect": "^0.13.0",
     "nextjs-google-analytics": "^2.3.3",
-    "novel": "^0.1.22",
+    "novel": "^0.2.0",
     "react": "18.2.0",
     "react-ace": "^10.1.0",
     "react-device-detect": "^2.2.2",
