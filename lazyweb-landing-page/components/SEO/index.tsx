@@ -54,6 +54,11 @@ export default function SEO({
           name="twitter:image"
           content="https://opengraph.b-cdn.net/production/documents/d77cfe8a-7bf5-493e-ae45-e24b06d49180.png?token=XqhxH33yqZ2mus4WtYg-dXQLZZqPTOKJ_5wkQ9HZRNo&height=628&width=1200&expires=33246160075"
         />
+        {/* conical tag */}
+        <link rel="canonical" href="https://lazyweb.rocks" />
+        {/* robots */}
+        <meta name="robots" content="index, follow" />
+
       </>
 
 

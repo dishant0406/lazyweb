@@ -13,6 +13,10 @@ const NavBar = (props: Props) => {
     element?.scrollIntoView({ behavior: "smooth" })
   }
 
+  const handleGoToBlog = () => {
+    window.location.href = "https://lazyweb.rocks/blog"
+  }
+
 
   return (
     <div className="w-[100vw] z-[10] sticky top-0 flex justify-center">
@@ -23,6 +27,7 @@ const NavBar = (props: Props) => {
         <div className="md:flex hidden gap-[2rem]">
           <p onClick={() => handleClick('feature')} className="text-white cursor-pointer">Features</p>
           <p onClick={() => handleClick('services')} className="text-white cursor-pointer">Services</p>
+          <p onClick={() => handleGoToBlog()} className="text-white cursor-pointer">Blog</p>
         </div>
         <button onClick={handleGoto} className="bg-white md:flex items-center justify-center hidden font-medium text-gray rounded-lg px-[20px] h-[40px] whitespace-nowrap">Launch App</button>
       </div>
