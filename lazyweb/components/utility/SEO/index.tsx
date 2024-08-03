@@ -27,7 +27,7 @@ export default function SEO() {
       <meta property="og:url" content="https://app.lazyweb.rocks" />
       <meta
         property="og:image"
-        content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/LazywebUpScaledLogo.png"
+        content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/mainlazyweb.png"
       />
       <meta property="og:locale" content="en_US" />
       <meta property="og:site_name" content="Lazyweb Rocks" />
@@ -43,7 +43,7 @@ export default function SEO() {
       />
       <meta
         name="twitter:image"
-        content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/LazywebUpScaledLogo.png"
+        content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/mainlazyweb.png"
       />
       <meta name="robots" content="index, follow" />
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

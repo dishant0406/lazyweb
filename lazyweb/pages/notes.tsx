@@ -26,13 +26,10 @@ const Notes = (props: Props) => {
           }
         />
         <meta property="og:type" content="website" />
-        <meta
-          property="og:url"
-          content="https://app.lazyweb.rocks/playground"
-        />
+        <meta property="og:url" content="https://app.lazyweb.rocks/notes" />
         <meta
           property="og:image"
-          content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/lazynotes.png"
+          content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/ainotes.png"
         />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -45,7 +42,7 @@ const Notes = (props: Props) => {
         />
         <meta
           name="twitter:image"
-          content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/lazynotes.png"
+          content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/ainotes.png"
         />
         <meta name="twitter:site" content="@dishant0406" />
         <meta name="twitter:creator" content="@dishant0406" />

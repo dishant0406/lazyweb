@@ -99,7 +99,7 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
           <div
             className={`h-[15rem] flex-grow transition-all flex items-center justify-center rounded-[10px] min-w-[18rem] max-w-[24rem] bg-[#0d0d0e]`}
           >
-            <div className="w-[95%] relative flex flex-col justify-end p-[1rem] items-center h-[14rem]">
+            <div className="w-[95%] relative flex flex-col rounded-[5px] justify-end p-[1rem] items-center overflow-hidden h-[14rem]">
               <Image
                 as={NextImage}
                 isZoomed
@@ -108,7 +108,7 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                 width={500}
                 alt="product image"
                 classNames={{
-                  wrapper: "absolute top-0 h-full z-[0] rounded-[5px]",
+                  wrapper: "absolute object-cover top-0 h-full z-[0]",
                 }}
               />
               <div className="w-full flex z-[1] rounded-lg bg-gray p-[0.5rem] items-center justify-between">

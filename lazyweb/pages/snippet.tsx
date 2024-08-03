@@ -36,7 +36,7 @@ const Snippet = (props: Props) => {
         <meta property="og:url" content="https://app.lazyweb.rocks/snippet" />
         <meta
           property="og:image"
-          content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/lazysnippetlow.png"
+          content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/codesnips.png"
         />
 
         <meta name="twitter:card" content="summary_large_image" />
@@ -49,7 +49,7 @@ const Snippet = (props: Props) => {
         />
         <meta
           name="twitter:image"
-          content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/lazysnippetlow.png"
+          content="https://cdn.jsdelivr.net/gh/dishant0406/images-repo@master/codesnips.png"
         />
         <meta name="twitter:site" content="@dishant0406" />
         <meta name="twitter:creator" content="@dishant0406" />
