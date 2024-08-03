@@ -1,285 +1,279 @@
-import { Fragment } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { useState } from 'react';
-import { useWebsiteScreenshot, useWebsiteMetaData } from 'hooks';
-import { formatUrl } from 'lib/formatUrl';
-import { useUserData } from '@/hooks';
-import { unFormatUrl } from '@/lib/unFormatUrl';
-import CreatableSelect from 'react-select/creatable'
-let placeholder = 'assets/placeholder-website.png'
-import { MultiValue } from 'react-select';
-import { useCompleteResourceLength, useAllResources, useAllTags,useAllCategory, axiosInstance } from 'hooks/Zustand';
-import { event } from 'nextjs-google-analytics';
+import { useUserData } from "@/hooks";
+import { Dialog, Transition } from "@headlessui/react";
+import {
+  axiosInstance,
+  useAllCategory,
+  useAllResources,
+  useAllTags,
+  useCompleteResourceLength,
+} from "hooks/Zustand";
+import { event } from "nextjs-google-analytics";
+import { Fragment, useState } from "react";
+import { CSSObjectWithLabel, MultiValue } from "react-select";
+import CreatableSelect from "react-select/creatable";
+let placeholder = "assets/placeholder-website.png";
 
 type Props = {
-  isOpen: boolean,
-  setIsOpen: (argo:boolean)=>void,
-  url:string,
-  title:string,
-  id:number
-}
+  isOpen: boolean;
+  setIsOpen: (argo: boolean) => void;
+  url: string;
+  title: string;
+  id: number;
+};
 
 type MultiValueProps = MultiValue<{
   value: string;
   label: string;
-}>
+}>;
 
-const PublishModal = ({isOpen, setIsOpen, url ,title,id}:Props) => {
-  const [description, setDescription] = useState('')
-  const [category, setCategory] = useState('')
-  const [tags, setTags] = useState<String[]>([])
-  const [image, setImage] = useState(placeholder)
-  const [loadingFetch, setLoadingFetch] = useState(false)
-  const [err, setError] = useState<String|null>(null)
-  const session = useUserData(state=>state.session)
-  const {completeResourceLength} = useCompleteResourceLength()
-  const {setAllResources} = useAllResources()
-  const {setAllTags} = useAllTags()
-  const {setAllCategories,allCategories} = useAllCategory()
+const PublishModal = ({ isOpen, setIsOpen, url, title, id }: Props) => {
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [tags, setTags] = useState<String[]>([]);
+  const [image, setImage] = useState(placeholder);
+  const [loadingFetch, setLoadingFetch] = useState(false);
+  const [err, setError] = useState<String | null>(null);
+  const session = useUserData((state) => state.session);
+  const { completeResourceLength } = useCompleteResourceLength();
+  const { setAllResources } = useAllResources();
+  const { setAllTags } = useAllTags();
+  const { setAllCategories, allCategories } = useAllCategory();
 
   function closeModal() {
-    setIsOpen(false)
-    setTimeout(()=>{
-      setDescription('')
-      setTags([])
-      setImage(placeholder)
-      setLoadingFetch(false)
-      setError(null)
-    }
-    ,300)
+    setIsOpen(false);
+    setTimeout(() => {
+      setDescription("");
+      setTags([]);
+      setImage(placeholder);
+      setLoadingFetch(false);
+      setError(null);
+    }, 300);
   }
 
   function openModal() {
-    setIsOpen(true)
+    setIsOpen(true);
   }
 
-  const options = allCategories.map((e)=>{
-    return {value:e, label:e}
-  })
-  
+  const options = allCategories.map((e) => {
+    return { value: e, label: e };
+  });
+
   const optionsTags = [
+    { value: "new", label: "new" },
+    { value: "retro", label: "retro" },
+    { value: "all time favourite", label: "all time favourite" },
+    { value: "great help", label: "great help" },
+    { value: "must use", label: "must use" },
+  ];
 
-   { value:'new',label:'new'},
-   { value:'retro',label:'retro'},
-   { value:'all time favourite',label:'all time favourite'},
-   { value:'great help',label:'great help'},
-   { value:'must use',label:'must use'},
-  ]
-  
-  
-
-  const handleTags = (e:MultiValueProps)=>{
-    let tagsArr:string[] = []
-    e.map((f)=>{
-      tagsArr.push(f.value.toLowerCase())
-    })
-    setTags(tagsArr)
-  }
-
-
-  // const handleAdd = async () =>{
-  //   //check if category and tags are not empty if not then update tags and category in supabase and set isAvailableForApproval to true
-  //   if(category && tags?.length>0){
-  //     setLoadingFetch(true)
-  //     setError('')
-  //     const {data, error} = await supabaseClient
-  //     .from('website')
-  //     .update({category:category.toLowerCase(), tags:tags, isAvailableForApproval:true})
-  //     .match({id:id})
-  //     if(error){
-  //       setError(error.message)
-  //     }else{
-  //       setAllResources('my')
-  //       setAllTags()
-  //       setAllCategories()
-  //       closeModal()
-  //     }
-  //     setLoadingFetch(false)
-  //   }else{
-  //     setError('Enter Valid Data for Submitting for Public View')
-  //   }
-
-    
-  // }
+  const handleTags = (e: MultiValueProps) => {
+    let tagsArr: string[] = [];
+    e.map((f) => {
+      tagsArr.push(f.value.toLowerCase());
+    });
+    setTags(tagsArr);
+  };
 
   const handleAdd = async () => {
-    if(category && tags?.length > 0) {
+    if (category && tags?.length > 0) {
       setLoadingFetch(true);
-      setError('');
-      
+      setError("");
+
       try {
-        const response = await axiosInstance.put(`/websites/publish/${id}`, {
-          category: category.toLowerCase(),
-          tags: tags
-        }, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`
+        const response = await axiosInstance.put(
+          `/websites/publish/${id}`,
+          {
+            category: category.toLowerCase(),
+            tags: tags,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
           }
-        });
-  
-        if(response.data.error) {
+        );
+
+        if (response.data.error) {
           throw new Error(response.data.error);
         }
-  
+
         // These methods are presumably fetching or updating state related to resources, categories, and tags.
-        setAllResources('my');
+        setAllResources("my");
         setAllTags();
         setAllCategories();
         closeModal();
-  
-      } catch(error:any) {
-        setError(error.message || 'An error occurred.');
+      } catch (error: any) {
+        setError(error.message || "An error occurred.");
       } finally {
         setLoadingFetch(false);
       }
     } else {
-      setError('Enter Valid Data for Submitting for Public View');
+      setError("Enter Valid Data for Submitting for Public View");
     }
   };
-  
-
 
   return (
-    <Transition appear 
-      show={isOpen} 
-      as={Fragment}
+    <Transition
+      appear
+      show={isOpen}
+      as={Fragment as any}
       enter="transition duration-100 ease-out"
     >
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-50" />
-          </Transition.Child>
+      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Transition.Child
+          as={Fragment as any}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black bg-opacity-50" />
+        </Transition.Child>
 
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex items-center justify-center min-h-full p-4 text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="w-full max-w-md p-6 text-left align-middle transition-all transform shadow-xl rounded-2xl bg-gray">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-white"
-                  >
-                    Publish a Resource
-                  </Dialog.Title>
-                  {err && <div className="mt-2">
-                    <p className="text-sm text-red-600 font-[600]">
-                      {err}
-                    </p>
-                  </div>}
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-full p-4 text-center">
+            <Transition.Child
+              as={Fragment as any}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 scale-95"
+              enterTo="opacity-100 scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 scale-100"
+              leaveTo="opacity-0 scale-95"
+            >
+              <Dialog.Panel className="w-full max-w-md p-6 text-left align-middle transition-all transform shadow-xl rounded-2xl bg-gray">
+                <Dialog.Title
+                  as="h3"
+                  className="text-lg font-medium leading-6 text-white"
+                >
+                  Publish a Resource
+                </Dialog.Title>
+                {err && (
                   <div className="mt-2">
-                    <p className="text-sm text-white">
-                      URL
-                    </p>
+                    <p className="text-sm text-red-600 font-[600]">{err}</p>
                   </div>
-                    
-                  <input disabled value={url} placeholder='lazyweb.com' className="bg-[#35363a] cursor-not-allowed opacity-[0.5] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]" />
+                )}
+                <div className="mt-2">
+                  <p className="text-sm text-white">URL</p>
+                </div>
 
-                  
-                  <div>
-                    <div className="mt-4">
-                      <p className="text-sm text-white">
-                        Title
-                      </p>
-                    </div>
-                      
-                    <input disabled value={title} placeholder='LazyWeb' className="bg-[#35363a] cursor-not-allowed opacity-[0.5] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]" />
-                  </div>
-                  <div className=''>
-                    <div className="mt-4">
-                      <p className="text-sm text-white">
-                        Category
-                      </p>
-                    </div>
-                      
-                    <CreatableSelect styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          backgroundColor:'#35363a',
-                          border:'none',
-                          width:'90%',
-                          borderRadius:'12px',
-                          marginTop:'0.5rem',
-                          color:'#fff !important'
-                        }),
-                       input:(base, props)=>( {
-                        ...base,
-                        color:'#fff !important'
-                       }),
-                       menuList:(base, props)=> ({
-                        ...base,
-                        maxHeight:'200px',
-                       }),
-                       
-                      }} onChange={e=>e?setCategory(e?.value):setCategory('')} isClearable options={options} />
-                  </div>
-                  <div className='mb-[-2rem]'>
-                    <div className="mt-4">
-                      <p className="text-sm text-white">
-                        Tags
-                      </p>
-                    </div>
-                      
-                    <CreatableSelect isMulti styles={{
-                        control: (baseStyles, state) => ({
-                          ...baseStyles,
-                          backgroundColor:'#35363a',
-                          border:'none',
-                          width:'90%',
-                          borderRadius:'12px',
-                          marginTop:'0.5rem',
-                          color:'#fff !important',
-                        }),
-                        input:(base, props)=>( {
-                          ...base,
-                          color:'#fff !important'
-                         }),
-                         menuList:(base, props)=> ({
-                          ...base,
-                          maxHeight:'200px',
-                         }),
+                <input
+                  disabled
+                  value={url}
+                  placeholder="lazyweb.com"
+                  className="bg-[#35363a] cursor-not-allowed opacity-[0.5] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]"
+                />
 
-                      }} onChange={e=>handleTags(e)} isClearable options={optionsTags} />
+                <div>
+                  <div className="mt-4">
+                    <p className="text-sm text-white">Title</p>
                   </div>
-                  
-                  <div className="mt-[3rem]">
-                    <button
-                      type="button"
-                      disabled={title=='' && image == placeholder && loadingFetch}
-                      className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                      onClick={()=>{
-                        event('publish', {
-                          category: 'publish',
-                          action: 'publish',
-                          label: 'publish'
-                        })
-                        handleAdd()
-                      }}
-                    >
-                     { loadingFetch?'Loading...':'Submit for Publishing'}
-                    </button>                   
+
+                  <input
+                    disabled
+                    value={title}
+                    placeholder="LazyWeb"
+                    className="bg-[#35363a] cursor-not-allowed opacity-[0.5] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]"
+                  />
+                </div>
+                <div className="">
+                  <div className="mt-4">
+                    <p className="text-sm text-white">Category</p>
                   </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
+
+                  <CreatableSelect
+                    styles={{
+                      control: (baseStyles, state) =>
+                        ({
+                          ...baseStyles,
+                          backgroundColor: "#35363a",
+                          border: "none",
+                          width: "90%",
+                          borderRadius: "12px",
+                          marginTop: "0.5rem",
+                          color: "#fff !important",
+                        } as CSSObjectWithLabel),
+                      input: (base, props) =>
+                        ({
+                          ...base,
+                          color: "#fff !important",
+                        } as CSSObjectWithLabel),
+                      menuList: (base, props) =>
+                        ({
+                          ...base,
+                          maxHeight: "200px",
+                        } as CSSObjectWithLabel),
+                    }}
+                    onChange={(e) =>
+                      e ? setCategory(e?.value) : setCategory("")
+                    }
+                    isClearable
+                    options={options}
+                  />
+                </div>
+                <div className="mb-[-2rem]">
+                  <div className="mt-4">
+                    <p className="text-sm text-white">Tags</p>
+                  </div>
+
+                  <CreatableSelect
+                    isMulti
+                    styles={{
+                      control: (baseStyles, state) =>
+                        ({
+                          ...baseStyles,
+                          backgroundColor: "#35363a",
+                          border: "none",
+                          width: "90%",
+                          borderRadius: "12px",
+                          marginTop: "0.5rem",
+                          color: "#fff !important",
+                        } as CSSObjectWithLabel),
+                      input: (base, props) =>
+                        ({
+                          ...base,
+                          color: "#fff !important",
+                        } as CSSObjectWithLabel),
+                      menuList: (base, props) =>
+                        ({
+                          ...base,
+                          maxHeight: "200px",
+                        } as CSSObjectWithLabel),
+                    }}
+                    onChange={(e) => handleTags(e)}
+                    isClearable
+                    options={optionsTags}
+                  />
+                </div>
+
+                <div className="mt-[3rem]">
+                  <button
+                    type="button"
+                    disabled={
+                      title == "" && image == placeholder && loadingFetch
+                    }
+                    className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                    onClick={() => {
+                      event("publish", {
+                        category: "publish",
+                        action: "publish",
+                        label: "publish",
+                      });
+                      handleAdd();
+                    }}
+                  >
+                    {loadingFetch ? "Loading..." : "Submit for Publishing"}
+                  </button>
+                </div>
+              </Dialog.Panel>
+            </Transition.Child>
           </div>
-        </Dialog>
-      </Transition>
-  )
-}
+        </div>
+      </Dialog>
+    </Transition>
+  );
+};
 
-export default PublishModal
+export default PublishModal;

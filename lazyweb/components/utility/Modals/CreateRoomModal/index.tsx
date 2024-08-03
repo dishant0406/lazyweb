@@ -1,111 +1,116 @@
-import { Fragment } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
-import { useState } from 'react';
-import { AuthError, Provider, Session, User } from '@supabase/supabase-js';
-import { PuffLoader } from 'react-spinners';
-import { GitHub } from 'react-feather'
-import axios from 'axios';
-import { useUserData } from '@/hooks';
-import { Checkbox } from 'react-input-checkbox';
-import { uniqueNamesGenerator, Config, adjectives, colors, animals, countries, names, NumberDictionary, starWars, languages } from 'unique-names-generator';
-import { toast } from 'react-toastify';
-import { event } from 'nextjs-google-analytics';
+import { useUserData } from "@/hooks";
+import { Dialog, Transition } from "@headlessui/react";
+import { event } from "nextjs-google-analytics";
+import { Fragment, useState } from "react";
+import { Checkbox } from "react-input-checkbox";
+import { toast } from "react-toastify";
+import {
+  adjectives,
+  colors,
+  names,
+  uniqueNamesGenerator,
+} from "unique-names-generator";
 
 type Props = {
-  isOpen: boolean,
-  setIsOpen: (argo: boolean) => void,
-  socket: any,
-  setIsRoomJoined: (arg: boolean) => void,
-  setRoomID: (arg: string) => void,
-  code: string,
-  setDisplayName: (arg: string) => void,
-}
+  isOpen: boolean;
+  setIsOpen: (argo: boolean) => void;
+  socket: any;
+  setIsRoomJoined: (arg: boolean) => void;
+  setRoomID: (arg: string) => void;
+  code: string;
+  setDisplayName: (arg: string) => void;
+};
 
 const generateName = () => {
   const randomName: string = uniqueNamesGenerator({
-    dictionaries: [adjectives, colors, names,]
+    dictionaries: [adjectives, colors, names],
   });
 
-  return randomName
-}
+  return randomName;
+};
 
 const generateDisplayName = () => {
   const randomName: string = uniqueNamesGenerator({
     dictionaries: [names],
   });
 
-  return randomName
-}
+  return randomName;
+};
 
-const CreateRoomModal = ({ isOpen, setDisplayName: setName, setIsOpen, code, setIsRoomJoined, setRoomID, socket }: Props) => {
-  const { setSession } = useUserData()
-  const [type, setType] = useState<'new' | 'join' | ''>('')
-  const [isPrivate, setIsPrivate] = useState<boolean>(false)
-  const [password, setPassword] = useState<string>('')
-  const [displayName, setDisplayName] = useState<string>(generateDisplayName())
-  const [roomId, setRoomId] = useState<string>(generateName())
-
-
-
+const CreateRoomModal = ({
+  isOpen,
+  setDisplayName: setName,
+  setIsOpen,
+  code,
+  setIsRoomJoined,
+  setRoomID,
+  socket,
+}: Props) => {
+  const { setSession } = useUserData();
+  const [type, setType] = useState<"new" | "join" | "">("");
+  const [isPrivate, setIsPrivate] = useState<boolean>(false);
+  const [password, setPassword] = useState<string>("");
+  const [displayName, setDisplayName] = useState<string>(generateDisplayName());
+  const [roomId, setRoomId] = useState<string>(generateName());
 
   function closeModal() {
-
-    setIsOpen(false)
+    setIsOpen(false);
     setTimeout(() => {
-      setType('')
-    }, 300)
-
+      setType("");
+    }, 300);
   }
 
   function openModal() {
-    setIsOpen(true)
+    setIsOpen(true);
   }
 
   const handleSubmit = async () => {
-    if (type === 'new') {
-      if (roomId === '') {
-        toast.error('Please enter a room id')
-        return
+    if (type === "new") {
+      if (roomId === "") {
+        toast.error("Please enter a room id");
+        return;
       }
-      socket.emit('createRoom', {
-        roomId, isPrivate, password
-      })
-
+      socket.emit("createRoom", {
+        roomId,
+        isPrivate,
+        password,
+      });
     }
-    if (type === 'join') {
-      if (roomId === '') {
-        toast.error('Please enter a room id')
-        return
+    if (type === "join") {
+      if (roomId === "") {
+        toast.error("Please enter a room id");
+        return;
       }
-      if (displayName === '') {
-        toast.error('Please enter a display name or generate one')
-        return
+      if (displayName === "") {
+        toast.error("Please enter a display name or generate one");
+        return;
       }
-      console.log('joining room')
-      socket.emit('joinRoom', {
-        roomId, password, name: displayName
-      })
-
+      socket.emit("joinRoom", {
+        roomId,
+        password,
+        name: displayName,
+      });
     }
 
-    socket.on('joinSuccess', (data: any) => {
-      setRoomID(data.roomId)
-      setIsRoomJoined(true)
-      setName(data.name)
-      toast.success('Joined Room Successfully')
-      closeModal()
-    })
-  }
+    socket.on("joinSuccess", (data: any) => {
+      setRoomID(data.roomId);
+      setIsRoomJoined(true);
+      setName(data.name);
+      toast.success("Joined Room Successfully");
+      closeModal();
+    });
+  };
 
   return (
-    <Transition appear
+    <Transition
+      appear
       show={isOpen}
-      as={Fragment}
+      as={Fragment as any}
       enter="transition duration-100 ease-out"
     >
       <Dialog as="div" className="relative z-[100]" onClose={closeModal}>
         <Transition.Child
-          as={Fragment}
+          as={Fragment as any}
           enter="ease-out duration-300"
           enterFrom="opacity-0"
           enterTo="opacity-100"
@@ -119,7 +124,7 @@ const CreateRoomModal = ({ isOpen, setDisplayName: setName, setIsOpen, code, set
         <div className="fixed inset-0 overflow-y-auto">
           <div className="flex items-center justify-center min-h-full p-4 text-center">
             <Transition.Child
-              as={Fragment}
+              as={Fragment as any}
               enter="ease-out duration-300"
               enterFrom="opacity-0 scale-95"
               enterTo="opacity-100 scale-100"
@@ -140,107 +145,173 @@ const CreateRoomModal = ({ isOpen, setDisplayName: setName, setIsOpen, code, set
                   </p>
                 </div>
 
-                <div className='mt-4 w-full flex justify-center gap-[1rem]'>
-                  <button onClick={() => {
-                    event('create-new-room', {
-                      category: 'room',
-                      action: 'create-new-room',
-                      label: 'create-new-room'
-                    })
-                    setType('new')
-                    setDisplayName('')
-                    setPassword('')
-                    setRoomId('')
-                    setIsPrivate(false)
-                  }} className={`flex ${type === 'new' ? 'bg-[#353535] text-white' : 'bg-white text-[#1e1e1e]'
-                    } items-center gap-[10px] font-medium transition-all duration-300 px-[10px] py-[5px] rounded-md`}>
+                <div className="mt-4 w-full flex justify-center gap-[1rem]">
+                  <button
+                    onClick={() => {
+                      event("create-new-room", {
+                        category: "room",
+                        action: "create-new-room",
+                        label: "create-new-room",
+                      });
+                      setType("new");
+                      setDisplayName("");
+                      setPassword("");
+                      setRoomId("");
+                      setIsPrivate(false);
+                    }}
+                    className={`flex ${
+                      type === "new"
+                        ? "bg-[#353535] text-white"
+                        : "bg-white text-[#1e1e1e]"
+                    } items-center gap-[10px] font-medium transition-all duration-300 px-[10px] py-[5px] rounded-md`}
+                  >
                     <span>New Room</span>
                   </button>
-                  <button onClick={() => {
-                    event('join-room', {
-                      category: 'room',
-                      action: 'join-room',
-                      label: 'join-room'
-                    })
-                    setType('join')
-                    setDisplayName('')
-                    setPassword('')
-                    setRoomId('')
-                    setIsPrivate(false)
-                  }} className={`flex items-center transition-all duration-300 gap-[10px] font-medium ${type === 'join' ? 'bg-[#353535] text-white' : 'bg-white text-[#1e1e1e]'
-                    } px-[10px] py-[5px] rounded-md`}>
+                  <button
+                    onClick={() => {
+                      event("join-room", {
+                        category: "room",
+                        action: "join-room",
+                        label: "join-room",
+                      });
+                      setType("join");
+                      setDisplayName("");
+                      setPassword("");
+                      setRoomId("");
+                      setIsPrivate(false);
+                    }}
+                    className={`flex items-center transition-all duration-300 gap-[10px] font-medium ${
+                      type === "join"
+                        ? "bg-[#353535] text-white"
+                        : "bg-white text-[#1e1e1e]"
+                    } px-[10px] py-[5px] rounded-md`}
+                  >
                     <span>Join Room</span>
                   </button>
                 </div>
 
-                {type !== '' && <div className='w-full mt-4'>
-                  <p className='text-sm mb-[10px] text-white'>Enter the Details for {
-                    type === 'new' ? 'New Room' : 'Room'
-                  }</p>
-                  <div className='w-full flex items-center gap-[1rem]'>
-                    <input value={roomId} onChange={e => setRoomId(e.target.value)} type="text" placeholder={type === 'new' ? 'New Room ID or Generate' : 'Room ID'} className='w-full focus:outline-none bg-[#3b3b3b] text-white px-[10px] py-[5px] rounded-md' />
-                    {type === 'new' && <button onClick={() => {
-                      event('generate-room-id', {
-                        category: 'room',
-                        action: 'generate-room-id',
-                        label: 'generate-room-id'
-                      })
-                      setRoomId(generateName())
-                    }} className='flex items-center gap-[10px] font-medium text-[#1e1e1e] bg-white px-[10px] py-[5px] rounded-md'>
-                      <span>Generate</span>
-                    </button>}
+                {type !== "" && (
+                  <div className="w-full mt-4">
+                    <p className="text-sm mb-[10px] text-white">
+                      Enter the Details for{" "}
+                      {type === "new" ? "New Room" : "Room"}
+                    </p>
+                    <div className="w-full flex items-center gap-[1rem]">
+                      <input
+                        value={roomId}
+                        onChange={(e) => setRoomId(e.target.value)}
+                        type="text"
+                        placeholder={
+                          type === "new" ? "New Room ID or Generate" : "Room ID"
+                        }
+                        className="w-full focus:outline-none bg-[#3b3b3b] text-white px-[10px] py-[5px] rounded-md"
+                      />
+                      {type === "new" && (
+                        <button
+                          onClick={() => {
+                            event("generate-room-id", {
+                              category: "room",
+                              action: "generate-room-id",
+                              label: "generate-room-id",
+                            });
+                            setRoomId(generateName());
+                          }}
+                          className="flex items-center gap-[10px] font-medium text-[#1e1e1e] bg-white px-[10px] py-[5px] rounded-md"
+                        >
+                          <span>Generate</span>
+                        </button>
+                      )}
+                    </div>
+                    {type == "new" && (
+                      <div className="w-full mt-[1rem] text-white">
+                        <Checkbox
+                          onChange={(e: any) => {
+                            setIsPrivate(e.target.checked);
+                          }}
+                          value={isPrivate}
+                          theme="bootstrap-checkbox"
+                        >
+                          Want to keep it private?
+                        </Checkbox>
+                      </div>
+                    )}
+
+                    {isPrivate && (
+                      <div className="w-full mt-[1rem]">
+                        <input
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          type="password"
+                          autoComplete="new-password"
+                          placeholder="Password"
+                          className="w-full focus:outline-none bg-[#3b3b3b] text-white px-[10px] py-[5px] rounded-md"
+                        />
+                      </div>
+                    )}
+
+                    {type === "join" && (
+                      <div className="w-full mt-[1rem]">
+                        <input
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          type="password"
+                          autoComplete="new-password"
+                          placeholder="Room Password (if any)"
+                          className="w-full focus:outline-none bg-[#3b3b3b] text-white px-[10px] py-[5px] rounded-md"
+                        />
+                      </div>
+                    )}
+                    {type === "join" && (
+                      <div className="w-full mt-[1rem] flex items-center gap-[1rem]">
+                        <input
+                          value={displayName}
+                          onChange={(e) => setDisplayName(e.target.value)}
+                          type="text"
+                          placeholder={"Display Name"}
+                          className="w-full focus:outline-none bg-[#3b3b3b] text-white px-[10px] py-[5px] rounded-md"
+                        />
+                        {type === "join" && (
+                          <button
+                            onClick={() => {
+                              event("generate-display-name", {
+                                category: "room",
+                                action: "generate-display-name",
+                                label: "generate-display-name",
+                              });
+                              setDisplayName(generateDisplayName());
+                            }}
+                            className="flex items-center gap-[10px] font-medium text-[#1e1e1e] bg-white px-[10px] py-[5px] rounded-md"
+                          >
+                            <span>Generate</span>
+                          </button>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="w-full mt-[1rem]">
+                      <button
+                        onClick={() => {
+                          event("submit-room", {
+                            category: "room",
+                            action: "submit-room",
+                            label: "submit-room",
+                          });
+                          handleSubmit();
+                        }}
+                        className="w-full focus:outline-none bg-white text-[#3b3b3b] px-[10px] py-[5px] rounded-md"
+                      >
+                        {type === "new" ? "Create Room" : "Join Room"}
+                      </button>
+                    </div>
                   </div>
-                  {type == 'new' && <div className='w-full mt-[1rem] text-white'>
-                    <Checkbox onChange={(e: any) => {
-                      setIsPrivate(e.target.checked)
-                    }} value={
-                      isPrivate
-                    } theme="bootstrap-checkbox">Want to keep it private?</Checkbox>
-                  </div>}
-
-                  {isPrivate && <div className='w-full mt-[1rem]'>
-                    <input value={password} onChange={e => setPassword(e.target.value)} type="password" autoComplete='new-password' placeholder='Password' className='w-full focus:outline-none bg-[#3b3b3b] text-white px-[10px] py-[5px] rounded-md' />
-                  </div>}
-
-                  {type === 'join' && <div className='w-full mt-[1rem]'>
-                    <input value={password} onChange={e => setPassword(e.target.value)} type="password" autoComplete='new-password' placeholder='Room Password (if any)' className='w-full focus:outline-none bg-[#3b3b3b] text-white px-[10px] py-[5px] rounded-md' />
-                  </div>}
-                  {type === 'join' && <div className='w-full mt-[1rem] flex items-center gap-[1rem]'>
-                    <input value={displayName} onChange={e => setDisplayName(e.target.value)} type="text" placeholder={'Display Name'} className='w-full focus:outline-none bg-[#3b3b3b] text-white px-[10px] py-[5px] rounded-md' />
-                    {type === 'join' && <button onClick={() => {
-                      event('generate-display-name', {
-                        category: 'room',
-                        action: 'generate-display-name',
-                        label: 'generate-display-name'
-                      })
-                      setDisplayName(generateDisplayName())
-                    }} className='flex items-center gap-[10px] font-medium text-[#1e1e1e] bg-white px-[10px] py-[5px] rounded-md'>
-                      <span>Generate</span>
-                    </button>}
-                  </div>}
-
-                  <div className='w-full mt-[1rem]'>
-                    <button onClick={()=>{
-                      event('submit-room', {
-                        category: 'room',
-                        action: 'submit-room',
-                        label: 'submit-room'
-                      })
-                      handleSubmit()
-                    }} className='w-full focus:outline-none bg-white text-[#3b3b3b] px-[10px] py-[5px] rounded-md'>{
-                      type === 'new' ? 'Create Room' : 'Join Room'
-                    }</button>
-                  </div>
-
-
-                </div>}
+                )}
               </Dialog.Panel>
             </Transition.Child>
           </div>
         </div>
       </Dialog>
     </Transition>
-  )
-}
+  );
+};
 
-export default CreateRoomModal
+export default CreateRoomModal;
