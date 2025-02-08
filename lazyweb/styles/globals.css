@@ -1,37 +1,34 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import 'react-input-checkbox/lib/react-input-checkbox.min.css';
-
 /* import localfont woff2 */
 @font-face {
-  font-family: 'jetbrainsmono';
-  src: url('/font/JetBrainsMono-Regular.woff2') format('woff2');
+  font-family: "jetbrainsmono";
+  src: url("/font/JetBrainsMono-Regular.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
 }
 
-html{
+html {
   overflow-x: hidden !important;
-  overflow-y:auto !important;
+  overflow-y: auto !important;
   user-select: none;
 }
 
-
-.__react_component_tooltip{
-  background:#35363a !important;
-  opacity:1 !important;
-  border-radius:20px !important;
+.__react_component_tooltip {
+  background: #35363a !important;
+  opacity: 1 !important;
+  border-radius: 20px !important;
 }
 
-.__react_component_tooltip::before{
-  opacity:0 !important;
+.__react_component_tooltip::before {
+  opacity: 0 !important;
 }
 
-.__react_component_tooltip::after{
-  opacity:0 !important;
+.__react_component_tooltip::after {
+  opacity: 0 !important;
 }
 
 /*!=============================================
@@ -41,14 +38,14 @@ html{
 .top_product svg circle {
   fill: #1c64ec;
 }
-.top_product svg rect{
+.top_product svg rect {
   fill: #fff;
 }
-.product-of-day svg circle{
+.product-of-day svg circle {
   fill: #0eaf62;
   stroke: #fff;
 }
-.product-of-day svg polyline{
+.product-of-day svg polyline {
   fill: #0eaf62;
   stroke: #fff;
 }
@@ -62,43 +59,33 @@ html{
 =            Scrollbar Category            =
 =============================================*/
 
-#style-4::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	background-color: #F5F5F5;
+#style-4::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
 }
 
-#style-4::-webkit-scrollbar
-{
-	height: 1px;
-	background-color: #5e5f60;
+#style-4::-webkit-scrollbar {
+  height: 1px;
+  background-color: #5e5f60;
 }
 
-#style-4::-webkit-scrollbar-thumb
-{
-	background-color: #000000;
-	border: 2px solid #555555;
+#style-4::-webkit-scrollbar-thumb {
+  background-color: #000000;
+  border: 2px solid #555555;
 }
 
 /*=====  End of Scrollbar Category  ======*/
-
-
-
 
 /**=============================================
 =            React Select Styles            =
 /**=============================================*/
 
 .css-1dimb5e-singleValue,
-.css-166bipr-Input{
-  color:#fff !important;
+.css-166bipr-Input {
+  color: #fff !important;
 }
 
 /**=====  End of React Select Styles  ======*/
-
-
-
-
 
 /**=============================================
 =            CSS FOR CHECKBOX            =
@@ -115,36 +102,40 @@ html{
   margin-left: -1.5rem;
 
   border: #5e5f60 solid 1px;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
 
   background-color: #35363a;
 
-  transition: background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+  transition: background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
 }
 
 .bootstrap-checkbox__input:checked + .bootstrap-checkbox__image {
   border-color: #007bff;
-  background: #007bff url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA4IDgnPjxwYXRoIGZpbGw9JyNmZmYnIGQ9J002LjU2NC43NWwtMy41OSAzLjYxMi0xLjUzOC0xLjU1TDAgNC4yNiAyLjk3NCA3LjI1IDggMi4xOTN6Jy8+PC9zdmc+) no-repeat 50%/50% 50%;
+  background: #007bff
+    url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA4IDgnPjxwYXRoIGZpbGw9JyNmZmYnIGQ9J002LjU2NC43NWwtMy41OSAzLjYxMi0xLjUzOC0xLjU1TDAgNC4yNiAyLjk3NCA3LjI1IDggMi4xOTN6Jy8+PC9zdmc+)
+    no-repeat 50%/50% 50%;
 }
 .bootstrap-checkbox__input_indeterminate + .bootstrap-checkbox__image {
   border-color: #007bff;
-  background: #007bff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3e%3cpath stroke='%23fff' d='M0 2h4'/%3e%3c/svg%3e") no-repeat 50%/50% 50%;
+  background: #007bff
+    url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 4'%3e%3cpath stroke='%23fff' d='M0 2h4'/%3e%3c/svg%3e")
+    no-repeat 50%/50% 50%;
 }
 .bootstrap-checkbox__input:disabled + .bootstrap-checkbox__image {
   background-color: #e9ecef;
 }
 .bootstrap-checkbox__input:checked:disabled + .bootstrap-checkbox__image,
 .bootstrap-checkbox__input_indeterminate:disabled + .bootstrap-checkbox__image {
-  background-color: rgba(0,123,255,.5);
+  background-color: rgba(0, 123, 255, 0.5);
 }
 .bootstrap-checkbox__input:focus + .bootstrap-checkbox__image {
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
 .bootstrap-checkbox__label {
   vertical-align: middle;
 }
-
 
 /**=====  End of CSS FOR CHECKBOX  ======**/
 
@@ -163,12 +154,10 @@ html{
 
 /* Console Styles */
 .console {
-  background-color: #242424;
   color: #ffffff;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
   font-size: 14px;
   padding: 12px;
-  border-left: 1px solid #333;
   overflow-y: auto;
   width: full;
 }
@@ -223,7 +212,6 @@ html{
   background-color: #1e1e1e;
   color: white;
 }
-
 
 .button-85 {
   padding: 0.6em 2em;
@@ -292,7 +280,6 @@ html{
   border-radius: 10px;
 }
 
-
 .Toastify__toast {
   border-radius: 8px;
   padding: 15px;
@@ -326,12 +313,8 @@ html{
   background: rgba(255, 255, 255, 0.6);
 }
 
-[class^="makeStyles-copyUrl-"]{
-  color:#000000 !important;
-}
-
-.react-share__ShareButton:focus{
-  outline:none !important;
+[class^="makeStyles-copyUrl-"] {
+  color: #000000 !important;
 }
 
 .no-scrollbar {
@@ -347,20 +330,250 @@ html{
   }
 }
 
-.ace_bracket{
+.ace_bracket {
   opacity: 0 !important;
 }
 
-
 .ace_editor,
 .ace_editor * {
-  font-family: 'jetbrainsmono', monospace !important;
+  font-family: "jetbrainsmono", monospace !important;
   font-weight: 400 !important;
   letter-spacing: 0 !important;
 }
 
-.ed-bor{
+.ed-bor {
   border: none;
-  box-shadow: 0 0 0 1px var(--frame-highlight-border),0 0 0 1.5px var(--frame-shadow-border),0 2.8px 2.2px rgba(0,0,0,.034),0 6.7px 5.3px rgba(0,0,0,.048),0 12.5px 10px rgba(0,0,0,.06),0 22.3px 17.9px rgba(0,0,0,.072),0 41.8px 33.4px rgba(0,0,0,.086),0 100px 80px rgba(0,0,0,.12);
+  box-shadow: 0 0 0 1px var(--frame-highlight-border),
+    0 0 0 1.5px var(--frame-shadow-border), 0 2.8px 2.2px rgba(0, 0, 0, 0.034),
+    0 6.7px 5.3px rgba(0, 0, 0, 0.048), 0 12.5px 10px rgba(0, 0, 0, 0.06),
+    0 22.3px 17.9px rgba(0, 0, 0, 0.072), 0 41.8px 33.4px rgba(0, 0, 0, 0.086),
+    0 100px 80px rgba(0, 0, 0, 0.12);
 }
 
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --text-primary: 234 16% 35%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --switch: 210, 14%, 89%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --text-primary: 179 100% 100%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --switch: 207, 10%, 23%;
+  }
+}
+
+.shadow-custom {
+  box-shadow: 0px 2px 3px -1px rgba(0, 0, 0, 0.1),
+    0px 1px 0px 0px rgba(25, 28, 33, 0.02),
+    0px 0px 0px 1px rgba(25, 28, 33, 0.08);
+}
+
+.dark .shadow-custom {
+  box-shadow: 0px 2px 3px -1px rgba(255, 255, 255, 0.2),
+    0px 1px 0px 0px rgba(255, 255, 255, 0.1),
+    0px 0px 0px 1px rgba(255, 255, 255, 0.1);
+}
+
+/**
+ * Prism.js Syntax Highlighting Theme
+ * Dark Mode Version
+ */
+
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #f8f8f2;
+  background: none;
+  font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+  font-size: 1em;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+pre[class*="language-"] {
+  padding: 1em;
+  margin: 0.5em 0;
+  overflow: auto;
+  border-radius: 0.3em;
+  background: #1e1e1e;
+}
+
+:not(pre) > code[class*="language-"] {
+  padding: 0.1em;
+  border-radius: 0.3em;
+  white-space: normal;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #6a9955;
+}
+
+.token.punctuation {
+  color: #d4d4d4;
+}
+
+.token.namespace {
+  opacity: 0.7;
+}
+
+.token.property,
+.token.tag,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #569cd6;
+}
+
+.token.boolean,
+.token.number {
+  color: #b5cea8;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #ce9178;
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: #d4d4d4;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #c586c0;
+}
+
+.token.function,
+.token.class-name {
+  color: #dcdcaa;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #d16969;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+/* Line highlighting */
+pre[data-line] {
+  position: relative;
+  padding: 1em 0 1em 3em;
+}
+
+.line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+.line-highlight:before,
+.line-highlight[data-end]:after {
+  content: attr(data-start);
+  position: absolute;
+  top: 0.4em;
+  left: 0.6em;
+  min-width: 1em;
+  padding: 0 0.5em;
+  color: #fff;
+  font: bold 65%/1.5 sans-serif;
+  text-align: center;
+  vertical-align: 0.3em;
+  border-radius: 999px;
+  text-shadow: none;
+  box-shadow: 0 1px #000;
+}
+
+.line-highlight[data-end]:after {
+  content: attr(data-end);
+  top: auto;
+  bottom: 0.4em;
+}

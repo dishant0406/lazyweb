@@ -1,13 +1,14 @@
+import { Button, InputWithLabel, TextArea } from "@/components/shared/Micro";
+import Modal, { ModalFooter } from "@/components/shared/Modal";
 import { useUserData } from "@/hooks";
-import { axiosInstance } from "@/hooks/Zustand";
 import { unFormatUrl } from "@/lib/unFormatUrl";
-import { Dialog, Transition } from "@headlessui/react";
-import { Input } from "@nextui-org/react";
 import axios from "axios";
 import { useWebsiteMetaData, useWebsiteScreenshot } from "hooks";
 import { formatUrl } from "lib/formatUrl";
 import { event } from "nextjs-google-analytics";
-import { Fragment, useState } from "react";
+import { useState } from "react";
+import { addResource } from "../../api";
+import { promiseToast } from "../../toast";
 let placeholder = "assets/placeholder-website.png";
 
 type Props = {
@@ -40,10 +41,6 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
     }, 300);
   }
 
-  function openModal() {
-    setIsOpen(true);
-  }
-
   async function isHttpsSupported(url: string) {
     // Make sure the URL starts with http:// or https://
     try {
@@ -59,40 +56,23 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
 
     if (session && image && title && description) {
       try {
-        const token = localStorage.getItem("token"); // Retrieve the token from localStorage
-
         const requestBody = {
           url: unFormatUrl(url),
           image_url: image,
           title: title,
           desc: description,
-          // Assuming you also want to send isPublicAvailable, category, and tags
-          // (you might need to define them in your component or receive them as input)
-          // isPublicAvailable: isPublicAvailable,
-          // category: category,
-          // tags: tags
         };
 
-        // Setting up headers for axios request
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+        await promiseToast(addResource(requestBody), "Added!", {
+          errorMessage: "Failed to add resource",
+          loadingText: "Adding Resource...",
+          onSuccess: (data) => {
+            if (data.data.error) {
+              throw new Error(data.data.error);
+            }
+            closeModal();
           },
-        };
-
-        const response = await axiosInstance.post(
-          "/websites/add",
-          requestBody,
-          config
-        );
-
-        // Assuming server responds with JSON containing data
-        if (response.data.error) {
-          throw new Error(response.data.error);
-        }
-
-        closeModal();
+        });
       } catch (error: any) {
         console.error(error);
         setError(error.message || "An error occurred.");
@@ -143,141 +123,87 @@ const CreateModal = ({ isOpen, setIsOpen }: Props) => {
   };
 
   return (
-    <Transition
-      appear
-      show={isOpen}
-      as={Fragment as any}
-      enter="transition duration-100 ease-out"
+    <Modal
+      className="max-w-[30rem]"
+      isOpen={isOpen}
+      onClose={closeModal}
+      title="Add Resource"
+      footer={
+        <ModalFooter className="flex w-full justify-end">
+          <Button
+            disabled={
+              title == "" ||
+              image === placeholder ||
+              loading ||
+              !session ||
+              loadingFetch
+            }
+            onClick={() => {
+              event("add-resource", {
+                category: "bookmark",
+                action: "add-resource",
+                label: "add-resource",
+              });
+              handleAdd();
+            }}
+          >
+            {loading ? "Adding..." : "Add"}
+          </Button>
+        </ModalFooter>
+      }
     >
-      <Dialog as="div" className={`relative z-10`} onClose={closeModal}>
-        <Transition.Child
-          as={Fragment as any}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+      {err && <p className="text-sm text-red-600 font-[600]">{err}</p>}
+
+      <InputWithLabel
+        color="default"
+        type="url"
+        readOnly={loadingFetch}
+        label="Enter the URL"
+        placeholder="lazyweb.rocks"
+        value={url}
+        onChange={(e) => setUrl(e.target.value)}
+        prefix="https://"
+      />
+      <div className="mt-4">
+        <Button
+          type="button"
+          disabled={loadingFetch || !url}
+          onClick={() => {
+            event("fetch-details", {
+              category: "bookmark",
+              action: "fetch-details",
+              label: "fetch-details",
+            });
+            handleFetchDetails();
+          }}
         >
-          <div className="fixed inset-0 bg-black bg-opacity-50" />
-        </Transition.Child>
+          {loadingFetch ? "Fetching..." : "Fetch Details"}
+        </Button>
+      </div>
 
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex dark items-center justify-center min-h-full p-4 text-center">
-            <Transition.Child
-              as={Fragment as any}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel
-                className={`w-full ${
-                  loading ? "animate-pulse" : ""
-                } max-w-md transform overflow-hidden rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all`}
-              >
-                <Dialog.Title
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-white"
-                >
-                  Add a Resource
-                </Dialog.Title>
-                {err && (
-                  <div className="mt-2">
-                    <p className="text-sm text-red-600 font-[600]">{err}</p>
-                  </div>
-                )}
+      <InputWithLabel
+        contClassName="mt-4"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="LazyWeb"
+        readOnly={loadingFetch}
+        label="Title"
+      />
 
-                <Input
-                  color="default"
-                  type="url"
-                  readOnly={loadingFetch}
-                  label="Enter the URL"
-                  placeholder="lazyweb.rocks"
-                  labelPlacement="outside"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  classNames={{
-                    input: "bg-[#35363a] border-none outline-none text-white",
-                    inputWrapper: "bg-[#35363a] w-[90%]",
-                    label: "mt-[0.5rem]",
-                  }}
-                  startContent={
-                    <div className="pointer-events-none flex items-center">
-                      <span className="text-default-400 text-small">
-                        https://
-                      </span>
-                    </div>
-                  }
-                />
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    disabled={loadingFetch}
-                    className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                    onClick={() => {
-                      event("fetch-details", {
-                        category: "bookmark",
-                        action: "fetch-details",
-                        label: "fetch-details",
-                      });
-                      handleFetchDetails();
-                    }}
-                  >
-                    {loadingFetch ? "Fetching..." : "Fetch Details"}
-                  </button>
-                </div>
+      <div className="mt-4">
+        <p className="text-sm text-white">Description</p>
+      </div>
 
-                <div className="mt-4">
-                  <p className="text-sm text-white">Title</p>
-                </div>
+      <TextArea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Resources that you need..."
+      />
 
-                <input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="LazyWeb"
-                  className="bg-[#35363a] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]"
-                />
-
-                <div className="mt-4">
-                  <p className="text-sm text-white">Description</p>
-                </div>
-
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Resources that you need..."
-                  className="bg-[#35363a] w-[90%] border-none outline-none text-white  mt-[0.5rem] py-[0.5rem] px-[1rem] rounded-[12px]"
-                />
-
-                <div className="mt-4 w-full justify-center flex">
-                  <img className="h-[220px] rounded-lg w-[300px]" src={image} />
-                </div>
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    disabled={title == "" || image === placeholder || loading}
-                    className="inline-flex disabled:opacity-50 justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                    onClick={() => {
-                      event("add-resource", {
-                        category: "bookmark",
-                        action: "add-resource",
-                        label: "add-resource",
-                      });
-                      handleAdd();
-                    }}
-                  >
-                    {loading ? "Adding..." : "Add"}
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
+      <div className="mt-4 w-full justify-center flex">
+        <img className="h-[220px] rounded-lg w-[300px]" src={image} />
+      </div>
+    </Modal>
   );
 };
 

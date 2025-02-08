@@ -2,7 +2,6 @@ type Props = {};
 import { AuthError, Provider, Session, User } from "@supabase/supabase-js";
 import axios from "axios";
 import { CreateResource, MobileResourceCard } from "components";
-import { Reorder } from "framer-motion";
 import {
   useAllCategory,
   useAllResources,
@@ -248,41 +247,16 @@ const SwipeUI = (props: Props) => {
         </button>
       </div>
 
-      <Reorder.Group
-        values={filteredResources.length > 0 ? filteredResources : allResources}
-        axis={"x"}
-        onReorder={() => {}}
-        className="mt-[2rem] mb-[5rem] w-[100vw] gap-[10px] flex justify-center flex-wrap"
-      >
+      <div className="mt-[2rem] mb-[5rem] w-[100vw] gap-[10px] flex justify-center flex-wrap">
         {filteredResources.length === 0 &&
           allResources.map((resource, index) => {
-            return (
-              <Reorder.Item
-                key={resource._id}
-                value={resource}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-              >
-                <MobileResourceCard key={index} resource={resource} />
-              </Reorder.Item>
-            );
+            return <MobileResourceCard key={index} resource={resource} />;
           })}
         {filteredResources.length > 0 &&
           filteredResources.map((resource, index) => {
-            return (
-              <Reorder.Item
-                key={resource._id}
-                value={resource}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                exit={{ scale: 0 }}
-              >
-                <MobileResourceCard key={index} resource={resource} />
-              </Reorder.Item>
-            );
+            return <MobileResourceCard key={index} resource={resource} />;
           })}
-      </Reorder.Group>
+      </div>
       <BottomSheet ref={bottomSheetRef} onDismiss={onDismiss} open={open}>
         <div className="w-[100%] mb-[2rem] mt-[1rem] flex flex-col items-center">
           <p className="text-[1.5rem] text-lightGray mb-[10px]">

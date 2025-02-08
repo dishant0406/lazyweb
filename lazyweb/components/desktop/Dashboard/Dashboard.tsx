@@ -4,7 +4,6 @@ import {
   useUrlAtIndex,
 } from "@/hooks/Zustand";
 import { FilteredResources, ResourceList, TopProduct } from "components";
-import { formatUrl } from "lib/formatUrl";
 import { useEffect } from "react";
 
 type Props = {};
@@ -19,10 +18,10 @@ const Dashboard = (props: Props) => {
     setUrlAtIndex();
   }, []);
   return (
-    <div className="w-[calc(100vw-12rem)] min-h-[calc(100vh-130px)] bg-gray">
+    <div className="w-[calc(100vw-13rem)] min-h-[calc(100vh-130px)] bg-background">
       {filteredResources.length === 0 && filteredTagsResources.length === 0 && (
         <div>
-          <TopProduct unformatUrl={urlAtIndex} url={formatUrl(urlAtIndex)} />
+          <TopProduct />
           <ResourceList />
         </div>
       )}

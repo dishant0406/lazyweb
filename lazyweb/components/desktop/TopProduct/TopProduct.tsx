@@ -1,20 +1,15 @@
-type Props = {
-  url: string;
-  unformatUrl: string;
-};
+import QRCode from "@/components/shared/QrCode";
 import { useTopProduct } from "@/hooks/Zustand";
 import { BLUR_IMAGE } from "@/lib/constants";
 import { formatUrl } from "@/lib/formatUrl";
-import { Image } from "@nextui-org/react";
-import moment from "moment";
-import NextImage from "next/image";
+import { unFormatUrl } from "@/lib/unFormatUrl";
+import Image from "next/image";
 import { event } from "nextjs-google-analytics";
 import { useEffect, useState } from "react";
 import { Link2, Star, ThumbsUp, UserCheck } from "react-feather";
 import { FcApproval, FcInfo, FcOpenedFolder } from "react-icons/fc";
-import QrCode from "react-qr-code";
 
-const TopProduct = ({ url, unformatUrl }: Props) => {
+const TopProduct = () => {
   const { topProduct } = useTopProduct();
   const [imgData, setImageData] = useState(BLUR_IMAGE);
   const [websiteData, setWebsiteData] = useState({
@@ -26,40 +21,25 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
   });
 
   function formatDateDifference(timestamp: number) {
-    const dateFromTimestamp = moment(timestamp);
-    const now = moment();
-
-    const minutesDifference = now.diff(dateFromTimestamp, "minutes");
-    const hoursDifference = now.diff(dateFromTimestamp, "hours");
-    const daysDifference = now.diff(dateFromTimestamp, "days");
-    const monthsDifference = now.diff(dateFromTimestamp, "months");
-    const yearsDifference = now.diff(dateFromTimestamp, "years");
-
-    if (minutesDifference === 1) {
-      return "1 minute ago";
-    } else if (minutesDifference < 60) {
-      return minutesDifference + " minutes ago";
-    } else if (hoursDifference === 1) {
-      return "1 hour ago";
-    } else if (hoursDifference < 24) {
-      return hoursDifference + " hours ago";
-    } else if (daysDifference === 1) {
-      return "1 day ago";
-    } else if (daysDifference < 30) {
-      return daysDifference + " days ago";
-    } else if (monthsDifference === 1) {
-      return "1 month ago";
-    } else if (monthsDifference < 12) {
-      return monthsDifference + " months ago";
-    } else if (yearsDifference === 1) {
-      return "1 year ago";
+    const date = new Date(timestamp);
+    const currentDate = new Date();
+    const diff = currentDate.getTime() - date.getTime();
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    if (days > 0) {
+      return `${days} days ago`;
+    } else if (hours > 0) {
+      return `${hours} hours ago`;
+    } else if (minutes > 0) {
+      return `${minutes} minutes ago`;
     } else {
-      return yearsDifference + " years ago";
+      return `${seconds} seconds ago`;
     }
   }
 
   useEffect(() => {
-    //use topProduct from Zustand
     if (topProduct) {
       setImageData(topProduct.image_url);
       const webData = {
@@ -97,26 +77,23 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
       <div className="w-[100%] flex justify-center">
         <div className="flex flex-wrap w-[95%] gap-[1.5rem] mt-[1rem]">
           <div
-            className={`h-[15rem] flex-grow transition-all flex items-center justify-center rounded-[10px] min-w-[18rem] max-w-[24rem] bg-[#0d0d0e]`}
+            className={`h-[15rem] transition-all flex items-center justify-center rounded-[10px] w-[24rem] bg-background shadow-custom border border-input`}
           >
             <div className="w-[95%] relative flex flex-col rounded-[5px] justify-end p-[1rem] items-center overflow-hidden h-[14rem]">
               <Image
-                as={NextImage}
-                isZoomed
                 src={imgData}
-                height={500}
-                width={500}
+                layout="fill"
+                objectFit="cover"
                 alt="product image"
-                classNames={{
-                  wrapper: "absolute object-cover top-0 h-full z-[0]",
-                }}
+                className="absolute top-0 h-full z-[0]"
               />
               <div className="w-full flex z-[1] rounded-lg bg-gray p-[0.5rem] items-center justify-between">
                 <div className="flex w-full items-center top_product gap-[5px]">
                   <FcOpenedFolder />
-                  {/* <p className='text-white'>{unformatUrl.length > 20 ? unformatUrl.substring(0, 17) + '...' : unformatUrl}</p> */}
                   <p className="max-w-[85%] text-white truncate">
-                    {topProduct?.url ? topProduct?.url : "Not Available"}
+                    {topProduct?.url
+                      ? unFormatUrl(topProduct?.url)
+                      : "Not Available"}
                   </p>
                   <FcApproval />
                 </div>
@@ -143,9 +120,9 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
               </button>
             </div>
           </div>
-          <div>
+          <div className="flex max-w-[calc(100%-26rem)] flex-col flex-grow">
             <div className="flex flex-wrap flex-grow gap-[1.5rem]">
-              <div className="h-[8.5rem] max-w-[28rem] flex-grow flex items-center justify-center bg-[#0d0d0e] border-[5px] border-altGray rounded-[10px]">
+              <div className="h-[8.5rem] flex-grow flex items-center justify-center bg-[#0d0d0e] border-[5px] border-altGray rounded-[10px]">
                 <div className="w-[90%] flex flex-col gap-[15px] h-[75%]">
                   <div className="flex gap-[10px]">
                     <Link2 className="text-lightGray scale-[0.6]" />
@@ -160,10 +137,13 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                         target="_blank"
                         className="text-[#7d9ddb] transition-all truncate text-[14px]"
                       >
-                        {topProduct?.url
-                          ? topProduct?.url.length > 20
-                            ? topProduct?.url.substring(0, 17) + "..."
-                            : topProduct?.url
+                        {unFormatUrl(topProduct?.url || "")
+                          ? unFormatUrl(topProduct?.url || "").length > 20
+                            ? unFormatUrl(topProduct?.url || "").substring(
+                                0,
+                                17
+                              ) + "..."
+                            : unFormatUrl(topProduct?.url || "")
                           : "Not Available"}
                       </a>
                       <button
@@ -245,17 +225,16 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
                 }`}
                 className="h-[8.5rem] gap-[4px] product-of-day flex flex-col items-center justify-center w-[8.5rem] bg-[#0d0d0e] rounded-[10px]"
               >
-                {/* <p className='w-[6rem] font-[600] text-center text-white'>Product of the day</p>
-                <BsTrophy className='text-[#fff] scale-[1.3] mt-[0.5rem] text-[1.5rem]' /> */}
-                <QrCode
-                  fgColor="#fff"
-                  bgColor="#0d0d0e"
-                  value={
+                <QRCode
+                  url={
                     topProduct?.url
                       ? formatUrl(topProduct?.url)
                       : "Not Available"
                   }
-                  size={120}
+                  height={120}
+                  width={120}
+                  imageMargin={1}
+                  margin={1}
                 />
               </div>
               <div className="h-[8.5rem] border-[5px] border-altGray gap-[4px] product-of-day flex flex-col items-center justify-center w-[8.5rem] bg-[#0d0d0e] rounded-[10px]">
@@ -266,14 +245,12 @@ const TopProduct = ({ url, unformatUrl }: Props) => {
               </div>
             </div>
             <div
-              className={` transition-all px-[2rem] flex items-center max-w-[40vw] justify-center h-[5rem] rounded-[10px] mt-[1.5rem] border-[5px] border-altGray bg-[#0d0d0e]`}
+              className={` transition-all px-[2rem] flex items-center justify-center h-[5rem] rounded-[10px] mt-[1.5rem] border-[5px] border-altGray bg-[#0d0d0e]`}
             >
               <div className="flex w-full items-center">
-                <div className="flex items-center w-full gap-[5px]">
+                <div className="flex items-center w-full gap-4">
                   <FcInfo className="text-[24px]" />
-                  <p className="text-white w-full truncate">
-                    {websiteData.description}
-                  </p>
+                  <p className="text-white w-full">{websiteData.description}</p>
                 </div>
               </div>
             </div>

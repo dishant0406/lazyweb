@@ -1,9 +1,21 @@
-import axios from "axios";
+import {
+  addBookmark,
+  addLike,
+  getBookmarkedResources,
+  getResources,
+  getResourcesByCategories,
+  getResourcesByTags,
+  getUserPendingResources,
+  getUserResources,
+  isAvailableForApproval,
+} from "@/components/utility/api";
+import { errorToast, promiseToast } from "@/components/utility/toast";
 import jwt_decode from "jwt-decode";
+import { useQueryState } from "next-usequerystate";
 import { create } from "zustand";
 
 export type Resource = {
-  _id: number;
+  _id: string;
   created_at: string;
   created_by: string;
   url: string;
@@ -18,6 +30,14 @@ export type Resource = {
   created_by_list: string[];
   bookmarked_by: string[];
   liked_by: string[];
+};
+
+export type PaginatedResponse = {
+  resources: Resource[];
+  nextCursor: number;
+  hasMore: boolean;
+  totalCount: number;
+  dailyResource: Resource;
 };
 
 export type VisitersInfo = {
@@ -50,22 +70,6 @@ type User = {
   id: string;
 };
 
-export const axiosInstance = axios.create({
-  // baseURL: 'https://api.lazyweb.rocks/api',
-  baseURL: `${process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}/api`,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export const axiosIntanceWithAuth = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}/api`,
-  // baseURL: 'http://localhost:4000/api',
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
 export type UserWithAdmin = User & Admin;
 const useUserData = create<{
   session: UserWithAdmin | null;
@@ -76,13 +80,16 @@ const useUserData = create<{
   setSession: async (tokenPramas?: string) => {
     //get token from localstorage
     const token = tokenPramas || localStorage.getItem("token");
+
     if (!token) {
+      console.log("Token not found");
       return;
     }
 
     //check jwt format is correct or not
     const tokenArray = token.split(".");
     if (tokenArray.length !== 3) {
+      errorToast("Invalid token");
       localStorage.removeItem("token");
       return;
     }
@@ -91,6 +98,7 @@ const useUserData = create<{
     const decodedToken = jwt_decode(token) as UserWithAdmin;
     //check if the token is expired or not
     if (decodedToken.expirationDate < new Date().toISOString()) {
+      errorToast("Token expired");
       localStorage.removeItem("token");
       return;
     }
@@ -136,7 +144,6 @@ const useAllTags = create<{
     if (tags) {
       set({ allTags: shuffleArray(tags) });
       return;
-    } else {
     }
   },
 }));
@@ -172,26 +179,54 @@ const useGetPendingResources = create<{
   },
 }));
 
+type AllResourcesOption = {
+  resources?: Resource[] | null;
+  setActiveTab?: (arg: string) => void;
+};
+
 const useAllResources = create<{
-  loading: Boolean;
+  loading: boolean;
   allResources: Resource[];
-  setAllResources: (arg: String, arg2?: Resource[] | null) => void;
+  setAllResources: (arg: String, options?: AllResourcesOption) => void;
+  cursor: number;
+  totalResources: number;
+  hasMore: boolean;
+  setMeta: (arg: {
+    cursor: number;
+    totalResources: number;
+    hasMore: boolean;
+  }) => void;
 }>((set) => ({
   loading: false,
   allResources: [],
-  setAllResources: async (selectedTab = "all", resources = null) => {
+  cursor: 30,
+  totalResources: 0,
+  hasMore: true,
+  setMeta: (arg) => {
+    set(arg);
+  },
+  setAllResources: async (selectedTab = "all", options) => {
+    const { resources, setActiveTab } = options || {};
+
     set({ loading: true });
     if (selectedTab === "all") {
       if (!resources) {
-        const { data } = await axiosInstance.get("/websites");
-        if (data) {
-          set({ allResources: data.resources });
-          useTopProduct.getState().setTopProduct(data?.dailyResource);
-          useAllTags.getState().setAllTags(data?.tags);
-          useAllCategory
-            .getState()
-            .setAllCategories(data?.categories, data?.allCategories);
-        }
+        await promiseToast(getResources(30, 0), "", {
+          errorMessage: "Failed to get resources",
+          onSuccess: ({ data }) => {
+            set({
+              allResources: data.resources,
+              cursor: data.nextCursor,
+              totalResources: data.totalCount,
+              hasMore: data.hasMore,
+            });
+            useTopProduct.getState().setTopProduct(data?.dailyResource);
+            useAllTags.getState().setAllTags(data?.tags);
+            useAllCategory
+              .getState()
+              .setAllCategories(data?.categories, data?.allCategories);
+          },
+        });
       } else {
         set({ allResources: resources });
       }
@@ -199,48 +234,46 @@ const useAllResources = create<{
       let isPendingSelected =
         useGetPendingResources.getState().isPendingSelected;
       if (!isPendingSelected) {
-        const { data } = await axiosIntanceWithAuth.get("/websites/user", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        await promiseToast(getUserResources(), "", {
+          errorMessage: "Failed to get resources",
+          onSuccess: ({ data }) => {
+            set({ allResources: data.userWebsites });
+          },
+          onError: () => {
+            setActiveTab?.("all");
           },
         });
-        if (data) {
-          set({ allResources: data.userWebsites });
-        }
       } else {
-        const { data } = await axiosIntanceWithAuth.get(
-          "/websites/user/pending",
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        if (data) {
-          set({ allResources: data.userWebsites });
-        }
+        await promiseToast(getUserPendingResources(), "", {
+          errorMessage: "Failed to get resources",
+          onSuccess: ({ data }) => {
+            set({ allResources: data.userWebsites });
+          },
+          onError: () => {
+            setActiveTab?.("all");
+          },
+        });
       }
     } else if (selectedTab === "saved") {
-      const { data } = await axiosIntanceWithAuth.get("/websites/bookmarked", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      await promiseToast(getBookmarkedResources(), "", {
+        errorMessage: "Failed to get resources",
+        onSuccess: ({ data }) => {
+          set({ allResources: data.bookmarkedResources });
+        },
+        onError: () => {
+          setActiveTab?.("all");
         },
       });
-      if (data) {
-        set({ allResources: data.bookmarkedResources });
-      }
     } else if (selectedTab === "publish") {
-      const { data } = await axiosIntanceWithAuth.get(
-        "/websites/is-available-for-approval",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (data) {
-        set({ allResources: data.resources });
-      }
+      await promiseToast(isAvailableForApproval(), "", {
+        errorMessage: "Failed to get resources",
+        onSuccess: ({ data }) => {
+          set({ allResources: data.resources });
+        },
+        onError: () => {
+          setActiveTab?.("all");
+        },
+      });
     }
     set((state) => ({ loading: false }));
   },
@@ -257,7 +290,9 @@ const useSetAllResourcesServerSide = create<{
   }) => void;
 }>((set) => ({
   setAllResourcesServerSide: async (arg) => {
-    useAllResources.getState().setAllResources("all", arg.resources);
+    useAllResources.getState().setAllResources("all", {
+      resources: arg.resources,
+    });
     useAllTags.getState().setAllTags(arg.allTags);
     useAllCategory
       .getState()
@@ -281,69 +316,25 @@ const useFilterUsingCategoriesArray = create<{
     //set filtered resources of tags to empty array
     //set manage selected tags array to empty array
     useManageSelectedTags.getState().setSelectedTags("");
-    const { data } = await axiosInstance.post("/websites/by-categories", {
-      categories,
+    await promiseToast(getResourcesByCategories(categories), "", {
+      errorMessage: "Failed to get resources",
+      onSuccess: ({ data }) => {
+        set({ filteredResources: data.resources });
+      },
     });
-    if (data) {
-      set({ filteredResources: data.resources });
-    }
     useFilterUsingTagsArray.getState().setFilteredResources([]);
   },
 }));
 
-const useCompleteResourceLength = create<{
-  completeResourceLength: number;
-  setCompleteResourceLength: (selectedTab: string) => void;
-}>((set) => ({
-  completeResourceLength: 0,
-  setCompleteResourceLength: async (selectedTab) => {
-    if (selectedTab === "all") {
-      const { data } = await axiosInstance.get("/websites");
-      if (data) {
-        set({ completeResourceLength: data.resources.length });
-      }
-    } else if (selectedTab === "my") {
-      const { data } = await axiosIntanceWithAuth.get("/websites/user", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      if (data) {
-        set({ completeResourceLength: data.userWebsites.length });
-      }
-    } else if (selectedTab === "saved") {
-      const { data } = await axiosIntanceWithAuth.get("/websites/bookmarked", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      });
-      //fetch all resources which are available in the bookmarks table
-      if (data) {
-        set({ completeResourceLength: data.bookmarkedResources.length });
-      }
-    } else if (selectedTab === "publish") {
-      const { data } = await axiosIntanceWithAuth.get(
-        "/websites/is-available-for-approval",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (data) {
-        set({ completeResourceLength: data.resources.length });
-      }
-    }
-  },
-}));
+const useSelectedTab = () => {
+  const [selectedTab, setSelectedTab] = useQueryState("tab", {
+    shallow: true,
+    history: "replace",
+    defaultValue: "all",
+  });
 
-const useSelectedTab = create<{
-  selectedTab: string;
-  setSelectedTab: (tab: string) => void;
-}>((set) => ({
-  selectedTab: "all",
-  setSelectedTab: (tab: string) => set({ selectedTab: tab }),
-}));
+  return { selectedTab, setSelectedTab };
+};
 
 const useUrlAtIndex = create<{
   urlAtIndex: string;
@@ -365,27 +356,25 @@ const useTopProduct = create<{
 
 const useSetBookmark = create<{
   setComplete: Boolean;
-  setBookmark: (resourceId: number) => Promise<Resource>;
+  setBookmark: (resourceId: string) => Promise<Resource>;
 }>((set) => ({
   setComplete: false,
-  setBookmark: async (resourceId: number) => {
+  setBookmark: async (resourceId: string) => {
     try {
       set((state) => ({ setComplete: !state.setComplete }));
-      const data = await axiosIntanceWithAuth.put(
-        `/websites/bookmark/${resourceId}`,
-        {},
+      const data = await promiseToast(
+        addBookmark(resourceId),
+        "Added Bookmark!",
         {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          errorMessage: "Failed to bookmark",
+          loadingText: "Adding Bookmark...",
+          onSuccess: () => {
+            set((state) => ({ setComplete: !state.setComplete }));
           },
         }
       );
-      if (data) {
-        set((state) => ({ setComplete: !state.setComplete }));
-        //if selected tab is saved then refetch all recouseces
 
-        return data.data;
-      }
+      return data.data;
     } catch (err: any) {
       console.log(err);
     }
@@ -394,25 +383,19 @@ const useSetBookmark = create<{
 
 const useSetLikes = create<{
   setComplete: Boolean;
-  setLikes: (resourceId: number) => Promise<Resource>;
+  setLikes: (resourceId: string) => Promise<Resource>;
 }>((set) => ({
   setComplete: false,
-  setLikes: async (resourceId: number) => {
+  setLikes: async (resourceId: string) => {
     try {
       set((state) => ({ setComplete: !state.setComplete }));
-      const { data } = await axiosIntanceWithAuth.put(
-        `/websites/like/${resourceId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      if (data) {
-        set((state) => ({ setComplete: !state.setComplete }));
-        return data;
-      }
+      const { data } = await promiseToast(addLike(resourceId), "Liked!", {
+        errorMessage: "Failed to like",
+        onSuccess: () => {
+          set((state) => ({ setComplete: !state.setComplete }));
+        },
+      });
+      return data;
     } catch (err: any) {
       console.log(err);
     }
@@ -474,10 +457,12 @@ const useFilterUsingTagsArray = create<{
     useManageSelectedCategories.getState().setSelectedCategories("");
 
     //if tags array is not empty then filter the resources
-    const { data } = await axiosInstance.post("/websites/by-tags", { tags });
-    if (data) {
-      set({ filteredResources: data.resources });
-    }
+    await promiseToast(getResourcesByTags(tags), "", {
+      errorMessage: "Failed to get resources",
+      onSuccess: ({ data }) => {
+        set({ filteredResources: data.resources });
+      },
+    });
     useFilterUsingCategoriesArray.getState().setFilteredResources([]);
   },
 }));
@@ -507,43 +492,6 @@ const useManageSelectedTags = create<{
       .setFilteredResources(useManageSelectedTags.getState().selectedTags);
   },
 }));
-
-// const useStoreVisitersInfoIfDoesNotExist = create<
-//   {
-//     setVisitersInfo: () => void
-//   }
-// >((set) => ({
-//   setVisitersInfo: async () => {
-//     //getting users ip address using api
-//     const {data} = await axios.get('https://api.ipify.org?format=json')
-//     if(!data){
-//       console.log('error')
-//       return
-//     }
-//     // getting ip adddress info using http://ip-api.com/json/ api
-//     const {data:ipData} = await axios.post(`https://api.lazyweb.rocks/ipinfo`, {ip:data.ip})
-//     if(!ipData){
-//       console.log('ipError')
-//       return
-//     }
-
-//     //check if the ip address is already present in the database
-//     const {data:visitersData,error:visitersError} = await supabaseClient.from('visiters').select('*').eq('query', data.ip)
-//     if(!visitersData){
-//       console.log(visitersError)
-//       return
-//     }
-
-//     //if ip address is not present in the database then add it to the database
-//     if(visitersData.length===0){
-//       const {data:visitersData,error:visitersError} = await supabaseClient.from('visiters').insert([{city:ipData.City,country:ipData.Country,isp:ipData.provider,query:ipData.ipAddress,regionName:ipData.Region,zip:ipData.postalCode, lat:`${ipData.lat}`,lan:`${ipData.lon}`}])
-//       if(!visitersData){
-//         console.log(visitersError)
-//         return
-//       }
-//     }
-
-//   }}))
 
 //login modal open state manage
 const useLoginModal = create<{
@@ -939,7 +887,6 @@ export {
   useAllCategory,
   useAllResources,
   useAllTags,
-  useCompleteResourceLength,
   useFilterUsingCategoriesArray,
   useFilterUsingTagsArray,
   useGetPendingResources,

@@ -1,0 +1,12 @@
+.editorLineNumbers {
+  box-sizing: border-box;
+  overflow: hidden;
+  text-align: right;
+  padding: 10px;
+  padding-top: 5px;
+  margin: 0;
+  font-family: "jetbrainsmono", Courier, monospace;
+  line-height: inherit;
+  pointer-events: none;
+  user-select: none;
+}

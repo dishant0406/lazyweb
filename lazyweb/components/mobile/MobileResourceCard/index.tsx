@@ -94,7 +94,7 @@ const MobileResourceCard = ({ resource }: Props) => {
           </p>
         </div>
       </div>
-      <InfoModal isOpen={open} resource={resource} setIsOpen={setOpen} />
+      <InfoModal isOpen={router.query.id === resource._id} />
       <QrCodeModal
         isOpen={isInfoOpen}
         setIsOpen={setIsInfoOpen}

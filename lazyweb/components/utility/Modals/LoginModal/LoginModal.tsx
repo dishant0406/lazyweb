@@ -1,8 +1,9 @@
-import { Dialog, Transition } from "@headlessui/react";
+import { Input } from "@/components/shared/Micro";
+import Modal, { ModalFooter } from "@/components/shared/Modal";
 import { AuthError, Provider, Session, User } from "@supabase/supabase-js";
 import axios from "axios";
 import { event } from "nextjs-google-analytics";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { GitHub } from "react-feather";
 import { PuffLoader } from "react-spinners";
 
@@ -53,14 +54,9 @@ const LoginModal = ({ isOpen, setIsOpen }: Props) => {
     }, 300);
   }
 
-  function openModal() {
-    setIsOpen(true);
-  }
-
   const handleLogin = async () => {
     if (!email) return;
 
-    //match regex email
     if (!email.match(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/))
       return setError({
         message: "Invalid Email",
@@ -69,10 +65,6 @@ const LoginModal = ({ isOpen, setIsOpen }: Props) => {
     setLoading(true);
     setData(null);
     setError(null);
-    // const {data, error} = await supabaseClient.auth.signInWithOtp({
-    //   email,
-    // })
-
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL}/api/auth/login`,
       {
@@ -91,10 +83,6 @@ const LoginModal = ({ isOpen, setIsOpen }: Props) => {
     setLoading(true);
     setData(null);
     setError(null);
-    // const {data, error} = await supabaseClient.auth.signInWithOAuth({
-    //   provider: 'github',
-    // })
-    // setData(data)
     var width = 500;
     var height = 600;
     var left = window.innerWidth / 2;
@@ -116,14 +104,11 @@ const LoginModal = ({ isOpen, setIsOpen }: Props) => {
     window.addEventListener(
       "message",
       (event) => {
-        // if (event.origin !== window.location.origin) return;
         if (event.data.jwt) {
-          // Handle your token here
           const { jwt } = event.data;
           localStorage.setItem("token", jwt);
           window.location.reload();
           setIsOpen(false);
-          // Close the popup
           if (popup) popup.close();
         }
       },
@@ -136,106 +121,70 @@ const LoginModal = ({ isOpen, setIsOpen }: Props) => {
   };
 
   return (
-    <Transition
-      appear
-      show={isOpen}
-      as={Fragment as any}
-      enter="transition duration-100 ease-out"
+    <Modal
+      isOpen={isOpen}
+      onClose={closeModal}
+      title="Login Using Magic Link"
+      className="w-full max-w-md"
+      footer={
+        <ModalFooter className="mt-4 justify-end flex gap-[1rem] items-center">
+          <button
+            onClick={() => {
+              event("login", {
+                category: "login",
+                action: "login",
+                label: "login",
+              });
+              handleLogin();
+            }}
+            type="button"
+            disabled={!data || error ? false : true}
+            className="inline-flex min-w-[6rem] justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          >
+            {!data || error ? (
+              !loading ? (
+                "Sign In"
+              ) : (
+                <PuffLoader size={20} color="#fff" />
+              )
+            ) : (
+              "Email Sent"
+            )}
+          </button>
+          <p className="text-white">or</p>
+          <button
+            onClick={() => {
+              event("login-with-github", {
+                category: "login",
+                action: "login-with-github",
+                label: "login-with-github",
+              });
+              handleGithubLogin();
+            }}
+            className="w-[7rem] py-1 text-lightGray rounded-lg px-[0.5rem] flex justify-center items-center gap-[0.5rem] bg-altGray"
+          >
+            <GitHub className="text-lightGray h-[2rem]" />
+            Github
+          </button>
+        </ModalFooter>
+      }
     >
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
-        <Transition.Child
-          as={Fragment as any}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black bg-opacity-75" />
-        </Transition.Child>
+      <div className="mt-2">
+        <p className="text-sm text-white">
+          {!data
+            ? "Enter Your Email"
+            : "Check your Email (and spam folder) for a login link"}
+        </p>
+      </div>
 
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-full p-4 text-center">
-            <Transition.Child
-              as={Fragment as any}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform shadow-xl rounded-2xl bg-gray">
-                <Dialog.Title
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-white"
-                >
-                  Login Using Magic Link
-                </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-white">
-                    {!data
-                      ? "Enter Your Email"
-                      : "Check your Email (and spam folder) for a login link"}
-                  </p>
-                </div>
-
-                {(!data || error) && (
-                  <input
-                    onChange={(e) => setEmail(e.target.value)}
-                    value={email}
-                    placeholder="joe@lazyweb.rocks"
-                    className="bg-[#35363a] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]"
-                  />
-                )}
-
-                <div className="mt-4 flex gap-[1rem] items-center">
-                  <button
-                    onClick={() => {
-                      event("login", {
-                        category: "login",
-                        action: "login",
-                        label: "login",
-                      });
-                      handleLogin();
-                    }}
-                    type="button"
-                    disabled={!data || error ? false : true}
-                    className="inline-flex min-w-[6rem] justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                  >
-                    {!data || error ? (
-                      !loading ? (
-                        "Sign In"
-                      ) : (
-                        <PuffLoader size={20} color="#fff" />
-                      )
-                    ) : (
-                      "Email Sent"
-                    )}
-                  </button>
-                  <p className="text-white">or</p>
-                  <button
-                    onClick={() => {
-                      event("login-with-github", {
-                        category: "login",
-                        action: "login-with-github",
-                        label: "login-with-github",
-                      });
-                      handleGithubLogin();
-                    }}
-                    className="w-[7rem] py-1 text-lightGray rounded-lg px-[0.5rem] flex justify-center items-center gap-[0.5rem] bg-altGray"
-                  >
-                    <GitHub className="text-lightGray h-[2rem]" />
-                    Github
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
+      {(!data || error) && (
+        <Input
+          onChange={(e) => setEmail(e.target.value)}
+          value={email}
+          placeholder="joe@lazyweb.rocks"
+        />
+      )}
+    </Modal>
   );
 };
 

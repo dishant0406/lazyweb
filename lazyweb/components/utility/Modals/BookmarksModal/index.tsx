@@ -1,21 +1,17 @@
 import ResourceCard from "@/components/desktop/ResourceCard";
 import MobileResourceCard from "@/components/mobile/MobileResourceCard";
-import { Resource, axiosInstance, useUserData } from "@/hooks/Zustand";
-import { Dialog, Transition } from "@headlessui/react";
+import Modal, { ModalFooter } from "@/components/shared/Modal";
+import { Resource, useUserData } from "@/hooks/Zustand";
 import { useRouter } from "next/router";
 import { event } from "nextjs-google-analytics";
-import { Fragment, useState } from "react";
-import { toast } from "react-toastify";
+import { useState } from "react";
+import { bulkBookmark } from "../../api";
+import { errorToast, promiseToast, successToast } from "../../toast";
 
 type Props = {
   isOpen: boolean;
   setIsOpen: (argo: boolean) => void;
   resources: Resource[] | undefined;
-};
-
-const capitalize = (s: string) => {
-  if (typeof s !== "string") return "";
-  return s.charAt(0).toUpperCase() + s.slice(1).toLocaleLowerCase();
 };
 
 const BookmarkModal = ({ isOpen, setIsOpen, resources }: Props) => {
@@ -37,161 +33,86 @@ const BookmarkModal = ({ isOpen, setIsOpen, resources }: Props) => {
     );
   };
 
-  function openModal() {
-    setIsOpen(true);
-  }
-
   const bookmarkAll = async () => {
     setLoading(true);
     try {
-      const { data } = await axiosInstance.post(
-        "/websites/bulk-bookmark",
+      await promiseToast(
+        bulkBookmark(resources?.map((e) => e._id) || []),
+        "Saved",
         {
-          resourceIds: resources?.map((e) => e._id),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          errorMessage: "Something went wrong!",
+          loadingText: "Saving Resource...",
+          onSuccess: (data) => {
+            if (data.success) {
+              successToast("Bookmarked all resources!");
+              closeModal();
+              setLoading(false);
+            }
           },
         }
       );
-
-      if (data.success) {
-        toast.success("Bookmarked all resources!");
-        closeModal();
-        setLoading(false);
-      }
     } catch (err) {
-      toast.error("Something went wrong!");
+      errorToast("Something went wrong!");
       setLoading(false);
     }
   };
 
   return (
     <>
-      <Transition
-        appear
-        show={isOpen}
-        as={Fragment as any}
-        enter="transition duration-100 ease-out"
-      >
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment as any}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-75" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex items-center justify-center min-h-full p-2 text-center">
-              <Transition.Child
-                as={Fragment as any}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
+      <Modal
+        className="md:max-w-[60vw] max-w-full"
+        isOpen={isOpen}
+        title="Shared Resources"
+        onClose={closeModal}
+        footer={
+          <ModalFooter className="w-full flex justify-end">
+            {session?.id && (
+              <button
+                type="button"
+                disabled={loading}
+                className="md:inline-flex hidden justify-center px-4 py-1 text-base font-medium bg-[#0d0d0e] border-altGray border-[2px]  rounded-md shadow-sm text-white hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 "
+                onClick={() => {
+                  event("save-all", {
+                    category: "bookmark",
+                    action: "save-all",
+                    label: "save-all",
+                  });
+                  bookmarkAll();
+                }}
               >
-                <Dialog.Panel className="md:w-[65vw] w-full transform overflow-hidden rounded-2xl bg-gray md:p-6 p-2 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg px-6 mt-[0.5rem] md:whitespace-nowrap flex w-full justify-center md:justify-between md:pr-[2rem] items-center gap-[10px] font-medium leading-6 text-white"
-                  >
-                    Shared Resource
-                    {session?.id && (
-                      <button
-                        type="button"
-                        disabled={loading}
-                        className="md:inline-flex hidden justify-center px-4 py-1 text-base font-medium bg-[#0d0d0e] border-altGray border-[2px]  rounded-md shadow-sm text-white hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 "
-                        onClick={() => {
-                          event("save-all", {
-                            category: "bookmark",
-                            action: "save-all",
-                            label: "save-all",
-                          });
-                          bookmarkAll();
-                        }}
-                      >
-                        {loading ? "Saving..." : "Save All"}
-                      </button>
-                    )}
-                  </Dialog.Title>
+                {loading ? "Saving..." : "Save All"}
+              </button>
+            )}
+          </ModalFooter>
+        }
+      >
+        <div className="mt-4 md:flex hidden flex-wrap gap-[10px]">
+          {resources &&
+            resources.map((e) => {
+              return (
+                <ResourceCard
+                  key={e._id}
+                  resource={e}
+                  description={e.desc}
+                  title={e.title}
+                  image={e.image_url}
+                  url={e.url}
+                />
+              );
+            })}
+        </div>
 
-                  <div className="flex mt-[1rem] justify-between px-[2rem] items-center w-full md:hidden">
-                    {
-                      <button
-                        type="button"
-                        disabled={loading}
-                        className="inline-flex md:hidden justify-center px-4 py-1 text-base font-medium bg-[#0d0d0e] border-altGray border-[2px]  rounded-md shadow-sm text-white hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 "
-                        onClick={() => {
-                          event("save-all", {
-                            category: "bookmark",
-                            action: "save-all",
-                            label: "save-all",
-                          });
-                          session?.id && bookmarkAll();
-                        }}
-                      >
-                        {session?.id && (loading ? "Saving..." : "Save All")}
-                        {!session?.id && `${resources?.length} Resources`}
-                      </button>
-                    }
-                    <button
-                      type="button"
-                      disabled={loading}
-                      className="inline-flex md:hidden justify-center px-4 py-1 text-base font-medium bg-[#0d0d0e] border-altGray border-[2px]  rounded-md shadow-sm text-white hover:bg-gray-50 focus:outline-none focus:ring-0 focus:ring-offset-0 "
-                      onClick={() => {
-                        event("close-modal", {
-                          category: "bookmark",
-                          action: "close-modal",
-                          label: "close-modal",
-                        });
-                        closeModal();
-                      }}
-                    >
-                      Close
-                    </button>
-                  </div>
-
-                  <div className="mt-4 md:flex hidden flex-wrap gap-[10px]">
-                    {resources &&
-                      resources.map((e) => {
-                        return (
-                          <ResourceCard
-                            key={e._id}
-                            resource={e}
-                            description={e.desc}
-                            title={e.title}
-                            image={e.image_url}
-                            url={e.url}
-                          />
-                        );
-                      })}
-                  </div>
-
-                  <div className="flex flex-wrap justify-center mt-4 md:hidden ">
-                    {resources &&
-                      resources.map((e) => {
-                        return (
-                          <div className="scale-90" key={e._id}>
-                            <MobileResourceCard key={e._id} resource={e} />
-                          </div>
-                        );
-                      })}
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition>
+        <div className="flex flex-wrap justify-center mt-4 md:hidden ">
+          {resources &&
+            resources.map((e) => {
+              return (
+                <div className="scale-90" key={e._id}>
+                  <MobileResourceCard key={e._id} resource={e} />
+                </div>
+              );
+            })}
+        </div>
+      </Modal>
     </>
   );
 };

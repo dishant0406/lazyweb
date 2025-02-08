@@ -3,7 +3,6 @@ import {
   useFilterUsingTagsArray,
 } from "@/hooks/Zustand";
 import { ResourceCard } from "components";
-import { Reorder } from "framer-motion";
 
 type Props = {};
 
@@ -24,54 +23,31 @@ const FilteredResources = (props: Props) => {
       <div
         className={`relative w-[100%] transition-all duration-300 flex justify-center`}
       >
-        <div className="ml-[2rem] w-[95%] justify-start gap-[2rem] flex-wrap my-[1rem]">
-          <Reorder.Group
-            values={filteredResources}
-            axis={"x"}
-            onReorder={() => {}}
-            className="z-[1] flex flex-wrap gap-[1rem] mt-[2rem]"
-          >
-            {filteredResources.map((e) => {
-              return (
-                <Reorder.Item
-                  key={e._id}
-                  value={e}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                >
-                  <ResourceCard
-                    key={e._id}
-                    resource={e}
-                    description={e.desc}
-                    title={e.title}
-                    image={e.image_url}
-                    url={e.url}
-                  />
-                </Reorder.Item>
-              );
-            })}
-            {filteredTagsResources.map((e) => {
-              return (
-                <Reorder.Item
-                  key={e._id}
-                  value={e}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  exit={{ scale: 0 }}
-                >
-                  <ResourceCard
-                    key={e._id}
-                    resource={e}
-                    description={e.desc}
-                    title={e.title}
-                    image={e.image_url}
-                    url={e.url}
-                  />
-                </Reorder.Item>
-              );
-            })}
-          </Reorder.Group>
+        <div className="ml-[2rem] w-[95%] flex justify-start gap-[2vw] flex-wrap my-[1rem]">
+          {filteredResources.map((e) => {
+            return (
+              <ResourceCard
+                key={e._id}
+                resource={e}
+                description={e.desc}
+                title={e.title}
+                image={e.image_url}
+                url={e.url}
+              />
+            );
+          })}
+          {filteredTagsResources.map((e) => {
+            return (
+              <ResourceCard
+                key={e._id}
+                resource={e}
+                description={e.desc}
+                title={e.title}
+                image={e.image_url}
+                url={e.url}
+              />
+            );
+          })}
         </div>
       </div>
     </div>

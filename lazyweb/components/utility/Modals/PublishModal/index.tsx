@@ -1,16 +1,11 @@
-import { useUserData } from "@/hooks";
-import { Dialog, Transition } from "@headlessui/react";
-import {
-  axiosInstance,
-  useAllCategory,
-  useAllResources,
-  useAllTags,
-  useCompleteResourceLength,
-} from "hooks/Zustand";
+import { Input, SelectWithLabel } from "@/components/shared/Micro";
+import Modal, { ModalFooter } from "@/components/shared/Modal";
+import { useAllCategory, useAllResources, useAllTags } from "hooks/Zustand";
 import { event } from "nextjs-google-analytics";
-import { Fragment, useState } from "react";
-import { CSSObjectWithLabel, MultiValue } from "react-select";
-import CreatableSelect from "react-select/creatable";
+import { useState } from "react";
+import { publishResource } from "../../api";
+import { promiseToast } from "../../toast";
+import { SelectOption } from "../../types";
 let placeholder = "assets/placeholder-website.png";
 
 type Props = {
@@ -18,23 +13,16 @@ type Props = {
   setIsOpen: (argo: boolean) => void;
   url: string;
   title: string;
-  id: number;
+  id: string;
 };
-
-type MultiValueProps = MultiValue<{
-  value: string;
-  label: string;
-}>;
 
 const PublishModal = ({ isOpen, setIsOpen, url, title, id }: Props) => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
-  const [tags, setTags] = useState<String[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [image, setImage] = useState(placeholder);
   const [loadingFetch, setLoadingFetch] = useState(false);
   const [err, setError] = useState<String | null>(null);
-  const session = useUserData((state) => state.session);
-  const { completeResourceLength } = useCompleteResourceLength();
   const { setAllResources } = useAllResources();
   const { setAllTags } = useAllTags();
   const { setAllCategories, allCategories } = useAllCategory();
@@ -66,7 +54,7 @@ const PublishModal = ({ isOpen, setIsOpen, url, title, id }: Props) => {
     { value: "must use", label: "must use" },
   ];
 
-  const handleTags = (e: MultiValueProps) => {
+  const handleTags = (e: SelectOption[]) => {
     let tagsArr: string[] = [];
     e.map((f) => {
       tagsArr.push(f.value.toLowerCase());
@@ -80,28 +68,26 @@ const PublishModal = ({ isOpen, setIsOpen, url, title, id }: Props) => {
       setError("");
 
       try {
-        const response = await axiosInstance.put(
-          `/websites/publish/${id}`,
-          {
+        await promiseToast(
+          publishResource(id, {
             category: category.toLowerCase(),
             tags: tags,
-          },
+          }),
+          "Published",
           {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            errorMessage: "Failed to publish",
+            loadingText: "Publishing Resource...",
+            onSuccess: (response) => {
+              if (response.data.error) {
+                throw new Error(response.data.error);
+              }
+              setAllResources("my");
+              setAllTags();
+              setAllCategories();
+              closeModal();
             },
           }
         );
-
-        if (response.data.error) {
-          throw new Error(response.data.error);
-        }
-
-        // These methods are presumably fetching or updating state related to resources, categories, and tags.
-        setAllResources("my");
-        setAllTags();
-        setAllCategories();
-        closeModal();
       } catch (error: any) {
         setError(error.message || "An error occurred.");
       } finally {
@@ -113,166 +99,83 @@ const PublishModal = ({ isOpen, setIsOpen, url, title, id }: Props) => {
   };
 
   return (
-    <Transition
-      appear
-      show={isOpen}
-      as={Fragment as any}
-      enter="transition duration-100 ease-out"
+    <Modal
+      isOpen={isOpen}
+      onClose={closeModal}
+      title="Publish Resource"
+      className="md:w-[30vw]"
+      footer={
+        <ModalFooter className="w-full flex justify-end">
+          <button
+            type="button"
+            disabled={title == "" && image == placeholder && loadingFetch}
+            className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+            onClick={() => {
+              event("publish", {
+                category: "publish",
+                action: "publish",
+                label: "publish",
+              });
+              handleAdd();
+            }}
+          >
+            {loadingFetch ? "Loading..." : "Submit for Publishing"}
+          </button>
+        </ModalFooter>
+      }
     >
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
-        <Transition.Child
-          as={Fragment as any}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black bg-opacity-50" />
-        </Transition.Child>
-
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-full p-4 text-center">
-            <Transition.Child
-              as={Fragment as any}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="w-full max-w-md p-6 text-left align-middle transition-all transform shadow-xl rounded-2xl bg-gray">
-                <Dialog.Title
-                  as="h3"
-                  className="text-lg font-medium leading-6 text-white"
-                >
-                  Publish a Resource
-                </Dialog.Title>
-                {err && (
-                  <div className="mt-2">
-                    <p className="text-sm text-red-600 font-[600]">{err}</p>
-                  </div>
-                )}
-                <div className="mt-2">
-                  <p className="text-sm text-white">URL</p>
-                </div>
-
-                <input
-                  disabled
-                  value={url}
-                  placeholder="lazyweb.com"
-                  className="bg-[#35363a] cursor-not-allowed opacity-[0.5] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]"
-                />
-
-                <div>
-                  <div className="mt-4">
-                    <p className="text-sm text-white">Title</p>
-                  </div>
-
-                  <input
-                    disabled
-                    value={title}
-                    placeholder="LazyWeb"
-                    className="bg-[#35363a] cursor-not-allowed opacity-[0.5] w-[90%] border-none outline-none text-white h-[2.5rem] mt-[0.5rem] px-[1rem] rounded-[12px]"
-                  />
-                </div>
-                <div className="">
-                  <div className="mt-4">
-                    <p className="text-sm text-white">Category</p>
-                  </div>
-
-                  <CreatableSelect
-                    styles={{
-                      control: (baseStyles, state) =>
-                        ({
-                          ...baseStyles,
-                          backgroundColor: "#35363a",
-                          border: "none",
-                          width: "90%",
-                          borderRadius: "12px",
-                          marginTop: "0.5rem",
-                          color: "#fff !important",
-                        } as CSSObjectWithLabel),
-                      input: (base, props) =>
-                        ({
-                          ...base,
-                          color: "#fff !important",
-                        } as CSSObjectWithLabel),
-                      menuList: (base, props) =>
-                        ({
-                          ...base,
-                          maxHeight: "200px",
-                        } as CSSObjectWithLabel),
-                    }}
-                    onChange={(e) =>
-                      e ? setCategory(e?.value) : setCategory("")
-                    }
-                    isClearable
-                    options={options}
-                  />
-                </div>
-                <div className="mb-[-2rem]">
-                  <div className="mt-4">
-                    <p className="text-sm text-white">Tags</p>
-                  </div>
-
-                  <CreatableSelect
-                    isMulti
-                    styles={{
-                      control: (baseStyles, state) =>
-                        ({
-                          ...baseStyles,
-                          backgroundColor: "#35363a",
-                          border: "none",
-                          width: "90%",
-                          borderRadius: "12px",
-                          marginTop: "0.5rem",
-                          color: "#fff !important",
-                        } as CSSObjectWithLabel),
-                      input: (base, props) =>
-                        ({
-                          ...base,
-                          color: "#fff !important",
-                        } as CSSObjectWithLabel),
-                      menuList: (base, props) =>
-                        ({
-                          ...base,
-                          maxHeight: "200px",
-                        } as CSSObjectWithLabel),
-                    }}
-                    onChange={(e) => handleTags(e)}
-                    isClearable
-                    options={optionsTags}
-                  />
-                </div>
-
-                <div className="mt-[3rem]">
-                  <button
-                    type="button"
-                    disabled={
-                      title == "" && image == placeholder && loadingFetch
-                    }
-                    className="inline-flex justify-center rounded-md border border-transparent bg-[#1c64ec] text-white px-4 py-2 text-sm font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                    onClick={() => {
-                      event("publish", {
-                        category: "publish",
-                        action: "publish",
-                        label: "publish",
-                      });
-                      handleAdd();
-                    }}
-                  >
-                    {loadingFetch ? "Loading..." : "Submit for Publishing"}
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
+      {err && (
+        <div className="mt-2">
+          <p className="text-sm text-red-600 font-[600]">{err}</p>
         </div>
-      </Dialog>
-    </Transition>
+      )}
+      <div className="mt-2">
+        <p className="text-sm text-white">URL</p>
+      </div>
+
+      <Input disabled value={url} placeholder="lazyweb.com" />
+
+      <div>
+        <div className="mt-4">
+          <p className="text-sm text-white">Title</p>
+        </div>
+
+        <Input disabled value={title} placeholder="LazyWeb" />
+      </div>
+      <div className="">
+        <SelectWithLabel
+          showIcons
+          label="Category"
+          selectedOptions={
+            category
+              ? [
+                  {
+                    label: category,
+                    value: category,
+                  },
+                ]
+              : []
+          }
+          setSelectedOptions={(e) =>
+            e && e.length ? setCategory(e[0]?.value) : setCategory("")
+          }
+          options={options}
+        />
+      </div>
+
+      <SelectWithLabel
+        label="Tags"
+        isMultiSelect
+        setSelectedOptions={(e) => handleTags(e)}
+        options={optionsTags}
+        selectedOptions={tags.map((e) => {
+          return {
+            label: e,
+            value: e,
+          } as SelectOption;
+        })}
+      />
+    </Modal>
   );
 };
 

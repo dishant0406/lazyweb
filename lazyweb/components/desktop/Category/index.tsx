@@ -1,23 +1,21 @@
 import { CategoryPill } from "components";
 import { useAllTags } from "hooks/Zustand";
-import { useEffect } from "react";
 
 type Props = {};
 
 const Category = (props: Props) => {
-  const { allTags, setAllTags } = useAllTags();
+  const { allTags } = useAllTags();
 
-  useEffect(() => {
-    setAllTags();
-  }, []);
+  const uniqueTags = Array.from(new Set(allTags));
+
   return (
     <div className="pt-[70px] ">
       <div
         id="style-4"
-        className="w-[100vw] lazyweb-tags overflow-x-scroll border-b border-[#5e5f60] gap-[1rem] flex justify-start px-[3rem] items-center h-[60px] bg-[#202124]"
+        className="w-[100vw] lazyweb-tags bg-background overflow-x-scroll border-b shadow-custom border-input  gap-[1rem] flex justify-start px-[3rem] items-center h-[60px] "
       >
-        {allTags.length > 0 &&
-          allTags.map((tag) => {
+        {uniqueTags.length > 0 &&
+          uniqueTags.map((tag) => {
             return <CategoryPill key={tag} name={tag} />;
           })}
       </div>

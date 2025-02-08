@@ -1,0 +1,34 @@
+.easyCodeEditor {
+  all: initial;
+  position: relative;
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.easyCodeEditorContainer {
+  position: relative;
+  display: flex;
+  flex: 1;
+  font: inherit;
+  line-height: inherit;
+}
+
+.easyCodeEditorInput {
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  border: none;
+  resize: none;
+  scrollbar-width: thin;
+  outline: none;
+  margin: 0;
+  padding: 5px;
+  color: transparent;
+  background: transparent;
+  z-index: 999;
+  line-height: inherit;
+  font-family: "jetbrainsmono", Courier, monospace;
+}

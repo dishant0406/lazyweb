@@ -30,10 +30,6 @@ const CategoryPill = ({ name }: Props): JSX.Element => {
     setEmoji(emoji);
   }, []);
 
-  if (emoji == "") {
-    return <div></div>;
-  }
-
   return (
     <div
       onClick={() => {

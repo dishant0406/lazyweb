@@ -1,30 +1,67 @@
-import { Resource } from "@/hooks/Zustand";
-import { formatUrl } from "@/lib/formatUrl";
-import { Dialog, Transition } from "@headlessui/react";
+import Modal from "@/components/shared/Modal";
+import { useAllResources } from "@/hooks/Zustand";
 import Head from "next/head";
+import Image from "next/image";
 import { useRouter } from "next/router";
-import { event } from "nextjs-google-analytics";
-import { Fragment } from "react";
-import { FiExternalLink } from "react-icons/fi";
+
 import {
-  EmailIcon,
-  EmailShareButton,
-  FacebookIcon,
-  FacebookShareButton,
-  LinkedinIcon,
-  LinkedinShareButton,
-  RedditIcon,
-  RedditShareButton,
-  TwitterIcon,
-  TwitterShareButton,
-  WhatsappIcon,
-  WhatsappShareButton,
-} from "react-share";
+  FaFacebookF,
+  FaLinkedinIn,
+  FaRedditAlien,
+  FaWhatsapp,
+  FaXing,
+} from "react-icons/fa";
+
+const SocialShare = ({ url, title, summary }: SocialShareProps) => {
+  const shareData = {
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+      url
+    )}`,
+    whatsapp: `https://api.whatsapp.com/send?text=${encodeURIComponent(
+      `${title} ${url}`
+    )}`,
+    x: `https://x.com/intent/tweet?url=${encodeURIComponent(
+      url
+    )}&text=${encodeURIComponent(title)}`,
+    linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+      url
+    )}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(
+      summary
+    )}`,
+    reddit: `https://reddit.com/submit?url=${encodeURIComponent(
+      url
+    )}&title=${encodeURIComponent(title)}`,
+  };
+
+  const shareIcons = [
+    { name: "Facebook", icon: FaFacebookF, color: "bg-blue-600" },
+    { name: "WhatsApp", icon: FaWhatsapp, color: "bg-green-500" },
+    { name: "X", icon: FaXing, color: "bg-black" },
+    { name: "LinkedIn", icon: FaLinkedinIn, color: "bg-blue-700" },
+    { name: "Reddit", icon: FaRedditAlien, color: "bg-orange-600" },
+  ];
+
+  return (
+    <div className="flex w-full justify-center mt-4 space-x-4">
+      {shareIcons.map((platform) => (
+        <a
+          key={platform.name}
+          href={
+            shareData[platform.name.toLowerCase() as keyof typeof shareData]
+          }
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`${platform.color} shadow-custom border border-input text-white p-3 rounded-full transition-transform hover:scale-110`}
+        >
+          <platform.icon className="w-5 h-5" />
+        </a>
+      ))}
+    </div>
+  );
+};
 
 type Props = {
   isOpen: boolean;
-  setIsOpen: (argo: boolean) => void;
-  resource: Resource;
 };
 
 const capitalize = (s: string) => {
@@ -32,8 +69,9 @@ const capitalize = (s: string) => {
   return s.charAt(0).toUpperCase() + s.slice(1).toLocaleLowerCase();
 };
 
-const InfoModal = ({ isOpen, setIsOpen, resource }: Props) => {
+const InfoModal = ({ isOpen }: Props) => {
   const router = useRouter();
+  const { allResources } = useAllResources();
 
   const closeModal = () => {
     const { query } = router;
@@ -49,8 +87,11 @@ const InfoModal = ({ isOpen, setIsOpen, resource }: Props) => {
     );
   };
 
-  function openModal() {
-    setIsOpen(true);
+  //TODO: API CALL TO FETCH RESOURCE
+  const resource = allResources.find((r) => r._id === router.query.id);
+
+  if (!resource) {
+    return <></>;
   }
 
   return (
@@ -107,180 +148,52 @@ const InfoModal = ({ isOpen, setIsOpen, resource }: Props) => {
         </Head>
       )}
 
-      <Transition
-        appear
-        show={isOpen}
-        as={Fragment as any}
-        enter="transition duration-100 ease-out"
+      <Modal
+        isOpen={isOpen}
+        onClose={closeModal}
+        title={resource.title ? resource.title : "Resource"}
+        className="!w-[60vw]"
       >
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment as any}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black bg-opacity-75" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex items-center justify-center min-h-full p-4 text-center">
-              <Transition.Child
-                as={Fragment as any}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="md:min-w-[28rem] transform overflow-hidden rounded-2xl bg-gray p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg md:whitespace-nowrap flex items-center gap-[10px] font-medium leading-6 text-white"
-                  >
-                    <div className="w-[16px]">
-                      <FiExternalLink
-                        onClick={() => {
-                          event("open-resource", {
-                            category: "resource",
-                            action: "open-resource",
-                            label: "open-resource",
-                          });
-                          window.open(formatUrl(resource.url), "_blank");
-                        }}
-                        className="text-[16px] hover:scale-[1.2] transition-all cursor-pointer text-white"
-                      />
-                    </div>
-                    {
-                      //resouce title is too long then break it into half
-                      resource.title.length > 100 ? (
-                        <div className=" flex-col mb-[10px]">
-                          <span className="hidden md:flex">
-                            {resource.title.slice(0, 100)}
-                          </span>
-                          <span className="hidden md:flex">
-                            {resource.title.slice(100)}
-                          </span>
-                          <span className="flex md:hidden">
-                            {resource.title.split("|")[0]}
-                          </span>
-                        </div>
-                      ) : (
-                        <span>{resource.title}</span>
-                      )
-                    }
-                  </Dialog.Title>
-                  <div
-                    style={{
-                      //background url as image_url and position as center
-                      backgroundImage: `url(${resource.image_url})`,
-                      backgroundPosition: "50% 50%",
-                      backgroundSize: "cover",
-                    }}
-                    className="mt-2 h-[12rem] rounded-2xl"
-                  ></div>
-                  <div className="w-[full] flex justify-center">
-                    <div className="mt-2 w-[49rem]  flex">
-                      <p className="text-[16px] text-start text-white">
-                        {resource.desc}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-2 w-[90%]">
-                    <p className="text-white mb-[5px] mt-[1rem] ml-[1rem]">
-                      Category:
-                    </p>
-                    <span className="text-white rounded-2xl bg-lightGray px-[15px] py-[2px] ml-[1.5rem]">
-                      {resource.category && capitalize(resource.category)}
-                    </span>
-                    <p className="text-white mt-[0.5rem] ml-[1rem]">Tags:</p>
-                    <div className="flex gap-[0.5rem] flex-wrap mt-[5px] ml-[1.5rem]">
-                      {resource.tags &&
-                        resource.tags.map((tag: string) => (
-                          <span className="text-gray bg-white text-[14px] px-[10px] rounded-2xl py-[2px]">
-                            {capitalize(tag)}
-                          </span>
-                        ))}
-                    </div>
-                  </div>
-                  <div className="flex mt-[1rem] justify-center w-full">
-                    <div className="flex gap-[10px]">
-                      <FacebookShareButton
-                        url={
-                          typeof window !== "undefined"
-                            ? window.location.href
-                            : ""
-                        }
-                        quote={resource.title}
-                      >
-                        <FacebookIcon size={32} round={true} />
-                      </FacebookShareButton>
-                      <TwitterShareButton
-                        url={
-                          typeof window !== "undefined"
-                            ? window.location.href
-                            : ""
-                        }
-                        title={resource.title}
-                      >
-                        <TwitterIcon size={32} round={true} />
-                      </TwitterShareButton>
-                      <LinkedinShareButton
-                        url={
-                          typeof window !== "undefined"
-                            ? window.location.href
-                            : ""
-                        }
-                        title={resource.title}
-                        summary={resource.desc}
-                      >
-                        <LinkedinIcon size={32} round={true} />
-                      </LinkedinShareButton>
-                      <RedditShareButton
-                        url={
-                          typeof window !== "undefined"
-                            ? window.location.href
-                            : ""
-                        }
-                        title={resource.title}
-                      >
-                        <RedditIcon size={32} round={true} />
-                      </RedditShareButton>
-                      <WhatsappShareButton
-                        url={
-                          typeof window !== "undefined"
-                            ? window.location.href
-                            : ""
-                        }
-                        title={resource.title}
-                      >
-                        <WhatsappIcon size={32} round={true} />
-                      </WhatsappShareButton>
-                      <EmailShareButton
-                        url={
-                          typeof window !== "undefined"
-                            ? window.location.href
-                            : ""
-                        }
-                        subject={resource.title}
-                        body={resource.desc}
-                      >
-                        <EmailIcon size={32} round={true} />
-                      </EmailShareButton>
-                    </div>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
+        <div className="mt-2 h-[13rem] rounded-2xl overflow-hidden">
+          <Image
+            src={resource.image_url ? resource.image_url : "Default Image URL"}
+            alt={resource.title ? resource.title : "Resource Image"}
+            layout="fill"
+            className="object-cover !relative"
+          />
+        </div>
+        <div className="w-full mt-2">
+          <p className="text-[16px] text-start text-white">{resource.desc}</p>
+        </div>
+        <div className="mt-2 w-[90%]">
+          <p className="text-white mb-[5px] mt-[1rem] ml-[1rem]">Category:</p>
+          <span className="text-white rounded-2xl bg-lightGray px-[15px] py-[2px] ml-[1.5rem]">
+            {resource.category && capitalize(resource.category)}
+          </span>
+          <p className="text-white mt-[0.5rem] ml-[1rem]">Tags:</p>
+          <div className="flex gap-[0.5rem] flex-wrap mt-[5px] ml-[1.5rem]">
+            {resource.tags &&
+              resource.tags.map((tag: string) => (
+                <span className="text-gray bg-white text-[14px] px-[10px] rounded-2xl py-[2px]">
+                  {capitalize(tag)}
+                </span>
+              ))}
           </div>
-        </Dialog>
-      </Transition>
+        </div>
+        <SocialShare
+          url={typeof window !== "undefined" ? window.location.href : ""}
+          title={resource.title}
+          summary={resource.desc}
+        />
+      </Modal>
     </>
   );
 };
 
 export default InfoModal;
+
+type SocialShareProps = {
+  url: string;
+  title: string;
+  summary: string;
+};

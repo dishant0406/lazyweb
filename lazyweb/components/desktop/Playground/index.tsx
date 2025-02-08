@@ -1,22 +1,22 @@
 import CreateRoomModal from "@/components/utility/Modals/CreateRoomModal";
 import MemebersModal from "@/components/utility/Modals/Members";
-import Editor, { Monaco } from "@monaco-editor/react";
 import { useRouter } from "next/router";
 import { event } from "nextjs-google-analytics";
+import { highlight, languages } from "prismjs";
+
 import { useEffect, useRef, useState } from "react";
 import { isDesktop } from "react-device-detect";
 import { ReflexContainer, ReflexElement, ReflexSplitter } from "react-reflex";
 import "react-reflex/styles.css";
-import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
-import io from "socket.io-client";
+import { io, Socket } from "socket.io-client";
+import EasyCodeEditor, { DefaultDark } from "../CodeEditor";
 
-const socket = io(
-  process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL || "http://localhost:4000"
-);
+import "prismjs/components/prism-javascript";
+
+import { errorToast, successToast } from "@/components/utility/toast";
 
 const PlaygroundComponent = () => {
-  const editorRef = useRef(null);
   const [logs, setLogs] = useState<any>([]);
   const [code, setCode] = useState<any>("console.log('hello lazyweb')");
   const [isCreateOpen, setIsCreateOpen] = useState<boolean>(false);
@@ -24,6 +24,7 @@ const PlaygroundComponent = () => {
   const [isRoomJoined, setIsRoomJoined] = useState<boolean>(false);
   const [roomID, setRoomID] = useState<string>("");
   const [displayName, setDisplayName] = useState<string>("");
+  const [socket, setSocket] = useState<Socket | null>(null);
   const [memebersModalOpen, setMemebersModalOpen] = useState<boolean>(false);
   const [members, setMembers] = useState<
     {
@@ -32,6 +33,14 @@ const PlaygroundComponent = () => {
     }[]
   >([]); // [{id: '123', name: 'abc'}
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  const initializeSocket = () => {
+    const newSocket = io(
+      process.env.NEXT_PUBLIC_LAZYWEB_BACKEND_URL || "http://localhost:4000"
+    );
+    setSocket(newSocket);
+    return newSocket;
+  };
 
   const injectScript = (iframe: any, code: any) => {
     const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
@@ -83,38 +92,44 @@ const PlaygroundComponent = () => {
   };
 
   useEffect(() => {
-    socket.on("codeUpdate", (newCode) => {
-      setCode(newCode);
-    });
+    if (socket) {
+      socket.on("codeUpdate", (newCode) => {
+        setCode(newCode);
+      });
 
-    socket.on("setEditable", (editable) => {
-      // Handle editability here, if needed
-    });
+      socket.on("setEditable", (editable) => {
+        // Handle editability here, if needed
+      });
 
-    socket.on("membersList", (members) => {
-      setMembers(members);
-    });
+      socket.on("membersList", (members) => {
+        setMembers(members);
+      });
 
-    socket.on("joinError", (error) => {
-      toast.error(error);
-    });
+      socket.on("joinError", (error) => {
+        errorToast(error);
+      });
 
-    socket.on("leftRoom", (data) => {
-      toast.info(`${data.name} left the room`);
-    });
+      socket.on("leftRoom", (data) => {
+        successToast(`${data.name} left the room`);
+      });
 
-    socket.on("roomClosed", () => {
-      toast.info("Room Closed, Reloading Page...");
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    });
+      socket.on("roomClosed", () => {
+        successToast("Room Closed, Reloading Page...");
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      });
 
-    return () => {
-      socket.off("codeUpdate");
-      socket.off("setEditable");
-    };
-  }, []);
+      return () => {
+        socket.off("codeUpdate");
+        socket.off("setEditable");
+        socket.off("membersList");
+        socket.off("joinError");
+        socket.off("leftRoom");
+        socket.off("roomClosed");
+      };
+    }
+  }, [socket]);
 
   const handleRun = (code: any) => {
     setLogs([]); // Clear logs before running new code
@@ -195,10 +210,6 @@ const PlaygroundComponent = () => {
     ));
   };
 
-  function handleEditorDidMount(editor: any, monaco: Monaco) {
-    editorRef.current = editor;
-  }
-
   useEffect(() => {
     handleRun(code);
   }, [code]);
@@ -206,7 +217,6 @@ const PlaygroundComponent = () => {
   return (
     <>
       <div className="relative">
-        {/* <button className="absolute bottom-[10px] right-[10px] bg-[#1e1e1e] text-white px-[10px] py-[5px] rounded-md">Create Room</button> */}
         {!isRoomJoined && (
           <div className="fixed z-[2] bottom-[10px] right-[10px]">
             <div className="relative inline-flex group">
@@ -248,7 +258,7 @@ const PlaygroundComponent = () => {
                     setMemebersModalOpen(true);
                   } else {
                     navigator.clipboard.writeText(roomID);
-                    toast.success("Room ID Copied to Clipboard");
+                    successToast("Room ID Copied to Clipboard");
                   }
                 }}
                 className="relative inline-flex items-center bg-[#1e1e1e] justify-center px-4 py-2 text-lg font-bold text-white transition-all duration-200 bg-gray-900 font-pj rounded-xl focus:outline-none "
@@ -261,17 +271,19 @@ const PlaygroundComponent = () => {
               <div className="absolute transitiona-all duration-1000 opacity-70 -inset-px bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E] rounded-xl blur-lg group-hover:opacity-100 group-hover:-inset-1 group-hover:duration-200 animate-tilt"></div>
               <button
                 onClick={() => {
-                  //clipoard copy room id
                   event("disconnect-room", {
                     category: "playground",
                     label: "disconnect-room",
                   });
 
-                  socket.disconnect();
-                  window.location.reload();
+                  if (socket) {
+                    socket.disconnect();
+                    setSocket(null);
+                  }
                   setDisplayName("");
                   setRoomID("");
                   setIsRoomJoined(false);
+                  window.location.reload();
                 }}
                 className="relative inline-flex items-center bg-[#1e1e1e] justify-center px-4 py-2 text-lg font-bold text-white transition-all duration-200 bg-gray-900 font-pj rounded-xl focus:outline-none "
                 role="button"
@@ -311,31 +323,20 @@ const PlaygroundComponent = () => {
         {/* @ts-ignore */}
         <ReflexContainer orientation={isDesktop ? "vertical" : "horizontal"}>
           <ReflexElement className={isDesktop ? "left-pane" : ""}>
-            <div className="pane-content">
-              <Editor
-                height={isDesktop ? "100vh" : "50vh"}
-                theme="vs-dark"
-                loading={
-                  <div className="flex items-center justify-center w-full h-full text-white bg-gray">
-                    <h1>Loading Editor...</h1>
-                  </div>
-                }
+            <div className="pane-content h-[100vh]">
+              <EasyCodeEditor
+                theme={DefaultDark}
                 value={code}
-                width={"100%"}
-                defaultLanguage="javascript"
-                options={{
-                  fontFamily: "jetbrainsmono",
-                  fontSize: 16,
-                  padding: {
-                    top: 20,
-                  },
-                }}
                 onChange={(value) => {
                   setCode(value);
-                  socket.emit("codeEdit", { roomId: roomID, newCode: value });
+                  if (socket) {
+                    socket.emit("codeEdit", { roomId: roomID, newCode: value });
+                  }
                 }}
-                defaultValue="console.log('hello lazyweb')"
-                onMount={handleEditorDidMount}
+                autoIndent={true}
+                highlight={(code) =>
+                  highlight(code, languages.javascript, "javascript")
+                }
               />
             </div>
           </ReflexElement>
@@ -345,7 +346,12 @@ const PlaygroundComponent = () => {
             minSize={200}
             maxSize={800}
           >
-            <div className="pane-content">
+            <div
+              style={{
+                ...DefaultDark,
+              }}
+              className="pane-content"
+            >
               <div className="console md:h-[100vh] h-[50vh]">
                 <div className="console-header mb-[10px]">
                   <h3>| Console |</h3>
@@ -370,9 +376,9 @@ const PlaygroundComponent = () => {
           code={code}
           setIsRoomJoined={setIsRoomJoined}
           setRoomID={setRoomID}
-          socket={socket}
           isOpen={isCreateOpen}
           setIsOpen={setIsCreateOpen}
+          initializeSocket={initializeSocket}
         />
       }
       {isRoomJoined && (

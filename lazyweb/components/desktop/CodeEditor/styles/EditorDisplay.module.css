@@ -1,0 +1,29 @@
+.editorDisplay {
+  position: absolute;
+  outline: none;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+  padding: 5px;
+  font: inherit;
+  line-height: inherit;
+}
+
+.editorDisplayPre {
+  position: relative;
+  box-sizing: border-box;
+  margin: 0;
+  line-height: inherit;
+  font-family: "jetbrainsmono", Courier, monospace;
+}
+
+.editorDisplayCode {
+  position: absolute;
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 0;
+  font: inherit;
+  line-height: inherit;
+}

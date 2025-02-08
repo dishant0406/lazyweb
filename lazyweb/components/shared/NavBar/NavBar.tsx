@@ -42,7 +42,7 @@ const IconWithToolTip = ({
   );
 };
 
-const NavBar = (props: Props) => {
+const NavBar: React.FC<Props> = (props) => {
   // const [isOpen, setIsOpen] = useState(false)
   const { isLoginModalOpen: isOpen, setIsLoginModalOpen: setIsOpen } =
     useLoginModal();
@@ -58,7 +58,7 @@ const NavBar = (props: Props) => {
   };
 
   return (
-    <div className="w-[100vw] z-[4] fixed border-b border-[#5e5f60] md:flex hidden justify-between items-center h-[70px] bg-[#202124]">
+    <div className="w-[100vw] z-[4] fixed border-b  md:flex hidden justify-between items-center h-[70px] bg-background shadow-custom border border-input">
       <div className="flex items-center">
         <div
           title={"Go to home page"}
@@ -82,11 +82,6 @@ const NavBar = (props: Props) => {
           img="/assets/playfavicon.ico"
           path="/playground"
           title="JS Playground"
-        />
-        <IconWithToolTip
-          img="/assets/snipfavicon.ico"
-          path="/snippet"
-          title="SnipShots"
         />
         <IconWithToolTip
           img="/assets/notesfav.ico"

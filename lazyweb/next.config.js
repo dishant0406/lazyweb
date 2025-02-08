@@ -8,12 +8,16 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true
+    ignoreBuildErrors: true,
   },
   //image source
   images: {
-    domains: ['api.lazyweb.rocks', 'via.placeholder.com', 'pub-e97d1a56502c4db6aa9b54e745ce2298.r2.dev'],
+    domains: [
+      "api.lazyweb.rocks",
+      "via.placeholder.com",
+      "assets.lazyweb.rocks",
+    ],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

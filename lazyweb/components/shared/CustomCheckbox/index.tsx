@@ -1,6 +1,6 @@
 import { useManageSelectedCategories } from "@/hooks/Zustand";
 import { SyntheticEvent, useEffect, useState } from "react";
-import { Checkbox } from "react-input-checkbox";
+import Checkbox from "../Micro/CheckBox";
 
 type Props = {
   name: string;
@@ -34,16 +34,12 @@ const CustomCheckbox = ({ name, expanded }: Props) => {
     <button
       className={`${
         checked ? "text-white" : "text-[#747477]"
-      } w-fit cursor-pointer transition-all ${
+      } w-fit cursor-pointer text-sm transition-all ${
         expanded ? "h-[30px]" : "h-[0]"
       } `}
     >
       {expanded && (
-        <Checkbox
-          onChange={(e) => handleCheck(e)}
-          value={checked}
-          theme="bootstrap-checkbox"
-        >
+        <Checkbox onChange={handleCheck} value={checked}>
           {name}
         </Checkbox>
       )}
