@@ -24,7 +24,7 @@ export const rejectResource = async (id: string) => {
 
 //"/websites/bulk-bookmark"
 export const bulkBookmark = async (ids: string[]) => {
-  return apiClient.put(`/websites/bulk-bookmark`, { resourceIds: ids });
+  return apiClient.post(`/websites/bulk-bookmark`, { resourceIds: ids });
 };
 
 //"/websites/add"
