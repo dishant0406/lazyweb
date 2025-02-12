@@ -12,6 +12,7 @@ const nextConfig = {
   },
   //image source
   images: {
+    unoptimized: true,
     domains: [
       "api.lazyweb.rocks",
       "via.placeholder.com",
